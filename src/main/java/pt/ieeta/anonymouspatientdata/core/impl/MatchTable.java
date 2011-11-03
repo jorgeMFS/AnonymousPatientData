@@ -19,6 +19,10 @@
 
 package pt.ieeta.anonymouspatientdata.core.impl;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,21 +42,48 @@ public class MatchTable  implements Serializable
     
     private Map<String, String> accessionNumbers = new HashMap<String, String>();
     
-    public MatchTable()
+    private MatchTable()
     {
     
+    }
+    
+    private static MatchTable instance = null;
+    
+    
+    
+    public static MatchTable getInstance()
+    {
+    
+        if (instance==null)
+            instance = new MatchTable();
+        return instance;
+        
     }
     
     public String getName(String word)
     {
     
+        
         // Create a pattern to match breaks
         Pattern p = Pattern.compile("[,\\s]+");
         // Split input with the pattern
         String[] result = 
                  p.split(word);
         for (int i=0; i<result.length; i++)
-            System.out.println(result[i]);
+        {
+            String wordReplace = "";
+            if (patientNames.containsKey(result[i]))
+            {
+                wordReplace = patientNames.get(result[i]);
+            }
+            else
+            {
+                wordReplace = ForeignNames.getInstance().pop();
+            }
+            
+            word = word.replace(result[i],wordReplace );
+        
+        }
         
         return "";
 
@@ -109,5 +140,47 @@ public class MatchTable  implements Serializable
         
         
     }
+    
+    
+        public static void load()
+    {
+       
+        FileInputStream fileIn;
+        try {
+            fileIn = new FileInputStream("foreignNames.ser");
+                        ObjectInputStream in = new ObjectInputStream(fileIn);
+
+            
+            instance = (MatchTable)in.readObject();
+
+            
+            in.close();
+            fileIn.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+    
+    public static void save()
+    {
+               FileOutputStream fileOut;
+        try {
+            fileOut = new FileOutputStream("HTExample.ser");
+                       ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+            System.out.println("Writing Hashtable Object...");
+            out.writeObject(instance);
+
+            System.out.println("Closing all output streams...\n");
+            out.close();
+            fileOut.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+ 
+    
+    }
+    
 
 }

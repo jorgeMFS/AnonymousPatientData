@@ -20,8 +20,11 @@ package pt.ieeta.anonymouspatientdata.core.impl;
 import au.com.bytecode.opencsv.CSVReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -30,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import pt.ieeta.anonymouspatientdata.core.IRandomNames;
+import pt.ieeta.anonymouspatientdata.core.RandomString;
 
 /**
  *
@@ -44,8 +48,22 @@ public class ForeignNames implements Serializable, IRandomNames
     public static final String ENCODING = "UTF-8";
     Set<String> names = new HashSet<String> ();
     
+    private static ForeignNames instance = null;
     
+    private ForeignNames()
+    {
     
+        
+    }
+    
+    public static ForeignNames getInstance()
+    {
+    
+        if (instance==null)
+            instance = new ForeignNames();
+        return instance;
+        
+    }
     
     
     public void loadCSV(String fileName) throws FileNotFoundException
@@ -101,7 +119,56 @@ public class ForeignNames implements Serializable, IRandomNames
     
     public String pop()
     {
-        return "";
+        String result =  this.names.iterator().next();
+        if (result==null)
+        {
+            RandomString random = new RandomString(10);
+            result = random.nextString();
+        }
+        else
+        {
+            this.names.remove(result);
+        }return result;
+    }
+    
+    public static void load()
+    {
+       
+        FileInputStream fileIn;
+        try {
+            fileIn = new FileInputStream("foreignNames.ser");
+                        ObjectInputStream in = new ObjectInputStream(fileIn);
+
+            
+            instance = (ForeignNames)in.readObject();
+
+            
+            in.close();
+            fileIn.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+    
+    public static void save()
+    {
+               FileOutputStream fileOut;
+        try {
+            fileOut = new FileOutputStream("HTExample.ser");
+                       ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+            System.out.println("Writing Hashtable Object...");
+            out.writeObject(instance);
+
+            System.out.println("Closing all output streams...\n");
+            out.close();
+            fileOut.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+ 
+    
     }
     
 }
