@@ -51,7 +51,7 @@ public class ForeignNames implements Serializable, IRandomNames
 
     
     public static final String ENCODING = "UTF-8";
-    Set<String> names = new HashSet<String> ();
+    private Set<String> names = new HashSet<String> ();
     
     private static ForeignNames instance = null;
     
@@ -108,7 +108,6 @@ public class ForeignNames implements Serializable, IRandomNames
         }
         
         this.loadedDatabases.add(fileName);
-        StringBuilder text = new StringBuilder();
         
         Scanner scanner = new Scanner(new FileInputStream(fileName), ENCODING);
         try {
@@ -127,8 +126,10 @@ public class ForeignNames implements Serializable, IRandomNames
 
     public boolean addName(String name) 
     {
+        if(name == null || name.isEmpty())
+            return false;
         
-        return this.names.add(name);
+        return names.add(name);
     }
     
     public String pop()

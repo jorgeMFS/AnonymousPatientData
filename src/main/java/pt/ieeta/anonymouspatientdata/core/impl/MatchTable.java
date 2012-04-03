@@ -70,7 +70,7 @@ public class MatchTable  implements Serializable, IMatch
         while (st.hasMoreTokens()) {
             String current = st.nextToken("(^|#| )");
          
-            String wordReplace = "";
+            String wordReplace;
             if (patientNames.containsKey(current))
             {
                 wordReplace = patientNames.get(current);
@@ -203,7 +203,7 @@ public class MatchTable  implements Serializable, IMatch
     }
 
     public String getPatientID(String word) {
-        String result = "";
+        String result;
         if (patientIds.containsKey(word))
         {
             result = patientIds.get(word);
@@ -218,7 +218,7 @@ public class MatchTable  implements Serializable, IMatch
 
     public String getAccessionNumber(String word) {
         
-        String result = "";
+        String result;
         if (accessionNumbers.containsKey(word))
         {
             result = accessionNumbers.get(word);
