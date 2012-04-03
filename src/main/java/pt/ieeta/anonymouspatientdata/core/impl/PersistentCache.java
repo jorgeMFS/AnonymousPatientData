@@ -18,6 +18,7 @@
 
 package pt.ieeta.anonymouspatientdata.core.impl;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -27,8 +28,8 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.store.DiskStore;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
+import net.sf.ehcache.store.disk.DiskStore;
 
 /**
  *
@@ -45,24 +46,31 @@ public class PersistentCache<K, V> implements Map
     public  PersistentCache(String name)
     {
         
-        DiskStore d = DiskStore.create(cache, name);
-        
          manager = CacheManager.create();
         //Create a Cache specifying its configuration.
         cache = new Cache(
                 new CacheConfiguration(name, MAX_ELEMENTS)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
                 .overflowToDisk(true)
+                .overflowToOffHeap(false)
                 .eternal(true)
                 .timeToLiveSeconds(0)        
                 .timeToIdleSeconds(0)
-                .maxElementsInMemory(MAX_ELEMENTS)
+                .maxMemoryOffHeap("1k") 
+                //.maxElementsInMemory(MAX_ELEMENTS)
                 .diskPersistent(true)
                 .diskExpiryThreadIntervalSeconds(0));
         cache.setDiskStorePath("/Users/bastiao/Projects/devel/apps/AnonymousPatientData/"+"storage-"+name+".cache");
-        
+        DiskStore store = DiskStore.create(cache, "/Users/bastiao/Projects/devel/apps/AnonymousPatientData/"+"storage-"+name+".cache");
         manager.addCache(cache);
-
+        store.put(new Element("lol", "as"));
+        try {
+            store.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(PersistentCache.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        cache.flush();
     }
     public void shutdown()
     {
@@ -92,20 +100,21 @@ public class PersistentCache<K, V> implements Map
      
         
         PersistentCache<String, String> p = new PersistentCache("mycache"); 
-        p.put("test", "fuck");
-        p.put("test2", "fuck");
-        p.put("test3", "fuck");
+        p.put("test", "fuck1");
+        p.put("test2", "fuck2");
+        p.put("test3", "fuck3");
         int elementsInMemory = p.size();
         System.out.println("size: " + elementsInMemory);
         Cache cache = CacheManager.getInstance().getCache("mycache");
         long _elementsInMemory = cache.getMemoryStoreSize();
         System.out.println("size: " + _elementsInMemory);
 
-        p.put("test4", "fuck");
-        p.put("test5", "fuck");
-        
+        p.put("test4", "fuck4");
+        p.put("test5", "fuck5");
+        //cache.flush();
+        System.out.println("Memory stora size : "  + cache.getMemoryStoreSize());
         try {
-            Thread.sleep(8000);
+            Thread.sleep(2000);
         } catch (InterruptedException ex) {
             Logger.getLogger(PersistentCache.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -113,8 +122,11 @@ public class PersistentCache<K, V> implements Map
         System.out.println(p.get("test2"));
         System.out.println(p.get("test3"));
         System.out.println(p.get("test4"));
+        System.out.println(p.get("lol"));
         System.out.println(p.get("test5"));
-        p.shutdown();
+        //p.shutdown();
+        //CacheManager.getInstance().shutdown();
+        System.exit(0);
     }
 
     public int size() {
@@ -152,5 +164,4 @@ public class PersistentCache<K, V> implements Map
     public Set entrySet() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
 }

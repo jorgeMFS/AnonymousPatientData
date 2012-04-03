@@ -18,6 +18,7 @@
 package pt.ieeta.anonymouspatientdata.core.impl;
 
 import au.com.bytecode.opencsv.CSVReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -26,7 +27,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.logging.Level;
@@ -49,6 +54,9 @@ public class ForeignNames implements Serializable, IRandomNames
     Set<String> names = new HashSet<String> ();
     
     private static ForeignNames instance = null;
+    
+    private List<String> loadedDatabases = new ArrayList<String>();
+    
     
     private ForeignNames()
     {
@@ -94,13 +102,18 @@ public class ForeignNames implements Serializable, IRandomNames
     
     
     public void loadFromPlainText(String fileName) throws FileNotFoundException {
+        if (loadedDatabases.contains(fileName))
+        {
+            return;
+        }
         
+        this.loadedDatabases.add(fileName);
         StringBuilder text = new StringBuilder();
         
         Scanner scanner = new Scanner(new FileInputStream(fileName), ENCODING);
         try {
             while (scanner.hasNextLine()) {
-                addName(scanner.nextLine());
+                addName(scanner.nextLine().trim());
             }
         } finally {
             scanner.close();
@@ -114,27 +127,62 @@ public class ForeignNames implements Serializable, IRandomNames
 
     public boolean addName(String name) 
     {
+        
         return this.names.add(name);
     }
     
     public String pop()
     {
-        String result =  this.names.iterator().next();
+        String result = null;
+        Iterator it = null;
+        if (this.names!=null)
+        {
+            try
+            {
+                it = this.names.iterator();
+                result = (String) it.next();
+            }
+            catch(NoSuchElementException ex)
+            {
+            
+            }
+            
+        }
         if (result==null)
         {
             RandomString random = new RandomString(10);
             result = random.nextString();
+            if (result==null)
+            {
+                result ="Noname";
+            }
         }
         else
         {
-            this.names.remove(result);
-        }return result;
+            it.remove();
+        }
+        return result;
     }
     
     public static void load()
     {
        
+        
         FileInputStream fileIn;
+        
+        File f = new File("foreignNames.ser");
+        if (!f.exists())
+        {
+            try {
+                ForeignNames.getInstance().loadFromPlainText("database"+ File.separator + "census.txt");
+                ForeignNames.getInstance().loadFromPlainText("database"+ File.separator + "names.txt");
+                ForeignNames.getInstance().loadFromPlainText("database"+ File.separator + "names2.txt");
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+            return;
+        }
+        
         try {
             fileIn = new FileInputStream("foreignNames.ser");
                         ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -155,7 +203,7 @@ public class ForeignNames implements Serializable, IRandomNames
     {
                FileOutputStream fileOut;
         try {
-            fileOut = new FileOutputStream("HTExample.ser");
+            fileOut = new FileOutputStream("foreignNames.ser");
                        ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
             System.out.println("Writing Hashtable Object...");

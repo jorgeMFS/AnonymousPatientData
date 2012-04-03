@@ -19,6 +19,7 @@
 
 package pt.ieeta.anonymouspatientdata.core.impl;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -26,15 +27,17 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.UUID;
 import java.util.regex.Pattern;
+import pt.ieeta.anonymouspatientdata.core.IMatch;
 
 /**
  *
  * @author Luís A. Bastião Silva <bastiao@ua.pt>
  */
-public class MatchTable  implements Serializable
+public class MatchTable  implements Serializable, IMatch
 {
-    
     
     private Map<String, String> patientNames = new HashMap<String, String>();
 
@@ -62,11 +65,30 @@ public class MatchTable  implements Serializable
     
     public String getName(String word)
     {
+        StringTokenizer st = new StringTokenizer(word);
+        
+        while (st.hasMoreTokens()) {
+            String current = st.nextToken("(^|#| )");
+         
+            String wordReplace = "";
+            if (patientNames.containsKey(current))
+            {
+                wordReplace = patientNames.get(current);
+            }
+            else
+            {
+                wordReplace = ForeignNames.getInstance().pop();
+                this.patientNames.put(current, wordReplace);
+            }
+            
+            word = word.replace(current,wordReplace );
+         
+        }
     
         
-        // Create a pattern to match breaks
+        /**
         Pattern p = Pattern.compile("[,\\s]+");
-        // Split input with the pattern
+        
         String[] result = 
                  p.split(word);
         for (int i=0; i<result.length; i++)
@@ -79,13 +101,15 @@ public class MatchTable  implements Serializable
             else
             {
                 wordReplace = ForeignNames.getInstance().pop();
+                this.patientNames.put(result[i], wordReplace);
             }
             
             word = word.replace(result[i],wordReplace );
         
         }
+         **/
         
-        return "";
+        return word;
 
     }
 
@@ -132,22 +156,18 @@ public class MatchTable  implements Serializable
     }
     
     
+
     
-    public static void main(String [] args)
+    public static void load()
     {
-        MatchTable matchTable = new MatchTable();
-        
-        
-        
-    }
-    
-    
-        public static void load()
-    {
-       
+        File f = new File("match.ser");
+        if (!f.exists())
+        {    
+            return;
+        }
         FileInputStream fileIn;
         try {
-            fileIn = new FileInputStream("foreignNames.ser");
+            fileIn = new FileInputStream("match.ser");
                         ObjectInputStream in = new ObjectInputStream(fileIn);
 
             
@@ -164,9 +184,9 @@ public class MatchTable  implements Serializable
     
     public static void save()
     {
-               FileOutputStream fileOut;
+        FileOutputStream fileOut;
         try {
-            fileOut = new FileOutputStream("HTExample.ser");
+            fileOut = new FileOutputStream("match.ser");
                        ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
             System.out.println("Writing Hashtable Object...");
@@ -181,6 +201,49 @@ public class MatchTable  implements Serializable
  
     
     }
+
+    public String getPatientID(String word) {
+        String result = "";
+        if (patientIds.containsKey(word))
+        {
+            result = patientIds.get(word);
+        }
+        else
+        {
+            result = UUID.randomUUID().toString();
+            patientIds.put(word, result);
+        }
+        return result;
+    }
+
+    public String getAccessionNumber(String word) {
+        
+        String result = "";
+        if (accessionNumbers.containsKey(word))
+        {
+            result = accessionNumbers.get(word);
+        }
+        else
+        {
+            result = UUID.randomUUID().toString();
+            accessionNumbers.put(word, result);
+        }
+        return result;
+        
+    }
     
+    
+    public static void main(String [] args)
+    {
+        String word = "Luis^Bastiao#das asd";
+        StringTokenizer st = new StringTokenizer(word);
+        
+        while (st.hasMoreTokens()) {
+         System.out.println(st.nextToken("(^|#| )"));
+        }
+        
+        
+    
+    }
 
 }
