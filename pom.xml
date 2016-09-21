@@ -1,119 +1,118 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>pt.ieeta</groupId>
-    <artifactId>AnonymousPatientData</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+	<groupId>pt.ieeta</groupId>
+	<artifactId>AnonymousPatientData</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-    <name>AnonymousPatientData</name>
-    <url>http://maven.apache.org</url>
-    <repositories>
-      
-        <repository>
-            <id>sf-releases</id>
-            <name>SF</name>
-            <url>https://oss.sonatype.org/content/repositories/sourceforge-releases</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-       
-        </repository>
-        <repository>
-            <id>dcm4che-repo</id>
-            <url>http://www.dcm4che.org/maven2/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-     
-    </repositories>
-  
-  
-  
-    <build>
-        <finalName>${project.artifactId}</finalName>
-        
+	<name>AnonymousPatientData</name>
+	<url>http://maven.apache.org</url>
+	
+	<repositories>
+		<repository>
+			<id>sf-releases</id>
+			<name>SF</name>
+			<url>https://oss.sonatype.org/content/repositories/sourceforge-releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>dcm4che-repo</id>
+			<url>http://www.dcm4che.org/maven2/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>mi</id>
+			<url>http://bioinformatics.ua.pt/maven/content/repositories/mi</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>mi-snapshots</id>
+			<url>http://bioinformatics.ua.pt/maven/content/repositories/mi-snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
-        
-        
-        <plugins>
 
-        
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-  
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.swinglabs</groupId>
-            <artifactId>swing-layout</artifactId>
-            <version>1.0.3</version>
-        </dependency>
-    
-    
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.6.16</version>
-        </dependency>
-    
-    
-    
-        <dependency>
-            <groupId>net.sf.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>2.0</version>
-        </dependency>
-		
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
-            <version>2.4.6</version>
-        </dependency>
-        <dependency>
-            <groupId>dcm4che</groupId>
-            <artifactId>dcm4che-core</artifactId>
-            <version>2.0.25</version>
-        </dependency>
-    
-    </dependencies>
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<!-- Dicoogle SDK version here -->
+		<dicoogle.version>2.3.1</dicoogle.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>3.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.8.11.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sql2o</groupId>
+			<artifactId>sql2o</artifactId>
+			<version>1.5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>pt.ua.ieeta</groupId>
+			<artifactId>dicoogle-sdk</artifactId>
+			<version>${dicoogle.version}</version>
+		</dependency>
+	</dependencies>
 </project>
