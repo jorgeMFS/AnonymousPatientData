@@ -40,7 +40,6 @@ public class AnonimizeDicomObject {
 		String patientName = DICOMObj.getString(Tag.PatientName);
 		String patientId =DICOMObj.getString(Tag.PatientID);
 		String accessionNumber=DICOMObj.getString(Tag.AccessionNumber);
-		
 		PatientStudy patientStudy =MatchTables.getInstance().createMatch(patientId, patientName, accessionNumber);
 		String keyPatient = patientStudy.getPatientData().getMapId();
 		String keyStudy =patientStudy.getStudyData().getMapAccessionNumber();		

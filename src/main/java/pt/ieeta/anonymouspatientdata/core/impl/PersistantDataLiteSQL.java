@@ -33,7 +33,7 @@ public class PersistantDataLiteSQL {
 
 
 	public PersistantDataLiteSQL(String local){
-		sql2o= new Sql2o(local);
+		sql2o= new Sql2o(local, "", "");
 	}
 
 	public void CreateTable(){
@@ -46,6 +46,7 @@ public class PersistantDataLiteSQL {
 
 		String sqlTable2="CREATE TABLE MatchTableStudy" +
 				"(accessionNumber varchar(255) UNIQUE not NULL," + 
+				"patientId varchar(255) not NULL,"+
 				"mapAccessionNumber varchar(255) not NULL," +
 				"PRIMARY KEY (mapAccessionNumber),"+
 				"FOREIGN KEY (patientId) REFERENCES MatchTablePatient(patientId))";
@@ -90,21 +91,19 @@ public class PersistantDataLiteSQL {
 	}
 
 	public void insertPatientData(PatientData patientData){
-		String sql= "INSERT INTO MatchTablePatient" +
+		String sql= "INSERT INTO MatchTablePatient(patientId, mapId, patientName)" +
 				"VALUES (:patientId, :mapId,:patientName)";
 		try(Connection con = sql2o.open()) {
 			con.createQuery(sql).bind(patientData).executeUpdate();
 		}
-
 	}
 
 	public void insertStudyData(StudyData studyData){
-		String sql= "INSERT INTO MatchTableStudy" +
-				"VALUES (:accessionNumber, :mapAccessionNumber,:patientName)";
+		String sql= "INSERT INTO MatchTableStudy(accessionNumber, mapAccessionNumber, patientId)" +
+				"VALUES (:accessionNumber, :mapAccessionNumber,:patientId)";
 		try(Connection con = sql2o.open()) {
 			con.createQuery(sql).bind(studyData).executeUpdate();
 		}
-
 	}
 
 
