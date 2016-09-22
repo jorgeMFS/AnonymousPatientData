@@ -23,7 +23,6 @@ package pt.ieeta.anonymouspatientdata.pluginset;
 
 
 import pt.ieeta.anonymouspatientdata.core.impl.MatchTables;
-import pt.ieeta.anonymouspatientdata.core.impl.PersistantDataLiteSQL;
 import pt.ieeta.anonymouspatientdata.pluginset.storage.AnonymousStorage;
 import pt.ua.dicoogle.sdk.GraphicalInterface;
 import pt.ua.dicoogle.sdk.IndexerInterface;
@@ -44,8 +43,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.restlet.resource.ServerResource;
-import org.slf4j.LoggerFactory;
-import org.sql2o.Sql2oException;
+
 
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
@@ -54,17 +52,17 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 @SuppressWarnings("deprecation")
 @PluginImplementation
 public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterface {
-	
+
 	protected DicooglePlatformInterface platform;
 	private ConfigurationHolder settings;
-	
-	
+
+
 	@Override
 	public void setPlatformProxy(DicooglePlatformInterface core) {
 		this.platform=core;
 	}
-	
-	
+
+
 	@Override
 	public String getName() {
 		return "AnonymousSet";
@@ -75,7 +73,7 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 
 	@Override
 	public Collection<StorageInterface> getStoragePlugins() {
-	return Collections.singleton((StorageInterface) this.storage);
+		return Collections.singleton((StorageInterface) this.storage);
 	}
 
 
@@ -112,14 +110,13 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 
 	@Override
 	public void setSettings(ConfigurationHolder arg0) {
-		this.setDbLocation(arg0.getConfiguration().getString("dbLocation","jdbc:sqlite:AnonymousInformation.db"));
-		PersistantDataLiteSQL sql=new PersistantDataLiteSQL(getDbLocation());
-		MatchTables.getInstance().loadDataBase(getDbLocation());
 		try {
-			sql.CreateTable();
-		} catch (Sql2oException e) {
-			LoggerFactory.getLogger(AnonymousPluginSet.class).warn("Issue while initializing Database",e);
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
 		}
+		this.setDbLocation(arg0.getConfiguration().getString("dbLocation","jdbc:sqlite:AnonymousInformation.db"));
+		MatchTables.getInstance().bootstrapDataBase(getDbLocation());
 		this.settings =arg0;
 	}
 
@@ -134,7 +131,7 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 	public void setDbLocation(String dbLocation) {
 		this.dbLocation = dbLocation;
 	}
-	
+
 
 
 

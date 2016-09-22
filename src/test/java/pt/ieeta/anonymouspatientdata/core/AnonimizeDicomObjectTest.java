@@ -17,10 +17,7 @@
  */
 package pt.ieeta.anonymouspatientdata.core;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
-import java.net.URI;
 
 import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.data.Tag;
@@ -44,7 +41,7 @@ public class AnonimizeDicomObjectTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		MatchTables.getInstance().loadDataBase("jdbc:sqlite:test.db");
+		MatchTables.getInstance().bootstrapDataBase("jdbc:sqlite:test.db");
 		System.out.println("Setup Test");
 		String str ="C:\\Users\\Miguel\\Dropbox\\UACMUPERITIC00282014\\1_1.dcm"; 
 		dis =new DicomInputStream(new File(str));

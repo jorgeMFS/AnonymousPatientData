@@ -30,8 +30,8 @@ import org.junit.Test;
 public class PersistantDataLiteSQLTest {
 
 	String patientName= "Jorge Miguel Ferreira da Silva";
-	String patientId = "12345689656";
-	String accessionNumber ="836492346234987";
+	String patientId = "123456896564";
+	String accessionNumber ="83649234623498754";
 	PatientData patientData=PatientData.createWithMapping(patientName, patientId);
 	StudyData studyData =StudyData.createWithMapping(accessionNumber, patientId);
 	/**
@@ -77,8 +77,9 @@ public class PersistantDataLiteSQLTest {
 		sql1.CreateTable();
 		sql1.insertStudyData(this.studyData);
 		Optional<StudyData> sd = sql1.getStudyDataByAccessionNumber(accessionNumber);
-		
-		}
+		sd.get();
+
+	}
 
 	/**
 	 * Test method for {@link pt.ieeta.anonymouspatientdata.core.impl.PersistantDataLiteSQL#insertPatientData(pt.ieeta.anonymouspatientdata.core.impl.PatientData)}.

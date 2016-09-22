@@ -39,7 +39,7 @@ public class MatchTablesTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		MatchTables.getInstance().loadDataBase(Location);
+		MatchTables.getInstance().bootstrapDataBase(Location);
 	}
 	
 	/**

@@ -38,13 +38,13 @@ public class PersistantDataLiteSQL {
 
 	public void CreateTable(){
 
-		String sqlTable1 ="CREATE TABLE MatchTablePatient" +
+		String sqlTable1 ="CREATE TABLE IF NOT EXISTS MatchTablePatient" +
 				"(patientId varchar(255) not NULL," +
 				"mapId varchar(255) not NULL," +
 				"patientName varchar(255) not NULL,"+
 				"PRIMARY KEY (patientId))";
 
-		String sqlTable2="CREATE TABLE MatchTableStudy" +
+		String sqlTable2="CREATE TABLE IF NOT EXISTS MatchTableStudy" +
 				"(accessionNumber varchar(255) UNIQUE not NULL," + 
 				"patientId varchar(255) not NULL,"+
 				"mapAccessionNumber varchar(255) not NULL," +

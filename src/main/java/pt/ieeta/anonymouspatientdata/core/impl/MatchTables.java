@@ -21,7 +21,10 @@ package pt.ieeta.anonymouspatientdata.core.impl;
  */
 import java.util.Optional;
 
+import org.slf4j.LoggerFactory;
 import org.sql2o.Sql2oException;
+
+import pt.ieeta.anonymouspatientdata.pluginset.AnonymousPluginSet;
 
 public class MatchTables {
 	
@@ -62,7 +65,12 @@ public class MatchTables {
 				});
 	}
 
-	public void loadDataBase(String dbLocation){
+	public void bootstrapDataBase(String dbLocation){
 	sql = new PersistantDataLiteSQL(dbLocation);
+	try {
+		sql.CreateTable();
+	} catch (Sql2oException e) {
+		LoggerFactory.getLogger(AnonymousPluginSet.class).warn("Issue while initializing Database",e);
+	}
 	}
 }
