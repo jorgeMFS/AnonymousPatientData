@@ -39,9 +39,9 @@ public class PersistantDataLiteSQLTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		String tst="C:\\Users\\Miguel\\Desktop\\AnonymousPatientData\\test.db";
-		File file = new File(tst);
-		file.delete();
+//		String tst="C:\\Users\\Miguel\\Desktop\\AnonymousPatientData\\test.db";
+//		File file = new File(tst);
+//		file.delete();
 	}
 
 	/**
