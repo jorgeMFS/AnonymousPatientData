@@ -65,7 +65,7 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 
 	@Override
 	public String getName() {
-		return "AnonymousSet";
+		return "Anonymous-Wrapper-Plugin";
 	}
 
 	private AnonymousStorage storage= new AnonymousStorage();

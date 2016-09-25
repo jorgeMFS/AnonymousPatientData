@@ -105,6 +105,25 @@ public class PersistantDataLiteSQL {
 			con.createQuery(sql).bind(studyData).executeUpdate();
 		}
 	}
+	
+	public Optional<StudyData> getDataByPatientName(String patientName){
+
+		String sql =
+				"SELECT MatchTableStudy.accessionNumber, MatchTableStudy.mapAccessionNumber, MatchTablePatient.patientId, MatchTablePatient.mapId, MatchTablePatient.patientName" +
+						"FROM MatchTableStudy INNER JOIN MatchTablePatient"+
+						"ON MatchTableStudy.patientId=MatchTablePatient.patientId"+
+						"WHERE MatchTablePatient.patientId == :patientName";
+
+		try(Connection con = sql2o.open()) {
+			Iterator<StudyData> it= con.createQuery(sql).addParameter("accessionNumber", patientName)
+					.executeAndFetch(StudyData.class).iterator();
+			if (it.hasNext()) return Optional.of(it.next());
+			return Optional.empty();
+		}
+	}
+	
+	
+	
 
 
 }

@@ -1,5 +1,27 @@
+/*  Copyright   2016 - Jorge Miguel Ferreira da Silva
+ *
+ *  This file is part of AnonymousPatientData.
+ *
+ *  AnonymousQuery is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  AnonymousQuery is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with PACScloud.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package pt.ieeta.anonymouspatientdata.pluginset.Query;
+import java.util.Objects;
 
+/**
+ * @author Jorge Miguel Ferreira da Silva
+ *
+ */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +46,7 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 	
 	@Override
 	public String getName() {
-		return "Anonymous-Query-Plugin";
+		return "Anonymous-Wrapper-Plugin";
 	}
 
 	@Override
@@ -55,7 +77,7 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 
 	@Override
 	public Iterable<SearchResult> query(String query, Object... parameters) {
-		if (!enabled || query == null) {return null;}
+		Objects.requireNonNull(query);
 		return null;
 	}
 

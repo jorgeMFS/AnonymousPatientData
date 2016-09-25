@@ -117,7 +117,7 @@ public class AnonymousStorage extends AnonimizeDicomObject implements StorageInt
 
 	@Override
 	public String getName() {
-		return "Anonymous-Filesystem-Plugin";
+		return "Anonymous-Wrapper-Plugin";
 	}
 
 	@Override
