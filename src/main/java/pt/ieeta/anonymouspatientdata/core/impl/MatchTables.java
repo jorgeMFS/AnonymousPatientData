@@ -16,6 +16,7 @@
  *  along with PACScloud.  If not, see <http://www.gnu.org/licenses/>.
  */
 package pt.ieeta.anonymouspatientdata.core.impl;
+import java.io.IOException;
 /**
  * @author Jorge Miguel Ferreira da Silva
  */
@@ -24,11 +25,9 @@ import java.util.Optional;
 import org.slf4j.LoggerFactory;
 import org.sql2o.Sql2oException;
 
-import pt.ieeta.anonymouspatientdata.pluginset.AnonymousPluginSet;
-
 public class MatchTables {
 	
-	private PersistantDataLiteSQL sql=null;
+	private PersistantDataLucene lucene=null;
 	private MatchTables() {}
 	private static MatchTables instance = null;
 	public static MatchTables getInstance()
@@ -41,36 +40,38 @@ public class MatchTables {
 	}
 
 
-	public PatientStudy createMatch( String patientId, String patientName, String accessionNumber ) throws Sql2oException{
+	public PatientStudy createMatch( String patientId, String patientName, String accessionNumber ) throws Sql2oException, IOException{
 
-		PatientData patientData=sql.getPatientDataById(patientId).orElseGet(() -> {
+		PatientData patientData=lucene.getPatientDataById(patientId).orElseGet(() -> {
 			final PatientData pData2= PatientData.createWithMapping(patientName,patientId);
-			sql.insertPatientData(pData2);
+			lucene.insertPatientData(pData2);
 			return pData2;
 		});
 
-		StudyData studyData =sql.getStudyDataByAccessionNumber(accessionNumber).orElseGet(() ->{
-			final StudyData sData = StudyData.createWithMapping(accessionNumber,patientId);
+		StudyData studyData =lucene.getStudyDataByAccessionNumber(accessionNumber).orElseGet(() ->{
+			final StudyData sData = StudyData.createWithMapping(accessionNumber);
+			lucene.insertStudyData(sData);
 			return sData;
 		});
 
 		return new PatientStudy(patientData, studyData);
 	}
 
-	public Optional<PatientStudy> getMatch(String patientId, String accessionNumber)throws Sql2oException {
-		return sql.getPatientDataById(patientId)
+	public Optional<PatientStudy> getMatch(String patientId, String accessionNumber)throws Sql2oException, IOException {
+		return lucene.getPatientDataById(patientId)
 				.map(p -> {
-					final Optional<StudyData> study = sql.getStudyDataByAccessionNumber(accessionNumber);
+					Optional<StudyData> study = Optional.empty();
+					try {
+						study = lucene.getStudyDataByAccessionNumber(accessionNumber);
+					} catch (Exception e) {
+						LoggerFactory.getLogger(MatchTables.class).warn("Issue while getStudyData By AccessionNumber",e);
+					}
 					return new PatientStudy(p, study.orElse(null));
 				});
 	}
 
-	public void bootstrapDataBase(String dbLocation){
-	sql = new PersistantDataLiteSQL(dbLocation);
-	try {
-		sql.CreateTable();
-	} catch (Sql2oException e) {
-		LoggerFactory.getLogger(AnonymousPluginSet.class).warn("Issue while initializing Database",e);
+	public void bootstrapDataBase(String path){
+		lucene = new PersistantDataLucene(path);
 	}
-	}
+
 }

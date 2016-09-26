@@ -22,6 +22,7 @@ package pt.ieeta.anonymouspatientdata.core.impl;
  */
 
 import java.util.Iterator;
+
 import java.util.Optional;
 
 import org.sql2o.Connection;
@@ -105,25 +106,49 @@ public class PersistantDataLiteSQL {
 			con.createQuery(sql).bind(studyData).executeUpdate();
 		}
 	}
-	
-	public Optional<StudyData> getDataByPatientName(String patientName){
 
-		String sql =
-				"SELECT MatchTableStudy.accessionNumber, MatchTableStudy.mapAccessionNumber, MatchTablePatient.patientId, MatchTablePatient.mapId, MatchTablePatient.patientName" +
-						"FROM MatchTableStudy INNER JOIN MatchTablePatient"+
-						"ON MatchTableStudy.patientId=MatchTablePatient.patientId"+
-						"WHERE MatchTablePatient.patientId == :patientName";
 
-		try(Connection con = sql2o.open()) {
-			Iterator<StudyData> it= con.createQuery(sql).addParameter("accessionNumber", patientName)
-					.executeAndFetch(StudyData.class).iterator();
-			if (it.hasNext()) return Optional.of(it.next());
-			return Optional.empty();
-		}
-	}
-	
-	
-	
+
+//	public Optional<PatientData> AccessionNumberMapAndPatientIdbyPatientName(String patientName){
+//		String sql ="SELECT MatchTableStudy.mapAccessionNumber, MatchTableStudy.patientId" +
+//				"FROM MatchTableStudy,MatchTablePatient " +
+//				"WHERE MatchTableStudy.patientId == :MatchTablePatient.patientId"+
+//				"MatchTablePatient.patientName=:patientName";
+//
+//		try(Connection con = sql2o.open()) {
+//			Iterator<PatientData> it= con.createQuery(sql).addParameter("patientName", patientName)
+//					.executeAndFetch(PatientData.class).iterator();
+//			if (it.hasNext()) return Optional.of(it.next());
+//			return Optional.empty();
+//		}
+//	}
+
+//	public Optional<StudyData> AccessionNumberMapAndPatientIdbyPatientId(String patientId){
+//		String sql ="SELECT mapAccessionNumber, patientId" +
+//				"FROM MatchTableStudy " +
+//				"WHERE patientId == :patientId";
+//
+//		try(Connection con = sql2o.open()) {
+//			Iterator<StudyData> it= con.createQuery(sql).addParameter("patientId", patientId)
+//					.executeAndFetch(StudyData.class).iterator();
+//			if (it.hasNext()) return Optional.of(it.next());
+//			return Optional.empty();
+//		}
+//	}
+//
+//	public Optional<StudyData> AccessionNumberMapAndPatientIdbyAccessionNumber(String accessionNumber){
+//		String sql ="SELECT mapAccessionNumber, patientId" +
+//				"FROM MatchTableStudy " +
+//				"WHERE accessionNumber == :accessionNumber";
+//
+//		try(Connection con = sql2o.open()) {
+//			Iterator<StudyData> it= con.createQuery(sql).addParameter("accessionNumber", accessionNumber)
+//					.executeAndFetch(StudyData.class).iterator();
+//			if (it.hasNext()) return Optional.of(it.next());
+//			return Optional.empty();
+//		}
+//	}
+
 
 
 }

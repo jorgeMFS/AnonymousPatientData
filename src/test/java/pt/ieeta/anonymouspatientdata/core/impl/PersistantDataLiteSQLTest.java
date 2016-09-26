@@ -33,15 +33,18 @@ public class PersistantDataLiteSQLTest {
 	String patientId = "123456896564";
 	String accessionNumber ="83649234623498754";
 	PatientData patientData=PatientData.createWithMapping(patientName, patientId);
-	StudyData studyData =StudyData.createWithMapping(accessionNumber, patientId);
+	StudyData studyData =StudyData.createWithMapping(accessionNumber);
+	PersistantDataLiteSQL sql1;
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-//		String tst="C:\\Users\\Miguel\\Desktop\\AnonymousPatientData\\test.db";
-//		File file = new File(tst);
-//		file.delete();
+		String tst="C:\\Users\\Miguel\\Desktop\\AnonymousPatientData\\test.db";
+		File file = new File(tst);
+		file.delete();
+		sql1 = new PersistantDataLiteSQL("jdbc:sqlite:test.db");
+		sql1.CreateTable();
 	}
 
 	/**
@@ -49,7 +52,6 @@ public class PersistantDataLiteSQLTest {
 	 */
 	@Test
 	public final void testCreateTable() {
-		PersistantDataLiteSQL sql1 = new PersistantDataLiteSQL("jdbc:sqlite:test.db");
 		sql1.CreateTable();
 	}
 
@@ -59,7 +61,6 @@ public class PersistantDataLiteSQLTest {
 	@Test
 	public final void testGetPatientDataById() {
 
-		PersistantDataLiteSQL sql1 = new PersistantDataLiteSQL("jdbc:sqlite:test.db");
 		sql1.CreateTable();
 		sql1.insertPatientData(this.patientData);
 		Optional<PatientData> pd= sql1.getPatientDataById(this.patientId);
@@ -73,11 +74,12 @@ public class PersistantDataLiteSQLTest {
 	 */
 	@Test
 	public final void testGetStudyDataByAccessionNumber() {
-		PersistantDataLiteSQL sql1 = new PersistantDataLiteSQL("jdbc:sqlite:test.db");
 		sql1.CreateTable();
 		sql1.insertStudyData(this.studyData);
 		Optional<StudyData> sd = sql1.getStudyDataByAccessionNumber(accessionNumber);
 		sd.get();
+		System.out.println(sd.get().getAccessionNumber());
+		System.out.println(sd.get().getMapAccessionNumber().toString());
 
 	}
 
@@ -86,7 +88,6 @@ public class PersistantDataLiteSQLTest {
 	 */
 	@Test
 	public final void testInsertPatientData() {
-		PersistantDataLiteSQL sql1 = new PersistantDataLiteSQL("jdbc:sqlite:test.db");
 		sql1.CreateTable();
 		sql1.insertPatientData(this.patientData);
 	}
@@ -96,9 +97,34 @@ public class PersistantDataLiteSQLTest {
 	 */
 	@Test
 	public final void testInsertStudyData() {
-		PersistantDataLiteSQL sql1 = new PersistantDataLiteSQL("jdbc:sqlite:test.db");
 		sql1.CreateTable();
 		sql1.insertStudyData(this.studyData);
 	}
 
+//	@Test
+//	public final void AccessionNumberMapAndPatientIdbyPatientName() {
+//		sql1.CreateTable();
+//		sql1.insertPatientData(this.patientData);
+//		sql1.insertStudyData(this.studyData);
+//		sql1.AccessionNumberMapAndPatientIdbyPatientName(patientName);
+//	}
+	
+//	@Test
+//	public final void AccessionNumberMapAndPatientIdbyPatientId() {
+//		sql1.CreateTable();
+//		sql1.insertPatientData(this.patientData);
+//		sql1.insertStudyData(this.studyData);
+//		sql1.AccessionNumberMapAndPatientIdbyPatientId(patientId);
+//	}
+//	
+//	@Test
+//	public final void AccessionNumberMapAndPatientIdbyAccessionNumber() {
+//		sql1.CreateTable();
+//		sql1.insertPatientData(this.patientData);
+//		sql1.insertStudyData(this.studyData);
+//		sql1.AccessionNumberMapAndPatientIdbyAccessionNumber(accessionNumber);
+//	}
 }
+
+
+

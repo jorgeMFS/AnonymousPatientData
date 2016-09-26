@@ -10,7 +10,7 @@
 
 	<name>AnonymousPatientData</name>
 	<url>http://maven.apache.org</url>
-	
+
 	<repositories>
 		<repository>
 			<id>sf-releases</id>
@@ -95,14 +95,30 @@
 			<version>3.8.11.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.sql2o</groupId>
-			<artifactId>sql2o</artifactId>
-			<version>1.5.4</version>
-		</dependency>
-		<dependency>
 			<groupId>pt.ua.ieeta</groupId>
 			<artifactId>dicoogle-sdk</artifactId>
 			<version>${dicoogle.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sql2o</groupId>
+			<artifactId>sql2o</artifactId>
+			<version>1.6.0-RC2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>6.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<version>6.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.21</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

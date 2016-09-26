@@ -39,11 +39,12 @@ import pt.ua.dicoogle.sdk.StorageInterface; // TODO implement
 import pt.ua.dicoogle.sdk.core.DicooglePlatformInterface;
 import pt.ua.dicoogle.sdk.core.PlatformCommunicatorInterface;
 import pt.ua.dicoogle.sdk.settings.ConfigurationHolder; // TODO implement
+
+
 import java.util.Collection;
 import java.util.Collections;
 
 import org.restlet.resource.ServerResource;
-
 
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
@@ -107,16 +108,10 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 		return this.settings;
 	}
 
-
 	@Override
 	public void setSettings(ConfigurationHolder arg0) {
-		try {
-			Class.forName("org.sqlite.JDBC");
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		this.setDbLocation(arg0.getConfiguration().getString("dbLocation","jdbc:sqlite:AnonymousInformation.db"));
-		MatchTables.getInstance().bootstrapDataBase(getDbLocation());
+		this.setLocation(arg0.getConfiguration().getString("Location","./Anon_index/"));
+	MatchTables.getInstance().bootstrapDataBase(getLocation());
 		this.settings =arg0;
 	}
 
@@ -124,12 +119,12 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 	public void shutdown() {
 	}
 
-	public String getDbLocation() {
+	public String getLocation() {
 		return dbLocation;
 	}
 
-	public void setDbLocation(String dbLocation) {
-		this.dbLocation = dbLocation;
+	public void setLocation(String Location) {
+		this.dbLocation = Location;
 	}
 
 

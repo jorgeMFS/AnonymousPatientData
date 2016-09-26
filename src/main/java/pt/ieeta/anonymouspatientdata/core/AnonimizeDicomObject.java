@@ -18,6 +18,8 @@
 
 package pt.ieeta.anonymouspatientdata.core;
 
+import java.io.IOException;
+
 /**
  * @author Jorge Miguel Ferreira da Silva
  */
@@ -25,6 +27,7 @@ package pt.ieeta.anonymouspatientdata.core;
 import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.data.Tag;
 import org.dcm4che2.data.VR;
+import org.sql2o.Sql2oException;
 
 import pt.ieeta.anonymouspatientdata.core.impl.MatchTables;
 import pt.ieeta.anonymouspatientdata.core.impl.PatientStudy;
@@ -34,8 +37,10 @@ public class AnonimizeDicomObject {
  * Transforms the DicomObject by Anonymizing the Tag patientName, patientId and AccessionNumber
  * @param DICOMObj
  * @return  
+ * @throws IOException 
+ * @throws Sql2oException 
  */
-	public static void anonymizeObject(DicomObject DICOMObj) {
+	public static void anonymizeObject(DicomObject DICOMObj) throws Sql2oException, IOException {
 		
 		String patientName = DICOMObj.getString(Tag.PatientName);
 		String patientId =DICOMObj.getString(Tag.PatientID);

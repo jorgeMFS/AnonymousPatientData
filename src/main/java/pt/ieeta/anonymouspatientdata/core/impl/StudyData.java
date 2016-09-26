@@ -27,7 +27,6 @@ public class StudyData {
 
 	private String accessionNumber;
 	private String mapAccessionNumber;
-	private String patientId;
 
 	/**
 	 * @param accessionNumber
@@ -37,11 +36,10 @@ public class StudyData {
 	
 
 
-	public StudyData(String accessionNumber, String mapAccessionNumber, String patientId) {
+	public StudyData(String accessionNumber, String mapAccessionNumber) {
 		super();
 		this.setAccessionNumber(accessionNumber);
 		this.setMapAccessionNumber(mapAccessionNumber);
-		this.setPatientId(patientId);
 	}
 
 	public String getAccessionNumber() {
@@ -58,19 +56,12 @@ public class StudyData {
 	public void setMapAccessionNumber(String mapAccessionNumber) {
 		this.mapAccessionNumber = mapAccessionNumber;
 	}
-
-	public String getPatientId() {
-		return patientId;
-	}
-
-	public void setPatientId(String patientId) {
-		this.patientId = patientId;
-	}
+	
 	public static String createmapAccessionNumber(){
 		return UUID.randomUUID().toString();
 	}
-	public static StudyData createWithMapping(String accessionNumber,String patientId){
-		StudyData studyData = new StudyData(accessionNumber,createmapAccessionNumber(),patientId);
+	public static StudyData createWithMapping(String accessionNumber){
+		StudyData studyData = new StudyData(accessionNumber,createmapAccessionNumber());
 		return studyData;
 	}
 }

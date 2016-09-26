@@ -17,11 +17,13 @@
  */
 package pt.ieeta.anonymouspatientdata.core.impl;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.sql2o.Sql2oException;
 
 /**
  * @author Jorge Miguel Ferreira da Silva
@@ -31,9 +33,9 @@ public class MatchTablesTest {
 	String patientName= "Jorge Miguel";
 	String patientId = "234643501";
 	String accessionNumber ="836492346234987";
-	String Location="jdbc:sqlite:test.db";
+	String Location="./Test_index/";
 	PatientData patientData=PatientData.createWithMapping(patientName, patientId);
-	StudyData studyData =StudyData.createWithMapping(accessionNumber, patientId);
+	StudyData studyData =StudyData.createWithMapping(accessionNumber);
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -44,9 +46,11 @@ public class MatchTablesTest {
 	
 	/**
 	 * Test method for {@link pt.ieeta.anonymouspatientdata.core.impl.MatchTables#createMatch(java.lang.String, java.lang.String, java.lang.String)}.
+	 * @throws IOException 
+	 * @throws Sql2oException 
 	 */
 	@Test
-	public final void testCreateMatch() {
+	public final void testCreateMatch() throws Sql2oException, IOException {
 		
 		PatientStudy ps =MatchTables.getInstance().createMatch(patientId, patientName, accessionNumber);
 		Assert.assertNotNull(ps);
@@ -64,9 +68,11 @@ public class MatchTablesTest {
 
 	/**
 	 * Test method for {@link pt.ieeta.anonymouspatientdata.core.impl.MatchTables#getMatch(java.lang.String, java.lang.String)}.
+	 * @throws IOException 
+	 * @throws Sql2oException 
 	 */
 	@Test
-	public final void testGetMatch() {
+	public final void testGetMatch() throws Sql2oException, IOException {
 		Optional<PatientStudy> ps =MatchTables.getInstance().getMatch(patientId, accessionNumber);
 		Assert.assertNotNull(ps);
 		Optional<PatientStudy> ps1 =MatchTables.getInstance().getMatch("1234588787815212145","00987654325364636324");

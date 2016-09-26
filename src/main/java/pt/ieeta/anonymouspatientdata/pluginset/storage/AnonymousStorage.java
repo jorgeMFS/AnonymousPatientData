@@ -33,6 +33,7 @@ import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.io.DicomInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sql2o.Sql2oException;
 
 import pt.ieeta.anonymouspatientdata.core.AnonimizeDicomObject;
 import pt.ua.dicoogle.sdk.StorageInputStream;
@@ -62,7 +63,12 @@ public class AnonymousStorage extends AnonimizeDicomObject implements StorageInt
 	@Override
 	public URI store(DicomObject dcmObj, Object... arg1) {
 		if (!enabled || dcmObj == null) {return null;}
-		anonymizeObject(dcmObj);
+		try {
+			anonymizeObject(dcmObj);
+		} catch (Sql2oException | IOException e) {
+			LoggerFactory.getLogger(AnonymousStorage.class).warn("Issue while using Anonymous Storage",e);
+			e.printStackTrace();
+		}
 
 		return this.platform.getStoragePluginForSchema(this.scheme).store(dcmObj, arg1);
 	}
