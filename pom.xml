@@ -121,4 +121,8 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<organization>
+		<name>Bioinformatics</name>
+		<url>https://github.com/bioinformatics-ua</url>
+	</organization>
 </project>

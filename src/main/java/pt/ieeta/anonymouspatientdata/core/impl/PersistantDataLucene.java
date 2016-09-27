@@ -1,6 +1,6 @@
 /*  Copyright   2016 - Jorge Miguel Ferreira da Silva
  *
- *  This file is part of PersistantDataLucene.
+ *  This file is part of AnonymousPatientData.
  *
  *  PersistantDataLucene is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,8 +46,8 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class PersistantDataLucene {
-	
-	
+
+
 
 	private static final Logger log = LoggerFactory.getLogger(PersistantDataLucene.class);
 	static final String DEFAULT_ANON_PATH = "./Anon_index/";
@@ -69,7 +69,7 @@ public class PersistantDataLucene {
 		log.info("Created Lucene Indexer Plugin");
 	}
 	PersistantDataLucene(String path){
-		this.indexFilePath = path;
+		this.setIndexPath(path);
 		log.info("Created Lucene Indexer Plugin");
 	}
 
@@ -96,7 +96,9 @@ public class PersistantDataLucene {
 
 
 
-	public void insertStudyData(StudyData studyData){
+	public void insertStudyData(StudyData studyData) throws IOException{
+
+		if (index==null) throw new IllegalStateException();
 		Document studyDataDoc= new Document();
 		TextField AccessionNumber = new TextField("AccessionNumber",studyData.getAccessionNumber(),Store.YES);
 		TextField Accession_Map_Number = new TextField("Accession_Map_Number",studyData.getMapAccessionNumber(),Store.YES);
@@ -104,10 +106,15 @@ public class PersistantDataLucene {
 		studyDataDoc.add(AccessionNumber);
 		studyDataDoc.add(Accession_Map_Number);
 		studyDataDoc.add(other);
+		IndexWriter iw= new IndexWriter(this.index,new IndexWriterConfig().setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND));
+		iw.addDocument(studyDataDoc);
+		iw.flush();
+		iw.close();
 
 	}
 
-	public void insertPatientData(PatientData patientData){
+	public void insertPatientData(PatientData patientData) throws IOException{
+		if (index==null) throw new IllegalStateException();
 		Document patientDataDoc= new Document();
 		TextField patientName = new TextField("PatientName",patientData.getPatientName(),Store.YES);
 		TextField patientId = new TextField("PatientId",patientData.getPatientId(),Store.YES);
@@ -117,11 +124,17 @@ public class PersistantDataLucene {
 		patientDataDoc.add(patientId);
 		patientDataDoc.add(patient_Map_Id);
 		patientDataDoc.add(other);
+		IndexWriter iw= new IndexWriter(this.index,new IndexWriterConfig().setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND));
+		iw.addDocument(patientDataDoc);
+		iw.flush();
+		iw.close();
+
 
 
 	}
 
 	public Optional<StudyData> getStudyDataByAccessionNumber(String accessionNumber) throws IOException{
+		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("AccessionNumber",accessionNumber));
 		int NElem=1;
 
@@ -137,6 +150,7 @@ public class PersistantDataLucene {
 	}
 
 	public Optional<PatientData> getPatientDataById(String id) throws IOException{
+		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("PatientId",id));
 		int NElem=1;
 		DirectoryReader dr =DirectoryReader.open(index);
@@ -148,8 +162,14 @@ public class PersistantDataLucene {
 		Document d = is.doc(doc);
 		PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientId"),d.get("Patient_Map_Id"));
 		return Optional.of(pd);
+
+	}
+
+	public void close() throws IOException{
+		index.close();
 	
 	}
+	
 }
 
 

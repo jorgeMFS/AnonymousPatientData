@@ -44,13 +44,21 @@ public class MatchTables {
 
 		PatientData patientData=lucene.getPatientDataById(patientId).orElseGet(() -> {
 			final PatientData pData2= PatientData.createWithMapping(patientName,patientId);
-			lucene.insertPatientData(pData2);
+			try {
+				lucene.insertPatientData(pData2);
+			} catch (Exception e) {
+				LoggerFactory.getLogger(MatchTables.class).warn("Issue while inserting PatientData",e);
+			}
 			return pData2;
 		});
 
 		StudyData studyData =lucene.getStudyDataByAccessionNumber(accessionNumber).orElseGet(() ->{
 			final StudyData sData = StudyData.createWithMapping(accessionNumber);
-			lucene.insertStudyData(sData);
+			try {
+				lucene.insertStudyData(sData);
+			} catch (Exception e) {
+				LoggerFactory.getLogger(MatchTables.class).warn("Issue while inserting StudyData",e);
+			}
 			return sData;
 		});
 
@@ -73,5 +81,13 @@ public class MatchTables {
 	public void bootstrapDataBase(String path){
 		lucene = new PersistantDataLucene(path);
 	}
-
+	public void close(){
+		try {
+			lucene.close();
+		} catch (IOException e) {
+			LoggerFactory.getLogger(MatchTables.class).warn("Issue while closing index",e);	
+			}
+		
+	}
+	
 }
