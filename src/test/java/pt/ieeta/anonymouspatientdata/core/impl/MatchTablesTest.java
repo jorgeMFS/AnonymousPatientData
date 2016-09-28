@@ -61,13 +61,14 @@ public class MatchTablesTest {
 
 		PatientStudy ps =MatchTables.getInstance().createMatch(patientId, patientName, accessionNumber);
 		Assert.assertNotNull(ps);
-
-		System.out.println("getMapId :"+ ps.getPatientData().getMapId());
-		System.out.println("getPatientId :"+ ps.getPatientData().getPatientId());
-		System.out.println("getPatientName :"+ ps.getPatientData().getPatientName());
-		System.out.println("getAccessionNumber :"+ ps.getStudyData().getAccessionNumber());
-		System.out.println("getMapAccessionNumber :"+ ps.getStudyData().getMapAccessionNumber());
-
+		Assert.assertNotNull(ps.getPatientData());
+		Assert.assertNotNull(ps.getPatientData().getPatientId());
+		Assert.assertNotNull(ps.getStudyData());
+		Assert.assertNotNull(ps.getStudyData().getAccessionNumber());
+		Assert.assertNotNull(ps.getStudyData().getMapAccessionNumber());
+		Assert.assertNotNull(ps.getPatientData().getMapId());
+		Assert.assertNotNull(ps.getPatientData().getMapId());
+		
 		PatientStudy ps2 =MatchTables.getInstance().createMatch("15984753", "João Paulo Ferreira da Silva", "74123698789632145");
 		Assert.assertNotNull(ps);
 		Assert.assertNotNull(ps2);
@@ -83,12 +84,7 @@ public class MatchTablesTest {
 
 		Optional<PatientStudy> ps =MatchTables.getInstance().getMatch(patientId, accessionNumber);
 		Assert.assertNotNull(ps);
-		Assert.assertTrue(ps.isPresent());
-		Assert.assertNotNull(ps.get().getPatientData());
-		Assert.assertNotNull(ps.get().getPatientData().getPatientId());
-		Assert.assertNotNull(ps.get().getStudyData());
-		Assert.assertNotNull(ps.get().getStudyData().getAccessionNumber());
-
+		
 		// this one must not be in the index
 		Optional<PatientStudy> ps1 =MatchTables.getInstance().getMatch("1234588787815212145","00987654325364636324");
 		Assert.assertNotNull(ps);

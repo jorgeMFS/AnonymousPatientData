@@ -1,6 +1,6 @@
 /*  Copyright   2016 - Jorge Miguel Ferreira da Silva
  *
- *  This file is part of PatientStudy.
+ *  This file is part of AnonymousPatientData.
  *
  *  PatientStudy is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

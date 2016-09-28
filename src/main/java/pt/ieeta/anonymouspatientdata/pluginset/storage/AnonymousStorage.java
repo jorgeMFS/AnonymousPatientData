@@ -42,7 +42,7 @@ import pt.ua.dicoogle.sdk.core.DicooglePlatformInterface;
 import pt.ua.dicoogle.sdk.core.PlatformCommunicatorInterface;
 import pt.ua.dicoogle.sdk.settings.ConfigurationHolder;
 
-public class AnonymousStorage extends AnonimizeDicomObject implements StorageInterface, PlatformCommunicatorInterface{
+public class AnonymousStorage implements StorageInterface, PlatformCommunicatorInterface{
 
 	private static final Logger logger = LoggerFactory.getLogger(AnonymousStorage.class);
 	private ConfigurationHolder settings;
@@ -64,7 +64,7 @@ public class AnonymousStorage extends AnonimizeDicomObject implements StorageInt
 	public URI store(DicomObject dcmObj, Object... arg1) {
 		if (!enabled || dcmObj == null) {return null;}
 		try {
-			anonymizeObject(dcmObj);
+			AnonimizeDicomObject.anonymizeObject(dcmObj);
 		} catch (Sql2oException | IOException e) {
 			LoggerFactory.getLogger(AnonymousStorage.class).warn("Issue while using Anonymous Storage",e);
 			e.printStackTrace();

@@ -1,6 +1,6 @@
 /*  Copyright   2016 - Jorge Miguel Ferreira da Silva
  *
- *  This file is part of MatchTables.
+ *  This file is part of AnonymousPatientData.
  *
  *  MatchTables is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
