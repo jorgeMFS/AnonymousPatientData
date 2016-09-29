@@ -18,17 +18,29 @@
 
 package pt.ieeta.anonymouspatientdata.core.impl;
 
+import org.restlet.data.CacheDirective;
+import org.restlet.engine.header.CacheDirectiveWriter;
 /**
  * @author Jorge Miguel Ferreira das Silva
  *
  */
-public class Cache {
+public class AnonCache {
+
+	CacheDirective cD = new CacheDirective(getPath());
+	CacheDirectiveWriter cDW;
+	String cacheDirectory= "./cacheDirectory";
 
 	/**
 	 * 
 	 */
-	public Cache() {
-		// TODO Auto-generated constructor stub
+	public AnonCache() {
+
+	}
+	
+	private String getPath() {
+		return this.cacheDirectory;
 	}
 
+	
+	
 }

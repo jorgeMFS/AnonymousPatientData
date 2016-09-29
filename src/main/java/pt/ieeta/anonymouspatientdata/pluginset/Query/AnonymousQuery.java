@@ -16,8 +16,10 @@
  *  along with PACScloud.  If not, see <http://www.gnu.org/licenses/>.
  */
 package pt.ieeta.anonymouspatientdata.pluginset.Query;
+
 import java.io.IOException;
 import java.util.Objects;
+import java.util.stream.StreamSupport;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -31,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pt.ieeta.anonymouspatientdata.core.impl.QueryConverter;
+import pt.ieeta.anonymouspatientdata.core.impl.ResultConverter;
+import pt.ieeta.anonymouspatientdata.core.util.RuntimeIOException;
 import pt.ieeta.anonymouspatientdata.pluginset.storage.AnonymousStorage;
 import pt.ua.dicoogle.sdk.QueryInterface;
 import pt.ua.dicoogle.sdk.core.DicooglePlatformInterface;
@@ -46,11 +50,11 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 	protected DicooglePlatformInterface platform;
 	private String plugin;
 	AnonymousQuery(){
-		
+
 		super();
 		logger.info("Initializing -> Anonymous Query");
 	}
-	
+
 	@Override
 	public String getName() {
 		return "Anonymous-Wrapper-Plugin";
@@ -85,19 +89,32 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 
 	@Override
 	public Iterable<SearchResult> query(String query, Object... parameters) {
+		Objects.requireNonNull(query);
 		QueryParser qP = new QueryParser("other", new StandardAnalyzer());
 		QueryInterface provider = this.platform.requestQueryPlugin(this.plugin);
 		try {
 			Query q = qP.parse(query);
 			q =new QueryConverter().transformQuery(q);
 			Iterable<SearchResult> it = provider.query(q.toString(), parameters);
-		} catch (ParseException | IOException e1) {
-			LoggerFactory.getLogger(AnonymousStorage.class).warn("ParseException or IOException in Anonymous Query Plugin");
-		}
 
-		
-		
-		Objects.requireNonNull(query);
+			ResultConverter rC =new ResultConverter();
+
+			StreamSupport.stream(it.spliterator(), false)
+			.map(rs -> {
+				try {
+					return rC.transform(rs);
+
+				} catch (IOException e) {
+					throw new RuntimeIOException(e);
+				}})
+			.spliterator();	
+
+
+			return it;
+
+		} catch (ParseException | IOException  | RuntimeIOException e1) {
+			LoggerFactory.getLogger(AnonymousStorage.class).warn("ParseException,IOException or RuntimeIOException in Anonymous Query Plugin");
+		}
 		return null;
 	}
 
@@ -107,19 +124,3 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
