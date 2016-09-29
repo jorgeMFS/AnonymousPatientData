@@ -70,6 +70,7 @@ public class AnonymousStorage implements StorageInterface, PlatformCommunicatorI
 			e.printStackTrace();
 		}
 
+
 		return this.platform.getStoragePluginForSchema(this.scheme).store(dcmObj, arg1);
 	}
 

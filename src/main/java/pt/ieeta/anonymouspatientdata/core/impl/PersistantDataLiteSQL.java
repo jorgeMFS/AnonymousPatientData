@@ -108,47 +108,4 @@ public class PersistantDataLiteSQL {
 	}
 
 
-
-//	public Optional<PatientData> AccessionNumberMapAndPatientIdbyPatientName(String patientName){
-//		String sql ="SELECT MatchTableStudy.mapAccessionNumber, MatchTableStudy.patientId" +
-//				"FROM MatchTableStudy,MatchTablePatient " +
-//				"WHERE MatchTableStudy.patientId == :MatchTablePatient.patientId"+
-//				"MatchTablePatient.patientName=:patientName";
-//
-//		try(Connection con = sql2o.open()) {
-//			Iterator<PatientData> it= con.createQuery(sql).addParameter("patientName", patientName)
-//					.executeAndFetch(PatientData.class).iterator();
-//			if (it.hasNext()) return Optional.of(it.next());
-//			return Optional.empty();
-//		}
-//	}
-
-//	public Optional<StudyData> AccessionNumberMapAndPatientIdbyPatientId(String patientId){
-//		String sql ="SELECT mapAccessionNumber, patientId" +
-//				"FROM MatchTableStudy " +
-//				"WHERE patientId == :patientId";
-//
-//		try(Connection con = sql2o.open()) {
-//			Iterator<StudyData> it= con.createQuery(sql).addParameter("patientId", patientId)
-//					.executeAndFetch(StudyData.class).iterator();
-//			if (it.hasNext()) return Optional.of(it.next());
-//			return Optional.empty();
-//		}
-//	}
-//
-//	public Optional<StudyData> AccessionNumberMapAndPatientIdbyAccessionNumber(String accessionNumber){
-//		String sql ="SELECT mapAccessionNumber, patientId" +
-//				"FROM MatchTableStudy " +
-//				"WHERE accessionNumber == :accessionNumber";
-//
-//		try(Connection con = sql2o.open()) {
-//			Iterator<StudyData> it= con.createQuery(sql).addParameter("accessionNumber", accessionNumber)
-//					.executeAndFetch(StudyData.class).iterator();
-//			if (it.hasNext()) return Optional.of(it.next());
-//			return Optional.empty();
-//		}
-//	}
-
-
-
 }

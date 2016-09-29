@@ -16,12 +16,13 @@
  *  along with PACScloud.  If not, see <http://www.gnu.org/licenses/>.
  */
 package pt.ieeta.anonymouspatientdata.core.impl;
-import java.io.IOException;
+
+
 /**
  * @author Jorge Miguel Ferreira da Silva
  */
 import java.util.Optional;
-
+import java.io.IOException;
 import org.slf4j.LoggerFactory;
 import org.sql2o.Sql2oException;
 

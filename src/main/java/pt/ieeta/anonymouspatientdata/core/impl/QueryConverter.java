@@ -36,13 +36,13 @@ import org.apache.lucene.search.BooleanClause.Occur;
  * @author Jorge Miguel Ferreira da Silva
  *
  */
-public class Conversor {
+public class QueryConverter {
 
 	private PersistantDataLucene Lucy=new PersistantDataLucene();
 	/**
 	 * Constructor
 	 */
-	public Conversor() {
+	public QueryConverter() {
 		
 	}
 
@@ -56,6 +56,7 @@ public class Conversor {
 		if(q.getClass().isAssignableFrom(TermQuery.class))
 		{
 			TermQuery tq=(TermQuery) q;
+			
 			String fn=tq.getTerm().field();
 
 			if(fn.equals("PatientName")){

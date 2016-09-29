@@ -221,6 +221,53 @@ public class PersistantDataLucene {
 		index = null;
 
 	}
+	public String getPatientNameByPatientMapId(String patientMapId) throws IOException {
+		if (index==null) throw new IllegalStateException();
+		TermQuery termQuery = new TermQuery(new Term("Patient_Map_Id",patientMapId));
+		int NElem=1;
+		try(DirectoryReader dr =DirectoryReader.open(index)){
+			IndexSearcher is = new IndexSearcher(dr);
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return null;
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientId"),d.get("Patient_Map_Id"));
+			String patientName = pd.getPatientName();
+			return patientName;}
+	}
+	public String getPatientIdByPatientMapId(String patientMapId) throws IOException {
+		if (index==null) throw new IllegalStateException();
+		TermQuery termQuery = new TermQuery(new Term("Patient_Map_Id",patientMapId));
+		int NElem=1;
+		try(DirectoryReader dr =DirectoryReader.open(index)){
+			IndexSearcher is = new IndexSearcher(dr);
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return null;
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientId"),d.get("Patient_Map_Id"));
+			String patientId = pd.getPatientId();
+			return patientId;
+		}
+	}
+	public String getAccessionNumberByAccessionMapNumber(String mapAccessionNumber) throws IOException {
+		if (index==null) throw new IllegalStateException();
+		TermQuery termQuery = new TermQuery(new Term("Accession_Map_Number",mapAccessionNumber));
+		int NElem=1;
+		try(DirectoryReader dr =DirectoryReader.open(index)){
+			IndexSearcher is = new IndexSearcher(dr);
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return null;
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
+			String AccessionNumber = sd.getAccessionNumber();
+			return AccessionNumber;
+		}
+	}
 
 }
 
