@@ -28,7 +28,7 @@ import pt.ua.dicoogle.sdk.datastructs.SearchResult;
  */
 public class ResultConverter {
 
-	PersistantDataLucene Lucy= new PersistantDataLucene();
+	AnonDatabase Lucy= new PersistantDataLucene();
 	public ResultConverter() {
 
 	}

@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Jorge Miguel Ferreira da Silva
  *
  */
-public class PersistantDataLucene {
+public class PersistantDataLucene implements AnonDatabase {
 
 
 
@@ -94,8 +94,7 @@ public class PersistantDataLucene {
 	}
 
 
-
-
+	@Override
 	public void insertStudyData(StudyData studyData) throws IOException{
 
 		if (index==null) throw new IllegalStateException();
@@ -113,6 +112,7 @@ public class PersistantDataLucene {
 
 	}
 
+	@Override
 	public void insertPatientData(PatientData patientData) throws IOException{
 		if (index==null) throw new IllegalStateException();
 		Document patientDataDoc= new Document();
@@ -129,10 +129,10 @@ public class PersistantDataLucene {
 			iw.flush();
 		}
 
-
-
 	}
 
+	
+	@Override
 	public Optional<StudyData> getStudyDataByAccessionNumber(String accessionNumber) throws IOException{
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("AccessionNumber",accessionNumber));
@@ -150,6 +150,8 @@ public class PersistantDataLucene {
 		}
 	}
 
+	
+	@Override
 	public Optional<PatientData> getPatientDataById(String id) throws IOException{
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("PatientId",id));
@@ -165,6 +167,29 @@ public class PersistantDataLucene {
 			return Optional.of(pd);
 		}
 	}
+	
+	
+	
+	@Override
+	public PatientData getPatientDataBypatientMapId(String patientMapId) throws IOException {
+		if (index==null) throw new IllegalStateException();
+		TermQuery termQuery = new TermQuery(new Term("Patient_Map_Id",patientMapId));
+		int NElem=1;		
+		try(DirectoryReader dr =DirectoryReader.open(index)){
+			IndexSearcher is = new IndexSearcher(dr);
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return null;
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientId"),d.get("Patient_Map_Id"));
+			return pd;
+		}
+	}
+	
+	
+	
+	@Override
 	public String getmapAccessionNumber(String accessionNumber) throws IOException{
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("AccessionNumber",accessionNumber));
@@ -182,6 +207,8 @@ public class PersistantDataLucene {
 		}
 	}
 
+	
+	@Override
 	public String getmapIdbyPatientId(String patientId) throws IOException{
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("PatientId",patientId));
@@ -199,6 +226,8 @@ public class PersistantDataLucene {
 		}
 	}
 
+	
+	@Override
 	public String getmapIdbyPatientName(String patientName) throws IOException{
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("PatientName",patientName));
@@ -216,11 +245,16 @@ public class PersistantDataLucene {
 		}
 	}
 
+
+	@Override
 	public void close() throws IOException{
 		index.close();
 		index = null;
 
 	}
+	
+	
+	@Override
 	public String getPatientNameByPatientMapId(String patientMapId) throws IOException {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("Patient_Map_Id",patientMapId));
@@ -236,6 +270,9 @@ public class PersistantDataLucene {
 			String patientName = pd.getPatientName();
 			return patientName;}
 	}
+	
+	
+	@Override
 	public String getPatientIdByPatientMapId(String patientMapId) throws IOException {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("Patient_Map_Id",patientMapId));
@@ -252,6 +289,10 @@ public class PersistantDataLucene {
 			return patientId;
 		}
 	}
+	
+	
+	
+	@Override
 	public String getAccessionNumberByAccessionMapNumber(String mapAccessionNumber) throws IOException {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("Accession_Map_Number",mapAccessionNumber));
@@ -268,6 +309,7 @@ public class PersistantDataLucene {
 			return AccessionNumber;
 		}
 	}
+
 
 }
 

@@ -18,29 +18,157 @@
 
 package pt.ieeta.anonymouspatientdata.core.impl;
 
-import org.restlet.data.CacheDirective;
-import org.restlet.engine.header.CacheDirectiveWriter;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
+
+import pt.ieeta.anonymouspatientdata.core.util.RuntimeIOException;
 /**
- * @author Jorge Miguel Ferreira das Silva
+ * @author Jorge Miguel Ferreira da Silva
  *
  */
-public class AnonCache {
+public class AnonCache implements AnonDatabase {
 
-	CacheDirective cD = new CacheDirective(getPath());
-	CacheDirectiveWriter cDW;
-	String cacheDirectory= "./cacheDirectory";
 
-	/**
-	 * 
-	 */
-	public AnonCache() {
+	private final AnonDatabase anonDb;
+
+	private  Map<String, PatientData> patientDataMap;
+	private  Map<String, String> studyDataMap;
+	//private final int MAXSIZEPATIENTDATA=50;
+	//private final int MAXSIZESTUDYDATA=1000;
+
+	
+
+
+
+	public AnonCache(AnonDatabase anonDb) {
+
+		this.anonDb= anonDb;
+	}
+
+
+
+	@Override
+	public void insertStudyData(StudyData studyData) throws IOException {
+		this.anonDb.insertStudyData(studyData);
+	}
+
+
+	@Override
+	public void insertPatientData(PatientData patientData) throws IOException {
+		this.anonDb.insertPatientData(patientData);
+	}
+
+
+	@Override
+	public Optional<StudyData> getStudyDataByAccessionNumber(String accessionNumber) throws IOException {
+		return this.anonDb.getStudyDataByAccessionNumber(accessionNumber);
+	}
+
+
+	@Override
+	public Optional<PatientData> getPatientDataById(String id) throws IOException {
+		return this.anonDb.getPatientDataById(id);
+	}
+
+
+	@Override
+	public String getmapAccessionNumber(String accessionNumber) throws IOException {
+		return this.anonDb.getmapAccessionNumber(accessionNumber);
+	}
+
+
+	@Override
+	public String getmapIdbyPatientId(String patientId) throws IOException {
+		return this.anonDb.getmapIdbyPatientId(patientId);
+	}
+
+
+	@Override
+	public String getmapIdbyPatientName(String patientName) throws IOException {
+		return this.anonDb.getmapIdbyPatientName(patientName);
 
 	}
-	
-	private String getPath() {
-		return this.cacheDirectory;
+
+
+	@Override
+	public void close() throws IOException {
+		this.anonDb.close();
 	}
 
-	
-	
+
+	@Override
+	public String getPatientNameByPatientMapId(String patientMapId) throws IOException {
+
+		if(this.patientDataMap.containsKey(patientMapId)) {
+			return this.patientDataMap.get(patientMapId).getPatientName();
+		}
+
+		try{
+			PatientData pd = patientDataMap.computeIfAbsent(patientMapId, (k) -> {try{return this.anonDb.getPatientDataBypatientMapId(k);}
+			catch (IOException e) {
+				throw new RuntimeIOException(e);}
+
+			});
+			return pd.getPatientName();
+		}
+		catch(RuntimeIOException e){
+			throw new IOException(e);
+		}
+
+	}
+
+
+	@Override
+	public String getPatientIdByPatientMapId(String patientMapId) throws IOException {
+		if(this.patientDataMap.containsKey(patientMapId)) {
+			return this.patientDataMap.get(patientMapId).getPatientId();
+		}
+
+		try{
+			PatientData pd = patientDataMap.computeIfAbsent(patientMapId, (k) -> {try{return this.anonDb.getPatientDataBypatientMapId(k);}
+			catch (IOException e) {
+				throw new RuntimeIOException(e);}
+			});
+			return pd.getPatientId();
+		}
+		catch(RuntimeIOException e){
+			throw new IOException(e);
+		}
+	}
+
+
+	@Override
+	public String getAccessionNumberByAccessionMapNumber(String mapAccessionNumber) throws IOException {
+		if(this.studyDataMap.containsKey(mapAccessionNumber)) {
+			return this.studyDataMap.get(mapAccessionNumber);
+		}
+		try{
+			return studyDataMap.computeIfAbsent(mapAccessionNumber, (k) -> {try{return this.anonDb.getAccessionNumberByAccessionMapNumber(k);}
+			catch (IOException e) {
+				throw new RuntimeIOException(e);}
+			});
+		}
+		catch(RuntimeIOException e){
+			throw new IOException(e);
+		}
+	}
+
+
+	@Override
+	public PatientData getPatientDataBypatientMapId(String patientMapId) throws IOException {
+		if(this.patientDataMap.containsKey(patientMapId)) {
+			return this.patientDataMap.get(patientMapId);
+		}
+		try{
+			return patientDataMap.computeIfAbsent(patientMapId, (k) -> {try{return this.anonDb.getPatientDataBypatientMapId(k);}
+			catch (IOException e) {
+				throw new RuntimeIOException(e);}
+			});
+
+		}
+		catch(RuntimeIOException e){
+			throw new IOException(e);
+		}
+	}
 }

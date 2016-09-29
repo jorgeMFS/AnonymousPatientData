@@ -38,7 +38,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
  */
 public class QueryConverter {
 
-	private PersistantDataLucene Lucy=new PersistantDataLucene();
+	private AnonDatabase Lucy=new PersistantDataLucene();
 	/**
 	 * Constructor
 	 */

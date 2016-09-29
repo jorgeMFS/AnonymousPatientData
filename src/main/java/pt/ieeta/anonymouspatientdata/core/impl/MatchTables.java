@@ -24,11 +24,10 @@ package pt.ieeta.anonymouspatientdata.core.impl;
 import java.util.Optional;
 import java.io.IOException;
 import org.slf4j.LoggerFactory;
-import org.sql2o.Sql2oException;
 
 public class MatchTables {
 	
-	private PersistantDataLucene lucene=null;
+	private AnonDatabase lucene=null;
 	private MatchTables() {}
 	private static MatchTables instance = null;
 	public static MatchTables getInstance()
@@ -41,7 +40,7 @@ public class MatchTables {
 	}
 
 
-	public PatientStudy createMatch( String patientId, String patientName, String accessionNumber ) throws Sql2oException, IOException{
+	public PatientStudy createMatch( String patientId, String patientName, String accessionNumber ) throws IOException{
 
 		PatientData patientData=lucene.getPatientDataById(patientId).orElseGet(() -> {
 			final PatientData pData2= PatientData.createWithMapping(patientName,patientId);
@@ -66,7 +65,7 @@ public class MatchTables {
 		return new PatientStudy(patientData, studyData);
 	}
 
-	public Optional<PatientStudy> getMatch(String patientId, String accessionNumber)throws Sql2oException, IOException {
+	public Optional<PatientStudy> getMatch(String patientId, String accessionNumber)throws IOException {
 		return lucene.getPatientDataById(patientId)
 				.map(p -> {
 					Optional<StudyData> study = Optional.empty();
@@ -80,7 +79,7 @@ public class MatchTables {
 	}
 
 	public void bootstrapDataBase(String path){
-		lucene = new PersistantDataLucene(path);
+		lucene = new AnonCache(new PersistantDataLucene(path));
 	}
 	public void close(){
 		try {
