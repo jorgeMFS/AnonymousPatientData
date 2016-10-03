@@ -111,7 +111,7 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 	@Override
 	public void setSettings(ConfigurationHolder arg0) {
 		this.setLocation(arg0.getConfiguration().getString("Location","./Anon_index/"));
-	MatchTables.getInstance().bootstrapDataBase(getLocation());
+		MatchTables.getInstance().bootstrapDataBase(getLocation());
 		this.settings =arg0;
 	}
 

@@ -34,6 +34,8 @@ import org.apache.lucene.search.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pt.ieeta.anonymouspatientdata.core.impl.AnonDatabase;
+import pt.ieeta.anonymouspatientdata.core.impl.MatchTables;
 import pt.ieeta.anonymouspatientdata.core.impl.QueryConverter;
 import pt.ieeta.anonymouspatientdata.core.impl.ResultConverter;
 import pt.ieeta.anonymouspatientdata.core.util.RuntimeIOException;
@@ -96,10 +98,10 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 		QueryInterface provider = this.platform.requestQueryPlugin(this.plugin);
 		try {
 			Query q = qP.parse(query);
-			q =new QueryConverter().transformQuery(q);
+			AnonDatabase anondB=MatchTables.getInstance().getDB();
+			q =new QueryConverter(anondB).transformQuery(q);
 			Iterable<SearchResult> it = provider.query(q.toString(), parameters);
-
-			ResultConverter rC =new ResultConverter();
+			ResultConverter rC =new ResultConverter(anondB);
 
 			StreamSupport.stream(it.spliterator(), false)
 			.map(rs -> {

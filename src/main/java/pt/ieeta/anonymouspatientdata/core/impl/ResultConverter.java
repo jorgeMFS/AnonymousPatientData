@@ -2,12 +2,12 @@
  *
  *  This file is part of AnonymousPatientData.
  *
- *  PersistantDataLiteSQL is free software: you can redistribute it and/or modify
+ *  ResultConverter is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  PersistantDataLiteSQL is distributed in the hope that it will be useful,
+ *  ResultConverter is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
@@ -28,9 +28,9 @@ import pt.ua.dicoogle.sdk.datastructs.SearchResult;
  */
 public class ResultConverter {
 
-	AnonDatabase Lucy= new PersistantDataLucene();
-	public ResultConverter() {
-
+	AnonDatabase lucy;
+	public ResultConverter(AnonDatabase lucy) {
+		this.lucy=lucy;
 	}
 
 
@@ -38,9 +38,9 @@ public class ResultConverter {
 
 		HashMap<String, Object> hM = searchReasult.getExtraData();
 		String MapId =hM.get("PatientId").toString();
-		hM.put("PatientName", Lucy.getPatientNameByPatientMapId(MapId));
-		hM.put("PatientId", Lucy.getPatientIdByPatientMapId(MapId));
-		hM.put("AccessionNumber", Lucy.getAccessionNumberByAccessionMapNumber(hM.get("AccessionNumber").toString()));
+		hM.put("PatientName", lucy.getPatientNameByPatientMapId(MapId));
+		hM.put("PatientId", lucy.getPatientIdByPatientMapId(MapId));
+		hM.put("AccessionNumber", lucy.getAccessionNumberByAccessionMapNumber(hM.get("AccessionNumber").toString()));
 		SearchResult sR= new SearchResult(searchReasult.getURI(),searchReasult.getScore(), hM);
 		return sR;
 	}

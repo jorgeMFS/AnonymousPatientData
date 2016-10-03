@@ -38,12 +38,12 @@ import org.apache.lucene.search.BooleanClause.Occur;
  */
 public class QueryConverter {
 
-	private AnonDatabase Lucy=new PersistantDataLucene();
+	private AnonDatabase lucy;
 	/**
 	 * Constructor
 	 */
-	public QueryConverter() {
-		
+	public QueryConverter(AnonDatabase lucy) {
+		this.lucy=lucy;
 	}
 
 	/**
@@ -56,24 +56,25 @@ public class QueryConverter {
 		if(q.getClass().isAssignableFrom(TermQuery.class))
 		{
 			TermQuery tq=(TermQuery) q;
-			
+
 			String fn=tq.getTerm().field();
 
 			if(fn.equals("PatientName")){
 				String value=tq.getTerm().text();
-				TermQuery tq2=new TermQuery(new Term(fn, this.Lucy.getmapIdbyPatientName(value)));
+
+				TermQuery tq2=new TermQuery(new Term(fn, this.lucy.getmapIdbyPatientName(value)));
+
 				BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
 				BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
 				BooleanQuery bq = new BooleanQuery.Builder()
 						.add(bClause).add(bClause2)
 						.setMinimumNumberShouldMatch(1)
 						.build();
-
 				return bq;
 			}
 			if(fn.equals("PatientId")){
 				String value=tq.getTerm().text();
-				TermQuery tq2=new TermQuery(new Term(fn,  this.Lucy.getmapIdbyPatientId(value)));
+				TermQuery tq2=new TermQuery(new Term(fn,  this.lucy.getmapIdbyPatientId(value)));
 				BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
 				BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
 				BooleanQuery bq = new BooleanQuery.Builder().
@@ -85,7 +86,8 @@ public class QueryConverter {
 			}
 			if(fn.equals("AccessionNumber")){
 				String value=tq.getTerm().text();
-				TermQuery tq2=new TermQuery(new Term(fn, this.Lucy.getmapAccessionNumber(value)));
+				System.out.println((value));
+				TermQuery tq2=new TermQuery(new Term(fn, this.lucy.getmapAccessionNumber(value)));
 				BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
 				BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
 				BooleanQuery bq = new BooleanQuery.Builder()
@@ -97,9 +99,9 @@ public class QueryConverter {
 			}
 			if(fn.equals("other")){
 				String value=tq.getTerm().text();
-				String pIdValue=this.Lucy.getmapIdbyPatientId(value);
-				String PatientNameValue=this.Lucy.getmapIdbyPatientName(value);
-				String mapAccessionNumberValue=this.Lucy.getmapAccessionNumber(value);
+				String pIdValue=this.lucy.getmapIdbyPatientId(value);
+				String PatientNameValue=this.lucy.getmapIdbyPatientName(value);
+				String mapAccessionNumberValue=this.lucy.getmapAccessionNumber(value);
 				TermQuery tq2=new TermQuery(new Term("PatientId",pIdValue));
 				TermQuery tq3=new TermQuery(new Term("PatientName",PatientNameValue));
 				TermQuery tq4=new TermQuery(new Term("AccessionNumber",mapAccessionNumberValue));
@@ -160,35 +162,66 @@ public class QueryConverter {
 			PhraseQuery pq= (PhraseQuery) q;
 			Term[] pqTerms= pq.getTerms();
 			Builder bq = new BooleanQuery.Builder();
+			BooleanClause bClause1= new BooleanClause(pq, Occur.SHOULD);
+			bq.add(bClause1);
+
 
 			for (Term t:pqTerms){
+
 				String value=t.text();
-				String pIdValue=this.Lucy.getmapIdbyPatientId(value);
-				String PatientNameValue=this.Lucy.getmapIdbyPatientName(value);
-				String mapAccessionNumberValue=this.Lucy.getmapAccessionNumber(value);
 
-				if (pIdValue!= null){
-					Term term= new Term("PatientId",pIdValue);
-					TermQuery tQ=new TermQuery(term);
-					BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
-					bq.add(bClause);
+				if (t.field()=="PatientId"){
+					String pIdValue=this.lucy.getmapIdbyPatientId(value);
+					if (pIdValue!= null){
+						Term term= new Term("PatientId",pIdValue);
+						TermQuery tQ=new TermQuery(term);
+						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
+						bq.add(bClause);
+					}
 				}
 
-				if (PatientNameValue!= null){
-					Term term= new Term("AccessionNumber",PatientNameValue);
-					TermQuery tQ =new TermQuery(term);
-					BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
-					bq.add(bClause);
+				if (t.field()=="PatientName"){
+					String PatientNameValue=this.lucy.getmapIdbyPatientName(value);
+					if (PatientNameValue!= null){
+						Term term= new Term("PatientName",PatientNameValue);
+						TermQuery tQ =new TermQuery(term);
+						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
+						bq.add(bClause);
+					}
 				}
-
-
-				if (mapAccessionNumberValue!= null){
-					Term term= new Term("AccessionNumber",mapAccessionNumberValue);
-					TermQuery tQ =new TermQuery(term);
-					BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
-					bq.add(bClause);
+				if(t.field()=="AccessionNumber"){
+					String mapAccessionNumberValue=this.lucy.getmapAccessionNumber(value);
+					if (mapAccessionNumberValue!= null){
+						Term term= new Term("AccessionNumber",mapAccessionNumberValue);
+						TermQuery tQ =new TermQuery(term);
+						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
+						bq.add(bClause);
+					}
 				}
+				if(t.field()=="other"){
+					String mapAccessionNumberValue=this.lucy.getmapAccessionNumber(value);
+					String PatientNameValue=this.lucy.getmapIdbyPatientName(value);
+					String pIdValue=this.lucy.getmapIdbyPatientId(value);
 
+					if (pIdValue!= null){
+						Term term= new Term("PatientId",pIdValue);
+						TermQuery tQ=new TermQuery(term);
+						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
+						bq.add(bClause);
+					}
+					if (PatientNameValue!= null){
+						Term term= new Term("PatientName",PatientNameValue);
+						TermQuery tQ =new TermQuery(term);
+						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
+						bq.add(bClause);
+					}
+					if (mapAccessionNumberValue!= null){
+						Term term= new Term("AccessionNumber",mapAccessionNumberValue);
+						TermQuery tQ =new TermQuery(term);
+						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
+						bq.add(bClause);
+					}
+				}
 			}
 			BooleanQuery bq1 = bq.setMinimumNumberShouldMatch(1)
 					.build();
@@ -196,38 +229,4 @@ public class QueryConverter {
 		}
 		return q;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -7,7 +7,7 @@
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  PatientData is distributed in the hope that it will be useful,
+ *  MatchTables is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
@@ -16,17 +16,16 @@
  *  along with PACScloud.  If not, see <http://www.gnu.org/licenses/>.
  */
 package pt.ieeta.anonymouspatientdata.core.impl;
-
-
 /**
  * @author Jorge Miguel Ferreira da Silva
  */
+
 import java.util.Optional;
 import java.io.IOException;
 import org.slf4j.LoggerFactory;
 
 public class MatchTables {
-	
+
 	private AnonDatabase lucene=null;
 	private MatchTables() {}
 	private static MatchTables instance = null;
@@ -81,13 +80,19 @@ public class MatchTables {
 	public void bootstrapDataBase(String path){
 		lucene = new AnonCache(new PersistantDataLucene(path));
 	}
+
+
+	public AnonDatabase getDB(){
+		return lucene;
+	}
+	
 	public void close(){
 		try {
 			lucene.close();
 		} catch (IOException e) {
 			LoggerFactory.getLogger(MatchTables.class).warn("Issue while closing index",e);	
-			}
-		
+		}
+
 	}
-	
+
 }
