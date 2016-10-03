@@ -43,7 +43,7 @@ public class AnonimizeDicomObjectTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		MatchTables.getInstance().bootstrapDataBase("jdbc:sqlite:test.db");
+		MatchTables.getInstance().bootstrapDataBase("./Anon_index/");
 		System.out.println("Setup Test");
 		String str ="C:\\Users\\Miguel\\Dropbox\\UACMUPERITIC00282014\\1_1.dcm"; 
 		dis =new DicomInputStream(new File(str));
@@ -54,10 +54,9 @@ public class AnonimizeDicomObjectTest {
 	/**
 	 * Test method for {@link pt.ieeta.anonymouspatientdata.core.AnonimizeDicomObject#anonymizeObject(org.dcm4che2.data.DicomObject)}.
 	 * @throws IOException 
-	 * @throws Sql2oException 
 	 */
 	@Test
-	public final void testAnonymizeObject() throws Sql2oException, IOException {
+	public final void testAnonymizeObject() throws IOException {
 		String patientName=dcmObjc.getString(Tag.PatientName);
 		String patientID=dcmObjc.getString(Tag.PatientID);
 		String accessionNumber=dcmObjc.getString(Tag.AccessionNumber);
