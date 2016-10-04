@@ -23,6 +23,8 @@ package pt.ieeta.anonymouspatientdata.pluginset;
 
 
 import pt.ieeta.anonymouspatientdata.core.impl.MatchTables;
+import pt.ieeta.anonymouspatientdata.pluginset.jetty.AnonynousServletPlugin;
+import pt.ieeta.anonymouspatientdata.pluginset.query.AnonymousQuery;
 import pt.ieeta.anonymouspatientdata.pluginset.storage.AnonymousStorage;
 import pt.ua.dicoogle.sdk.GraphicalInterface;
 import pt.ua.dicoogle.sdk.IndexerInterface;
@@ -33,12 +35,12 @@ import pt.ua.dicoogle.sdk.JettyPluginInterface;
  *
  */
 
-import pt.ua.dicoogle.sdk.PluginSet;// TODO implement
-import pt.ua.dicoogle.sdk.QueryInterface;// TODO implement
-import pt.ua.dicoogle.sdk.StorageInterface; // TODO implement
+import pt.ua.dicoogle.sdk.PluginSet;
+import pt.ua.dicoogle.sdk.QueryInterface;
+import pt.ua.dicoogle.sdk.StorageInterface; 
 import pt.ua.dicoogle.sdk.core.DicooglePlatformInterface;
 import pt.ua.dicoogle.sdk.core.PlatformCommunicatorInterface;
-import pt.ua.dicoogle.sdk.settings.ConfigurationHolder; // TODO implement
+import pt.ua.dicoogle.sdk.settings.ConfigurationHolder;
 
 
 import java.util.Collection;
@@ -70,8 +72,11 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 	}
 
 	private AnonymousStorage storage= new AnonymousStorage();
-	private String Location="/Anon_index/"; 
-
+	private String location="/Anon_index/"; 
+	private AnonymousQuery query =new AnonymousQuery();
+	private AnonynousServletPlugin jettyservlet= new AnonynousServletPlugin();
+	
+	
 	@Override
 	public Collection<StorageInterface> getStoragePlugins() {
 		return Collections.singleton((StorageInterface) this.storage);
@@ -90,12 +95,12 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 
 	@Override
 	public Collection<JettyPluginInterface> getJettyPlugins() {
-		return Collections.emptyList();
+		return Collections.singleton((JettyPluginInterface) this.jettyservlet);
 	}
 
 	@Override
 	public Collection<QueryInterface> getQueryPlugins() {
-		return Collections.emptyList();
+		return Collections.singleton((QueryInterface) this.query);
 	}
 
 	@Override
@@ -120,11 +125,11 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 	}
 
 	public String getLocation() {
-		return Location;
+		return location;
 	}
 
-	public void setLocation(String Location) {
-		this.Location = Location;
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 

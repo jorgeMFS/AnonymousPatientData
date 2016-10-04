@@ -46,7 +46,7 @@ public class AnonymousStorage implements StorageInterface, PlatformCommunicatorI
 	private static final Logger logger = LoggerFactory.getLogger(AnonymousStorage.class);
 	private ConfigurationHolder settings;
 	private boolean enabled=true;
-	private String AnonymousScheme ="anon:";
+	private String AnonymousScheme ="anon";
 	protected DicooglePlatformInterface platform;
 	private String scheme;
 	public AnonymousStorage() {
