@@ -17,6 +17,8 @@
  */
 package pt.ieeta.anonymouspatientdata.pluginset.jetty;
 
+import javax.servlet.MultipartConfigElement;
+
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -36,7 +38,7 @@ public class AnonynousServletPlugin implements JettyPluginInterface, PlatformCom
     private ConfigurationHolder settings;
     private DicooglePlatformInterface platform;
     private final AnonymousWebServlet anonWS;
-    
+    private static final String ANON_FILE_PATH = System.getProperty("java.io.tmpdir");
     public AnonynousServletPlugin() {
         this.anonWS = new AnonymousWebServlet();
         this.enabled = true;
@@ -88,6 +90,7 @@ public class AnonynousServletPlugin implements JettyPluginInterface, PlatformCom
 		  ServletContextHandler handler = new ServletContextHandler();
 	        handler.setContextPath("/Anon");
 	        ServletHolder convertServletHolder = new ServletHolder(this.anonWS); 
+	        convertServletHolder.getRegistration().setMultipartConfig(new MultipartConfigElement(ANON_FILE_PATH));
 	        handler.addServlet(convertServletHolder, "/Store");
 	        HandlerList l = new HandlerList();
 	        l.addHandler(handler);

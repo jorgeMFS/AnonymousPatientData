@@ -1,8 +1,10 @@
 package pt.ieeta.anonymouspatientdata.pluginset.jetty;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -14,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.dcm4che2.io.DicomInputStream;
 import org.json.JSONException;
@@ -47,22 +50,52 @@ public class AnonymousWebServlet  extends HttpServlet implements PlatformCommuni
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, RuntimeIOException {
-
-		Stream<InputStream> dicomObjects;
+	
+		Stream<? extends InputStream> dicomObjects;
 		resp.setContentType("application/json");
 		if (req.getContentType() == null) {
 			JSONObject reply = new JSONObject();
 			try {
 				reply.put("error", "no content");
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.warn("Interrupted", e);
 			}
 			resp.getWriter().print(reply.toString());
 			resp.setStatus(400);
 			return;
-		} else {
-			dicomObjects = Stream.of(req.getInputStream());
+		}
+
+		else if (req.getContentType().startsWith("multipart/form-data")) {
+			// for now we just retrieve the first valid part
+			Collection<Part> parts = req.getParts();
+			if (parts == null || parts.isEmpty()) {
+				JSONObject reply = new JSONObject();
+				try {
+					reply.put("error", "no valid content in multipart entity");
+				} catch (JSONException e) {
+					logger.warn("Interrupted", e);
+				}
+				resp.getWriter().print(reply.toString());
+				resp.setStatus(400);
+				return;
+			}
+			
+			dicomObjects = parts.stream().sequential()
+					.filter(part -> part.getContentType() != null)
+					.map( part -> {
+						try {
+							return new BufferedInputStream(part.getInputStream());
+						} catch (IOException ex) {
+							logger.warn("Failed to fetch file", ex);
+							return null;
+						}
+					})
+					.filter(Objects::nonNull);
+			
+			
+		}
+		else {
+			dicomObjects = Stream.of(new BufferedInputStream(req.getInputStream()));
 		}
 
 
