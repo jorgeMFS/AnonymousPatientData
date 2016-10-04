@@ -64,10 +64,7 @@ public class PersistantDataLucene implements AnonDatabase {
 	/**
 	 * constructs an indexer instance
 	 */
-	PersistantDataLucene(){
-		this.indexFilePath = DEFAULT_ANON_PATH;
-		log.info("Created Lucene Indexer default Constructor");
-	}
+	
 	PersistantDataLucene(String path){
 		this.setIndexPath(path);
 		log.info("Created Lucene Indexer Plugin");

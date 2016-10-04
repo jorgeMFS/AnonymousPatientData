@@ -65,14 +65,24 @@ public class AnonymousStorage implements StorageInterface, PlatformCommunicatorI
 		try {
 			AnonimizeDicomObject.anonymizeObject(dcmObj);
 		} catch ( IOException e) {
-			LoggerFactory.getLogger(AnonymousStorage.class).warn("Issue while using Anonymous Storage",e);
-			e.printStackTrace();
+			logger.warn("Issue while using Anonymous Storage",e);
 		}
-
-
 		return this.platform.getStoragePluginForSchema(this.scheme).store(dcmObj, arg1);
 	}
-
+	
+	@Override
+	public URI store(DicomInputStream arg0, Object... arg1) throws IOException {
+		if (!enabled || arg0 == null) {
+			return null;
+		}
+		DicomObject obj = arg0.readDicomObject();
+		URI uri = store(obj);
+		logger.info("Stored at {}", uri);
+		return uri;		
+	}
+	
+	
+	
 	@Override
 	public void setSettings(ConfigurationHolder arg0) {
 		this.scheme=arg0.getConfiguration().getString("scheme","file");
@@ -86,9 +96,7 @@ public class AnonymousStorage implements StorageInterface, PlatformCommunicatorI
 
 	@Override
 	public boolean handles(URI location) {
-		if(location.getScheme()==null){
-			return true;}
-		return Objects.equals(getScheme(), equals(this.AnonymousScheme));
+		return Objects.equals(getScheme(), this.AnonymousScheme);
 	}
 
 	@Override
@@ -96,15 +104,7 @@ public class AnonymousStorage implements StorageInterface, PlatformCommunicatorI
 		return this.platform.getStorageForSchema(this.scheme).at(location, arg1);
 	}
 
-	@Override
-	public URI store(DicomInputStream arg0, Object... arg1) throws IOException {
-		if (!enabled || arg0 == null) {
-			return null;
-		}
-		DicomObject obj = arg0.readDicomObject();
-		System.out.println("Stored at " + store(obj));
-		return store(obj);		
-	}
+
 
 	@Override
 	public boolean disable() {

@@ -38,7 +38,7 @@ public class PersistantDataLuceneTest {
 	PatientData patientData=PatientData.createWithMapping(patientName, patientId);
 	StudyData studyData =StudyData.createWithMapping(accessionNumber);
 	AnonDatabase lucy;
-	static final String DEFAULT_ANON_PATH = "./Anon_index/";
+	static final String DEFAULT_ANON_PATH = "./Anon_index_2/";
 	
 
 	/**
@@ -46,7 +46,7 @@ public class PersistantDataLuceneTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		lucy =new PersistantDataLucene();
+		lucy =new PersistantDataLucene(DEFAULT_ANON_PATH);
 		((PersistantDataLucene) lucy).setIndexPath(DEFAULT_ANON_PATH);
 
 	}
