@@ -27,7 +27,6 @@ import java.io.IOException;
 import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.data.Tag;
 import org.dcm4che2.data.VR;
-import org.sql2o.Sql2oException;
 
 import pt.ieeta.anonymouspatientdata.core.impl.MatchTables;
 import pt.ieeta.anonymouspatientdata.core.impl.PatientStudy;
@@ -38,9 +37,8 @@ public class AnonimizeDicomObject {
  * @param DICOMObj
  * @return  
  * @throws IOException 
- * @throws Sql2oException 
  */
-	public static void anonymizeObject(DicomObject DICOMObj) throws Sql2oException, IOException {
+	public static void anonymizeObject(DicomObject DICOMObj) throws IOException {
 		
 		String patientName = DICOMObj.getString(Tag.PatientName);
 		String patientId =DICOMObj.getString(Tag.PatientID);

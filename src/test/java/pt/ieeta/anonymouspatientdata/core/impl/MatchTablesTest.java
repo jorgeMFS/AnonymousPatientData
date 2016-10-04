@@ -30,7 +30,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.sql2o.Sql2oException;
 
 /**
  * @author Jorge Miguel Ferreira da Silva

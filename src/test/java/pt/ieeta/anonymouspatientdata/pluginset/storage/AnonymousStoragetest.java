@@ -28,7 +28,6 @@ import org.dcm4che2.io.DicomInputStream;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.sql2o.Sql2oException;
 
 import pt.ieeta.anonymouspatientdata.core.AnonimizeDicomObject;
 
@@ -75,7 +74,7 @@ public class AnonymousStoragetest {
 	}
 
 	@Test
-	public void validateStoreOutput() throws Sql2oException, IOException{
+	public void validateStoreOutput() throws IOException{
 		String patientNameexpected=dcmObj.getString(Tag.PatientName);
 		AnonimizeDicomObject.anonymizeObject(this.dcmObj);
 		Assert.assertEquals(dcmObj.get(Tag.SOPInstanceUID).toString(), dcmObj.get(Tag.SOPInstanceUID).toString());

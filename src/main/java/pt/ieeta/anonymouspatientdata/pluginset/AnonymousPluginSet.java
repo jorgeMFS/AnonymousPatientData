@@ -70,7 +70,7 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 	}
 
 	private AnonymousStorage storage= new AnonymousStorage();
-	private String dbLocation="jdbc:sqlite:AnonymousInformation.db"; 
+	private String Location="/Anon_index/"; 
 
 	@Override
 	public Collection<StorageInterface> getStoragePlugins() {
@@ -120,11 +120,11 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 	}
 
 	public String getLocation() {
-		return dbLocation;
+		return Location;
 	}
 
 	public void setLocation(String Location) {
-		this.dbLocation = Location;
+		this.Location = Location;
 	}
 
 

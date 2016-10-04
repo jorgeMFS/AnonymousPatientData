@@ -26,7 +26,6 @@ import org.dcm4che2.io.DicomInputStream;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.sql2o.Sql2oException;
 
 import pt.ieeta.anonymouspatientdata.core.impl.MatchTables;
 
