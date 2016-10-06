@@ -19,6 +19,7 @@
 package pt.ieeta.anonymouspatientdata.core.impl;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,8 +33,8 @@ public class AnonCache implements AnonDatabase {
 
 	private final AnonDatabase anonDb;
 
-	private  Map<String, PatientData> patientDataMap;
-	private  Map<String, String> studyDataMap;
+	private  Map<String, PatientData> patientDataMap=new HashMap<String, PatientData>();
+	private  Map<String, String> studyDataMap=new HashMap<String, String>();
 	//private final int MAXSIZEPATIENTDATA=50;
 	//private final int MAXSIZESTUDYDATA=1000;
 
@@ -42,7 +43,6 @@ public class AnonCache implements AnonDatabase {
 
 
 	public AnonCache(AnonDatabase anonDb) {
-
 		this.anonDb= anonDb;
 	}
 
