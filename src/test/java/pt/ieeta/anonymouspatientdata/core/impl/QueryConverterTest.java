@@ -93,8 +93,8 @@ public class QueryConverterTest {
 		TermQuery tQ1 =new TermQuery(new Term("PatientName","123"));
 
 		//TermQuery PatientId
-		TermQuery tQa =new TermQuery(new Term("PatientId","1"));
-		TermQuery tQa1 =new TermQuery(new Term("PatientId","123"));
+		TermQuery tQa =new TermQuery(new Term("PatientID","1"));
+		TermQuery tQa1 =new TermQuery(new Term("PatientID","123"));
 		//--TEST1 PatientId
 		BooleanQuery.Builder builder= new Builder();
 		BooleanClause clause= new BooleanClause(tQa, Occur.SHOULD);
@@ -126,7 +126,7 @@ public class QueryConverterTest {
 		String T="a1";
 		PhraseQuery pQ =new PhraseQuery("PatientName",T);
 		String T2="1";
-		PhraseQuery phraseQ =new PhraseQuery("PatientId",T2);
+		PhraseQuery phraseQ =new PhraseQuery("PatientID",T2);
 
 		//QueryConverter
 		QueryConverter qC = new QueryConverter(Anon);
@@ -217,7 +217,7 @@ public class QueryConverterTest {
 	public void test3() {
 		//TermQuery Others
 		TermQuery tQ =new TermQuery(new Term("other","1 a1"));
-		TermQuery tQa =new TermQuery(new Term("PatientId","123"));
+		TermQuery tQa =new TermQuery(new Term("PatientID","123"));
 		TermQuery tQb =new TermQuery(new Term("PatientName","123"));
 		TermQuery tQc =new TermQuery(new Term("AccessionNumber","321"));
 		BooleanQuery.Builder builder= new Builder();

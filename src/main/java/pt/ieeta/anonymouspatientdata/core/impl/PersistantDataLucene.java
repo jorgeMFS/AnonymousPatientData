@@ -120,7 +120,7 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (index==null) throw new IllegalStateException();
 		Document patientDataDoc= new Document();
 		TextField patientName = new TextField("PatientName",patientData.getPatientName(),Store.YES);
-		TextField patientId = new TextField("PatientId",patientData.getPatientId(),Store.YES);
+		TextField patientId = new TextField("PatientID",patientData.getPatientId(),Store.YES);
 		TextField patient_Map_Id = new TextField("Patient_Map_Id",patientData.getMapId(),Store.YES);
 		TextField other =new TextField("other",patientData.getPatientName()+" "+patientData.getPatientId(),Store.NO);
 		patientDataDoc.add(patientName);
@@ -156,7 +156,7 @@ public class PersistantDataLucene implements AnonDatabase {
 	@Override
 	public Optional<PatientData> getPatientDataById(String id) throws IOException{
 		if (index==null) throw new IllegalStateException();
-		TermQuery termQuery = new TermQuery(new Term("PatientId",id));
+		TermQuery termQuery = new TermQuery(new Term("PatientID",id));
 		int NElem=1;
 		try(DirectoryReader dr =DirectoryReader.open(index)){
 			IndexSearcher is = new IndexSearcher(dr);
@@ -165,7 +165,7 @@ public class PersistantDataLucene implements AnonDatabase {
 				return Optional.empty();
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
-			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientId"),d.get("Patient_Map_Id"));
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			return Optional.of(pd);
 		}
 	}
@@ -184,7 +184,7 @@ public class PersistantDataLucene implements AnonDatabase {
 				return null;
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
-			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientId"),d.get("Patient_Map_Id"));
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			return pd;
 		}
 	}
@@ -213,7 +213,7 @@ public class PersistantDataLucene implements AnonDatabase {
 	@Override
 	public String getmapIdbyPatientId(String patientId) throws IOException{
 		if (index==null) throw new IllegalStateException();
-		TermQuery termQuery = new TermQuery(new Term("PatientId",patientId));
+		TermQuery termQuery = new TermQuery(new Term("PatientID",patientId));
 		int NElem=1;
 		try(DirectoryReader dr =DirectoryReader.open(index)){
 			IndexSearcher is = new IndexSearcher(dr);
@@ -222,7 +222,7 @@ public class PersistantDataLucene implements AnonDatabase {
 				return null;
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
-			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientId"),d.get("Patient_Map_Id"));
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientMapId= pd.getMapId();
 			return patientMapId;
 		}
@@ -241,7 +241,7 @@ public class PersistantDataLucene implements AnonDatabase {
 				return null;
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
-			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientId"),d.get("Patient_Map_Id"));
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientMapId= pd.getMapId();
 			return patientMapId;
 		}
@@ -268,7 +268,7 @@ public class PersistantDataLucene implements AnonDatabase {
 				return null;
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
-			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientId"),d.get("Patient_Map_Id"));
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientName = pd.getPatientName();
 			return patientName;}
 	}
@@ -286,7 +286,7 @@ public class PersistantDataLucene implements AnonDatabase {
 				return null;
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
-			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientId"),d.get("Patient_Map_Id"));
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientId = pd.getPatientId();
 			return patientId;
 		}

@@ -72,7 +72,7 @@ public class QueryConverter {
 						.build();
 				return bq;
 			}
-			if(fn.equals("PatientId")){
+			if(fn.equals("PatientID")){
 				String value=tq.getTerm().text();
 				TermQuery tq2=new TermQuery(new Term(fn,  this.lucy.getmapIdbyPatientId(value)));
 				BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
@@ -102,7 +102,7 @@ public class QueryConverter {
 				String pIdValue=this.lucy.getmapIdbyPatientId(value);
 				String PatientNameValue=this.lucy.getmapIdbyPatientName(value);
 				String mapAccessionNumberValue=this.lucy.getmapAccessionNumber(value);
-				TermQuery tq2=new TermQuery(new Term("PatientId",pIdValue));
+				TermQuery tq2=new TermQuery(new Term("PatientID",pIdValue));
 				TermQuery tq3=new TermQuery(new Term("PatientName",PatientNameValue));
 				TermQuery tq4=new TermQuery(new Term("AccessionNumber",mapAccessionNumberValue));
 				BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
@@ -170,10 +170,10 @@ public class QueryConverter {
 
 				String value=t.text();
 
-				if (t.field()=="PatientId"){
+				if (t.field()=="PatientID"){
 					String pIdValue=this.lucy.getmapIdbyPatientId(value);
 					if (pIdValue!= null){
-						Term term= new Term("PatientId",pIdValue);
+						Term term= new Term("PatientID",pIdValue);
 						TermQuery tQ=new TermQuery(term);
 						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
 						bq.add(bClause);
@@ -204,7 +204,7 @@ public class QueryConverter {
 					String pIdValue=this.lucy.getmapIdbyPatientId(value);
 
 					if (pIdValue!= null){
-						Term term= new Term("PatientId",pIdValue);
+						Term term= new Term("PatientID",pIdValue);
 						TermQuery tQ=new TermQuery(term);
 						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
 						bq.add(bClause);

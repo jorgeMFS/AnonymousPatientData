@@ -73,7 +73,7 @@ public class ResultConverterTest {
 		location= new URI("test");
 		data= new HashMap<String,Object>();
 		data.put("PatientName", "123");
-		data.put("PatientId", "123");
+		data.put("PatientID", "123");
 		data.put("AccessionNumber", "321");
 		Integer id=1;
 		String patientId = id.toString();
@@ -100,13 +100,13 @@ public class ResultConverterTest {
 		data.clear();
 		//test
 		data.put("PatientName", "a1");
-		data.put("PatientId", "1");
+		data.put("PatientID", "1");
 		data.put("AccessionNumber", "2");
 		SearchResult test=new SearchResult(location, 0.0, data );
 		
 		
 		Assert.assertEquals(test.get("PatientName"),rs1.get("PatientName"));
-		Assert.assertEquals(test.get("PatientId"),rs1.get("PatientId"));
+		Assert.assertEquals(test.get("PatientID"),rs1.get("PatientID"));
 		Assert.assertEquals(test.get("AccessionNumber"),rs1.get("AccessionNumber"));
 		Assert.assertEquals(test.getURI(),rs1.getURI());
 		Assert.assertEquals(test.getScore(),rs1.getScore(),0.001);

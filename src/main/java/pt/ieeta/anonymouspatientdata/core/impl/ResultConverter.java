@@ -37,9 +37,9 @@ public class ResultConverter {
 	public SearchResult transform(SearchResult searchReasult) throws IOException{
 
 		HashMap<String, Object> hM = searchReasult.getExtraData();
-		String MapId =hM.get("PatientId").toString();
+		String MapId =hM.get("PatientID").toString();
 		hM.put("PatientName", lucy.getPatientNameByPatientMapId(MapId));
-		hM.put("PatientId", lucy.getPatientIdByPatientMapId(MapId));
+		hM.put("PatientID", lucy.getPatientIdByPatientMapId(MapId));
 		hM.put("AccessionNumber", lucy.getAccessionNumberByAccessionMapNumber(hM.get("AccessionNumber").toString()));
 		SearchResult sR= new SearchResult(searchReasult.getURI(),searchReasult.getScore(), hM);
 		return sR;
