@@ -37,20 +37,20 @@ public interface AnonDatabase {
 
 	Optional<PatientData> getPatientDataById(String id) throws IOException;
 
-	PatientData getPatientDataBypatientMapId(String patientMapId) throws IOException;
+	Optional<PatientData> getPatientDataBypatientMapId(String patientMapId) throws IOException;
 	
-	String getmapAccessionNumber(String accessionNumber) throws IOException;
+	Optional<String> getmapAccessionNumber(String accessionNumber) throws IOException;
 
-	String getmapIdbyPatientId(String patientId) throws IOException;
+	Optional<String> getmapIdbyPatientId(String patientId) throws IOException;
 
-	String getmapIdbyPatientName(String patientName) throws IOException;
+	Optional<String> getmapIdbyPatientName(String patientName) throws IOException;
 
 	void close() throws IOException;
 
-	String getPatientNameByPatientMapId(String patientMapId) throws IOException;
+	Optional<String> getPatientNameByPatientMapId(String patientMapId) throws IOException;
 
-	String getPatientIdByPatientMapId(String patientMapId) throws IOException;
+	Optional<String> getPatientIdByPatientMapId(String patientMapId) throws IOException;
 
-	String getAccessionNumberByAccessionMapNumber(String mapAccessionNumber) throws IOException;
+	Optional<String> getAccessionNumberByAccessionMapNumber(String mapAccessionNumber) throws IOException;
 
 }

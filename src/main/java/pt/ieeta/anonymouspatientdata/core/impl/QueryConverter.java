@@ -19,6 +19,7 @@ package pt.ieeta.anonymouspatientdata.core.impl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -61,9 +62,9 @@ public class QueryConverter {
 
 			if(fn.equals("PatientName")){
 				String value=tq.getTerm().text();
-
-				TermQuery tq2=new TermQuery(new Term(fn, this.lucy.getmapIdbyPatientName(value)));
-
+				Optional<String> getmapIdbyPatientName =this.lucy.getmapIdbyPatientName(value);
+				if (!getmapIdbyPatientName.isPresent()) return q;
+				TermQuery tq2=new TermQuery(new Term(fn, getmapIdbyPatientName.get()));
 				BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
 				BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
 				BooleanQuery bq = new BooleanQuery.Builder()
@@ -74,7 +75,9 @@ public class QueryConverter {
 			}
 			if(fn.equals("PatientID")){
 				String value=tq.getTerm().text();
-				TermQuery tq2=new TermQuery(new Term(fn,  this.lucy.getmapIdbyPatientId(value)));
+				Optional<String> getmapIdbyPatientId=this.lucy.getmapIdbyPatientId(value);
+				if (!getmapIdbyPatientId.isPresent()) return q;
+				TermQuery tq2=new TermQuery(new Term(fn,  getmapIdbyPatientId.get()));
 				BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
 				BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
 				BooleanQuery bq = new BooleanQuery.Builder().
@@ -86,8 +89,9 @@ public class QueryConverter {
 			}
 			if(fn.equals("AccessionNumber")){
 				String value=tq.getTerm().text();
-				System.out.println((value));
-				TermQuery tq2=new TermQuery(new Term(fn, this.lucy.getmapAccessionNumber(value)));
+				Optional<String>getmapAccessionNumber= this.lucy.getmapAccessionNumber(value);
+				if (!getmapAccessionNumber.isPresent()) return q;
+				TermQuery tq2=new TermQuery(new Term(fn, getmapAccessionNumber.get()));
 				BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
 				BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
 				BooleanQuery bq = new BooleanQuery.Builder()
@@ -98,10 +102,15 @@ public class QueryConverter {
 				return (Query) bq;
 			}
 			if(fn.equals("other")){
+				
+				
 				String value=tq.getTerm().text();
-				String pIdValue=this.lucy.getmapIdbyPatientId(value);
-				String PatientNameValue=this.lucy.getmapIdbyPatientName(value);
-				String mapAccessionNumberValue=this.lucy.getmapAccessionNumber(value);
+				Optional<String> getmapIdbyPatientId=this.lucy.getmapIdbyPatientId(value);
+				Optional<String> getmapIdbyPatientName =this.lucy.getmapIdbyPatientName(value);
+				Optional<String>getmapAccessionNumber= this.lucy.getmapAccessionNumber(value);
+				String pIdValue=getmapIdbyPatientId.get();
+				String PatientNameValue=getmapIdbyPatientName.get();
+				String mapAccessionNumberValue=getmapAccessionNumber.get();
 				TermQuery tq2=new TermQuery(new Term("PatientID",pIdValue));
 				TermQuery tq3=new TermQuery(new Term("PatientName",PatientNameValue));
 				TermQuery tq4=new TermQuery(new Term("AccessionNumber",mapAccessionNumberValue));
@@ -109,17 +118,17 @@ public class QueryConverter {
 				Builder bq = new BooleanQuery.Builder()
 						.add(bClause);
 
-				if (pIdValue!= null){
+				if (getmapIdbyPatientId.isPresent()){
 					BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
 					bq.add(bClause2);
 				}
 
-				if (PatientNameValue!= null){
+				if (getmapIdbyPatientName.isPresent()){
 					BooleanClause bClause3= new BooleanClause(tq3, Occur.SHOULD);
 					bq.add(bClause3);
 				}
 
-				if (mapAccessionNumberValue!= null){
+				if (getmapAccessionNumber.isPresent()){
 					BooleanClause bClause4= new BooleanClause(tq4, Occur.SHOULD);
 					bq.add(bClause4);
 				}
@@ -171,8 +180,10 @@ public class QueryConverter {
 				String value=t.text();
 
 				if (t.field()=="PatientID"){
-					String pIdValue=this.lucy.getmapIdbyPatientId(value);
-					if (pIdValue!= null){
+					
+					Optional<String> getmapIdbyPatientId=this.lucy.getmapIdbyPatientId(value);
+					String pIdValue=getmapIdbyPatientId.get();
+					if (getmapIdbyPatientId.isPresent()){
 						Term term= new Term("PatientID",pIdValue);
 						TermQuery tQ=new TermQuery(term);
 						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
@@ -181,8 +192,9 @@ public class QueryConverter {
 				}
 
 				if (t.field()=="PatientName"){
-					String PatientNameValue=this.lucy.getmapIdbyPatientName(value);
-					if (PatientNameValue!= null){
+					Optional<String> getmapIdbyPatientName =this.lucy.getmapIdbyPatientName(value);
+					String PatientNameValue=getmapIdbyPatientName.get();
+					if (getmapIdbyPatientName.isPresent()){
 						Term term= new Term("PatientName",PatientNameValue);
 						TermQuery tQ =new TermQuery(term);
 						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
@@ -190,8 +202,9 @@ public class QueryConverter {
 					}
 				}
 				if(t.field()=="AccessionNumber"){
-					String mapAccessionNumberValue=this.lucy.getmapAccessionNumber(value);
-					if (mapAccessionNumberValue!= null){
+					Optional<String>getmapAccessionNumber= this.lucy.getmapAccessionNumber(value);
+					String mapAccessionNumberValue=getmapAccessionNumber.get();
+					if (getmapAccessionNumber.isPresent()){
 						Term term= new Term("AccessionNumber",mapAccessionNumberValue);
 						TermQuery tQ =new TermQuery(term);
 						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
@@ -199,23 +212,26 @@ public class QueryConverter {
 					}
 				}
 				if(t.field()=="other"){
-					String mapAccessionNumberValue=this.lucy.getmapAccessionNumber(value);
-					String PatientNameValue=this.lucy.getmapIdbyPatientName(value);
-					String pIdValue=this.lucy.getmapIdbyPatientId(value);
+					Optional<String> getmapIdbyPatientId=this.lucy.getmapIdbyPatientId(value);
+					Optional<String> getmapIdbyPatientName =this.lucy.getmapIdbyPatientName(value);
+					Optional<String>getmapAccessionNumber= this.lucy.getmapAccessionNumber(value);
+					String mapAccessionNumberValue=getmapAccessionNumber.get();
+					String PatientNameValue=getmapIdbyPatientName.get();
+					String pIdValue=getmapIdbyPatientId.get();
 
-					if (pIdValue!= null){
+					if (getmapIdbyPatientId.isPresent()){
 						Term term= new Term("PatientID",pIdValue);
 						TermQuery tQ=new TermQuery(term);
 						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
 						bq.add(bClause);
 					}
-					if (PatientNameValue!= null){
+					if (getmapIdbyPatientName.isPresent()){
 						Term term= new Term("PatientName",PatientNameValue);
 						TermQuery tQ =new TermQuery(term);
 						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
 						bq.add(bClause);
 					}
-					if (mapAccessionNumberValue!= null){
+					if (getmapAccessionNumber.isPresent()){
 						Term term= new Term("AccessionNumber",mapAccessionNumberValue);
 						TermQuery tQ =new TermQuery(term);
 						BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -56,13 +57,13 @@ public class ResultConverterTest {
 	public void create()throws IOException{
 		Anon =Mockito.mock(AnonDatabase.class);
 
-		when(Anon.getmapAccessionNumber(anyString())).thenReturn("321");
-		when(Anon.getAccessionNumberByAccessionMapNumber(anyString())).thenReturn(studyDataMap.get("2"));		
-		when(Anon.getPatientIdByPatientMapId(anyString())).thenReturn(patientDataMap.get("123").getPatientId());	
-		when(Anon.getPatientNameByPatientMapId(anyString())).thenReturn(patientDataMap.get("123").getPatientName());		
-		when(Anon.getAccessionNumberByAccessionMapNumber(anyString())).thenReturn(studyDataMap.get(anyString()));
-		when(Anon.getmapIdbyPatientId(patientDataMap.get("123").getPatientId())).thenReturn(patientDataMap.get("123").getMapId());
-		when(Anon.getmapIdbyPatientName(anyString())).thenReturn("123");
+		when(Anon.getmapAccessionNumber(anyString())).thenReturn(Optional.ofNullable("321"));
+		when(Anon.getAccessionNumberByAccessionMapNumber(anyString())).thenReturn(Optional.ofNullable(studyDataMap.get("2")));		
+		when(Anon.getPatientIdByPatientMapId(anyString())).thenReturn(Optional.ofNullable(patientDataMap.get("123").getPatientId()));	
+		when(Anon.getPatientNameByPatientMapId(anyString())).thenReturn(Optional.ofNullable(patientDataMap.get("123").getPatientName()));		
+		when(Anon.getAccessionNumberByAccessionMapNumber(anyString())).thenReturn(Optional.ofNullable(studyDataMap.get(anyString())));
+		when(Anon.getmapIdbyPatientId(patientDataMap.get("123").getPatientId())).thenReturn(Optional.ofNullable(patientDataMap.get("123").getMapId()));
+		when(Anon.getmapIdbyPatientName(anyString())).thenReturn(Optional.ofNullable("123"));
 	}
 
 	@Before

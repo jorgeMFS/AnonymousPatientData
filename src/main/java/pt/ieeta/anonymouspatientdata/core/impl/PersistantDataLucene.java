@@ -173,7 +173,7 @@ public class PersistantDataLucene implements AnonDatabase {
 
 
 	@Override
-	public PatientData getPatientDataBypatientMapId(String patientMapId) throws IOException {
+	public Optional<PatientData> getPatientDataBypatientMapId(String patientMapId) throws IOException {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("Patient_Map_Id",patientMapId));
 		int NElem=1;		
@@ -181,18 +181,18 @@ public class PersistantDataLucene implements AnonDatabase {
 			IndexSearcher is = new IndexSearcher(dr);
 			TopDocs tD= is.search(termQuery,NElem);
 			if (tD.totalHits== 0)
-				return null;
+				return Optional.empty();
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
-			return pd;
+			return Optional.of(pd);
 		}
 	}
 
 
 
 	@Override
-	public String getmapAccessionNumber(String accessionNumber) throws IOException{
+	public Optional<String> getmapAccessionNumber(String accessionNumber) throws IOException{
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("AccessionNumber",accessionNumber));
 		int NElem=1;
@@ -200,18 +200,18 @@ public class PersistantDataLucene implements AnonDatabase {
 			IndexSearcher is = new IndexSearcher(dr);
 			TopDocs tD= is.search(termQuery,NElem);
 			if (tD.totalHits== 0)
-				return null;
+				return Optional.empty();
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
 			String mapAccessionNumber= sd.getMapAccessionNumber();
-			return mapAccessionNumber;
+			return Optional.of(mapAccessionNumber);
 		}
 	}
 
 
 	@Override
-	public String getmapIdbyPatientId(String patientId) throws IOException{
+	public Optional<String> getmapIdbyPatientId(String patientId) throws IOException{
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("PatientID",patientId));
 		int NElem=1;
@@ -219,18 +219,18 @@ public class PersistantDataLucene implements AnonDatabase {
 			IndexSearcher is = new IndexSearcher(dr);
 			TopDocs tD= is.search(termQuery,NElem);
 			if (tD.totalHits== 0)
-				return null;
+				return Optional.empty();
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientMapId= pd.getMapId();
-			return patientMapId;
+			return Optional.of(patientMapId);
 		}
 	}
 
 
 	@Override
-	public String getmapIdbyPatientName(String patientName) throws IOException{
+	public Optional<String> getmapIdbyPatientName(String patientName) throws IOException{
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("PatientName",patientName));
 		int NElem=1;
@@ -238,12 +238,12 @@ public class PersistantDataLucene implements AnonDatabase {
 			IndexSearcher is = new IndexSearcher(dr);
 			TopDocs tD= is.search(termQuery,NElem);
 			if (tD.totalHits== 0)
-				return null;
+				return Optional.empty();
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientMapId= pd.getMapId();
-			return patientMapId;
+			return Optional.of(patientMapId);
 		}
 	}
 
@@ -257,7 +257,7 @@ public class PersistantDataLucene implements AnonDatabase {
 
 
 	@Override
-	public String getPatientNameByPatientMapId(String patientMapId) throws IOException {
+	public Optional<String> getPatientNameByPatientMapId(String patientMapId) throws IOException {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("Patient_Map_Id",patientMapId));
 		int NElem=1;
@@ -265,17 +265,17 @@ public class PersistantDataLucene implements AnonDatabase {
 			IndexSearcher is = new IndexSearcher(dr);
 			TopDocs tD= is.search(termQuery,NElem);
 			if (tD.totalHits== 0)
-				return null;
+				return Optional.empty();
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientName = pd.getPatientName();
-			return patientName;}
+			return Optional.of(patientName);}
 	}
 
 
 	@Override
-	public String getPatientIdByPatientMapId(String patientMapId) throws IOException {
+	public Optional<String> getPatientIdByPatientMapId(String patientMapId) throws IOException {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("Patient_Map_Id",patientMapId));
 		int NElem=1;
@@ -283,17 +283,17 @@ public class PersistantDataLucene implements AnonDatabase {
 			IndexSearcher is = new IndexSearcher(dr);
 			TopDocs tD= is.search(termQuery,NElem);
 			if (tD.totalHits== 0)
-				return null;
+				return Optional.empty();
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientId = pd.getPatientId();
-			return patientId;
+			return Optional.of(patientId);
 		}
 	}
 
 	@Override
-	public String getAccessionNumberByAccessionMapNumber(String mapAccessionNumber) throws IOException {
+	public Optional<String> getAccessionNumberByAccessionMapNumber(String mapAccessionNumber) throws IOException {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("Accession_Map_Number",mapAccessionNumber));
 		int NElem=1;
@@ -301,12 +301,12 @@ public class PersistantDataLucene implements AnonDatabase {
 			IndexSearcher is = new IndexSearcher(dr);
 			TopDocs tD= is.search(termQuery,NElem);
 			if (tD.totalHits== 0)
-				return null;
+				return Optional.empty();
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
 			String AccessionNumber = sd.getAccessionNumber();
-			return AccessionNumber;
+			return Optional.of(AccessionNumber);
 		}
 	}
 

@@ -38,7 +38,7 @@ public class AnonCache implements AnonDatabase {
 	//private final int MAXSIZEPATIENTDATA=50;
 	//private final int MAXSIZESTUDYDATA=1000;
 
-	
+
 
 
 
@@ -73,19 +73,19 @@ public class AnonCache implements AnonDatabase {
 
 
 	@Override
-	public String getmapAccessionNumber(String accessionNumber) throws IOException {
+	public Optional<String> getmapAccessionNumber(String accessionNumber) throws IOException {
 		return this.anonDb.getmapAccessionNumber(accessionNumber);
 	}
 
 
 	@Override
-	public String getmapIdbyPatientId(String patientId) throws IOException {
+	public Optional<String> getmapIdbyPatientId(String patientId) throws IOException {
 		return this.anonDb.getmapIdbyPatientId(patientId);
 	}
 
 
 	@Override
-	public String getmapIdbyPatientName(String patientName) throws IOException {
+	public Optional<String> getmapIdbyPatientName(String patientName) throws IOException {
 		return this.anonDb.getmapIdbyPatientName(patientName);
 
 	}
@@ -98,19 +98,21 @@ public class AnonCache implements AnonDatabase {
 
 
 	@Override
-	public String getPatientNameByPatientMapId(String patientMapId) throws IOException {
+	public Optional<String> getPatientNameByPatientMapId(String patientMapId) throws IOException {
 
 		if(this.patientDataMap.containsKey(patientMapId)) {
-			return this.patientDataMap.get(patientMapId).getPatientName();
+			return Optional.of(this.patientDataMap.get(patientMapId).getPatientName());
 		}
 
 		try{
-			PatientData pd = patientDataMap.computeIfAbsent(patientMapId, (k) -> {try{return this.anonDb.getPatientDataBypatientMapId(k);}
+			Optional<PatientData>  pd = Optional.ofNullable(patientDataMap.computeIfAbsent(patientMapId, (k) -> {try
+			{return this.anonDb.getPatientDataBypatientMapId(k).orElse(null);
+			}
 			catch (IOException e) {
 				throw new RuntimeIOException(e);}
 
-			});
-			return pd.getPatientName();
+			}));
+			return pd.map(PatientData::getPatientName);
 		}
 		catch(RuntimeIOException e){
 			throw new IOException(e);
@@ -120,17 +122,19 @@ public class AnonCache implements AnonDatabase {
 
 
 	@Override
-	public String getPatientIdByPatientMapId(String patientMapId) throws IOException {
+	public Optional<String> getPatientIdByPatientMapId(String patientMapId) throws IOException {
 		if(this.patientDataMap.containsKey(patientMapId)) {
-			return this.patientDataMap.get(patientMapId).getPatientId();
+			return Optional.of(this.patientDataMap.get(patientMapId).getPatientId());
 		}
 
 		try{
-			PatientData pd = patientDataMap.computeIfAbsent(patientMapId, (k) -> {try{return this.anonDb.getPatientDataBypatientMapId(k);}
+			Optional<PatientData> pd = Optional.ofNullable(patientDataMap.computeIfAbsent(patientMapId, (k) -> {try{
+				return this.anonDb.getPatientDataBypatientMapId(k).orElse(null);
+			}
 			catch (IOException e) {
 				throw new RuntimeIOException(e);}
-			});
-			return pd.getPatientId();
+			}));
+			return pd.map(PatientData::getPatientId);
 		}
 		catch(RuntimeIOException e){
 			throw new IOException(e);
@@ -139,15 +143,23 @@ public class AnonCache implements AnonDatabase {
 
 
 	@Override
-	public String getAccessionNumberByAccessionMapNumber(String mapAccessionNumber) throws IOException {
+	public Optional<String> getAccessionNumberByAccessionMapNumber(String mapAccessionNumber) throws IOException {
 		if(this.studyDataMap.containsKey(mapAccessionNumber)) {
-			return this.studyDataMap.get(mapAccessionNumber);
+			return Optional.of(this.studyDataMap.get(mapAccessionNumber));
 		}
 		try{
-			return studyDataMap.computeIfAbsent(mapAccessionNumber, (k) -> {try{return this.anonDb.getAccessionNumberByAccessionMapNumber(k);}
+			Optional<String> pd = Optional.ofNullable( studyDataMap.computeIfAbsent(mapAccessionNumber, (k) -> {try
+			{return this.anonDb.getAccessionNumberByAccessionMapNumber(k).orElse(null);
+			}
+
 			catch (IOException e) {
 				throw new RuntimeIOException(e);}
-			});
+			}));
+			
+			return pd;
+
+
+
 		}
 		catch(RuntimeIOException e){
 			throw new IOException(e);
@@ -156,16 +168,17 @@ public class AnonCache implements AnonDatabase {
 
 
 	@Override
-	public PatientData getPatientDataBypatientMapId(String patientMapId) throws IOException {
+	public Optional<PatientData> getPatientDataBypatientMapId(String patientMapId) throws IOException {
 		if(this.patientDataMap.containsKey(patientMapId)) {
-			return this.patientDataMap.get(patientMapId);
+			return Optional.of(this.patientDataMap.get(patientMapId));
 		}
 		try{
-			return patientDataMap.computeIfAbsent(patientMapId, (k) -> {try{return this.anonDb.getPatientDataBypatientMapId(k);}
+			Optional<PatientData> pd = Optional.ofNullable(patientDataMap.computeIfAbsent(patientMapId, (k) -> {try{return this.anonDb.getPatientDataBypatientMapId(k).orElse(null);
+			}
 			catch (IOException e) {
 				throw new RuntimeIOException(e);}
-			});
-
+			}));
+			return pd;
 		}
 		catch(RuntimeIOException e){
 			throw new IOException(e);
