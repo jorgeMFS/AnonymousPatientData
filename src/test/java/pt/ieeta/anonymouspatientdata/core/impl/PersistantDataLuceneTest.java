@@ -38,7 +38,7 @@ public class PersistantDataLuceneTest {
 	PatientData patientData=PatientData.createWithMapping(patientName, patientId);
 	StudyData studyData =StudyData.createWithMapping(accessionNumber);
 	AnonDatabase lucy;
-	static final String DEFAULT_ANON_PATH = "./Anon_index_2/";
+	static final String DEFAULT_ANON_PATH = "./Anon_index/";
 	
 
 	/**

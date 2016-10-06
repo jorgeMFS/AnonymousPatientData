@@ -64,11 +64,18 @@ public class PersistantDataLucene implements AnonDatabase {
 	/**
 	 * constructs an indexer instance
 	 */
-	
+	PersistantDataLucene(){
+
+		this.indexFilePath = DEFAULT_ANON_PATH;
+		log.info("Created Lucene Indexer default Constructor");
+	}
+
 	PersistantDataLucene(String path){
 		this.setIndexPath(path);
 		log.info("Created Lucene Indexer Plugin");
 	}
+
+
 
 	public final void setIndexPath(String indexPath) {
 		this.indexFilePath = indexPath;
@@ -106,7 +113,6 @@ public class PersistantDataLucene implements AnonDatabase {
 			iw.addDocument(studyDataDoc);
 			iw.flush();
 		}
-
 	}
 
 	@Override
@@ -125,10 +131,9 @@ public class PersistantDataLucene implements AnonDatabase {
 			iw.addDocument(patientDataDoc);
 			iw.flush();
 		}
-
 	}
 
-	
+
 	@Override
 	public Optional<StudyData> getStudyDataByAccessionNumber(String accessionNumber) throws IOException{
 		if (index==null) throw new IllegalStateException();
@@ -147,7 +152,7 @@ public class PersistantDataLucene implements AnonDatabase {
 		}
 	}
 
-	
+
 	@Override
 	public Optional<PatientData> getPatientDataById(String id) throws IOException{
 		if (index==null) throw new IllegalStateException();
@@ -164,9 +169,9 @@ public class PersistantDataLucene implements AnonDatabase {
 			return Optional.of(pd);
 		}
 	}
-	
-	
-	
+
+
+
 	@Override
 	public PatientData getPatientDataBypatientMapId(String patientMapId) throws IOException {
 		if (index==null) throw new IllegalStateException();
@@ -183,9 +188,9 @@ public class PersistantDataLucene implements AnonDatabase {
 			return pd;
 		}
 	}
-	
-	
-	
+
+
+
 	@Override
 	public String getmapAccessionNumber(String accessionNumber) throws IOException{
 		if (index==null) throw new IllegalStateException();
@@ -204,7 +209,7 @@ public class PersistantDataLucene implements AnonDatabase {
 		}
 	}
 
-	
+
 	@Override
 	public String getmapIdbyPatientId(String patientId) throws IOException{
 		if (index==null) throw new IllegalStateException();
@@ -223,7 +228,7 @@ public class PersistantDataLucene implements AnonDatabase {
 		}
 	}
 
-	
+
 	@Override
 	public String getmapIdbyPatientName(String patientName) throws IOException{
 		if (index==null) throw new IllegalStateException();
@@ -249,8 +254,8 @@ public class PersistantDataLucene implements AnonDatabase {
 		index = null;
 
 	}
-	
-	
+
+
 	@Override
 	public String getPatientNameByPatientMapId(String patientMapId) throws IOException {
 		if (index==null) throw new IllegalStateException();
@@ -267,8 +272,8 @@ public class PersistantDataLucene implements AnonDatabase {
 			String patientName = pd.getPatientName();
 			return patientName;}
 	}
-	
-	
+
+
 	@Override
 	public String getPatientIdByPatientMapId(String patientMapId) throws IOException {
 		if (index==null) throw new IllegalStateException();
@@ -286,9 +291,7 @@ public class PersistantDataLucene implements AnonDatabase {
 			return patientId;
 		}
 	}
-	
-	
-	
+
 	@Override
 	public String getAccessionNumberByAccessionMapNumber(String mapAccessionNumber) throws IOException {
 		if (index==null) throw new IllegalStateException();

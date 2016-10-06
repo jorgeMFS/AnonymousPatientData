@@ -18,7 +18,12 @@
 package pt.ieeta.anonymouspatientdata.pluginset.query;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.StreamSupport;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -104,22 +109,39 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 			Iterable<SearchResult> it = provider.query(q.toString(), parameters);
 			ResultConverter rC = new ResultConverter(anondB);
 
-			StreamSupport.stream(it.spliterator(), false).map(rs -> {
+			Spliterator<SearchResult> splt= StreamSupport.stream(it.spliterator(), false)
+						 .map(rs -> {
 				try {
 					return rC.transform(rs);
 
 				} catch (IOException e) {
-					throw new RuntimeIOException(e);
+					logger.warn("Problem with Search Result Transformation",e);
+					return null;
 				}
-			}).spliterator();
+			})
+				.filter(Objects::nonNull)
+				.spliterator();
 
-			return it;
+			return new Iterable<SearchResult>() {
+				
+				@Override
+				public Spliterator<SearchResult> spliterator() {
+					return splt;
+				}
+
+				@Override
+				public Iterator<SearchResult> iterator() {
+					return Spliterators.iterator(splt);
+				}
+
+			};
 
 		} catch (ParseException | IOException | RuntimeIOException e1) {
 			LoggerFactory.getLogger(AnonymousStorage.class)
-					.warn("ParseException,IOException or RuntimeIOException in Anonymous Query Plugin");
+					.warn("failed to query", e1);
+			return Collections.emptyList();
 		}
-		return null;
+		
 	}
 
 	@Override
