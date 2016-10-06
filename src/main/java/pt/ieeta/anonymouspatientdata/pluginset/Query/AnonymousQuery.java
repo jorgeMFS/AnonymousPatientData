@@ -18,7 +18,6 @@
 package pt.ieeta.anonymouspatientdata.pluginset.query;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
@@ -60,7 +59,6 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 	private String plugin;
 
 	public AnonymousQuery() {
-
 		super();
 		logger.info("Initializing -> Anonymous Query");
 	}
@@ -87,7 +85,7 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 
 	@Override
 	public void setSettings(ConfigurationHolder settings) {
-		this.plugin = settings.getConfiguration().getString("Plugin", "Lucene");
+		this.plugin = settings.getConfiguration().getString("Plugin", "lucene");
 		this.settings = settings;
 
 	}
@@ -133,7 +131,6 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 				public Iterator<SearchResult> iterator() {
 					return Spliterators.iterator(splt);
 				}
-
 			};
 
 		} catch (ParseException | IOException | RuntimeIOException e1) {
@@ -141,7 +138,6 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 					.warn("failed to query", e1);
 			return Collections.emptyList();
 		}
-		
 	}
 
 	@Override
