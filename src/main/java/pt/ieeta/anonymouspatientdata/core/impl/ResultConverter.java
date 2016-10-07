@@ -19,6 +19,7 @@ package pt.ieeta.anonymouspatientdata.core.impl;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Optional;
 
 import pt.ua.dicoogle.sdk.datastructs.SearchResult;
 
@@ -36,11 +37,28 @@ public class ResultConverter {
 
 	public SearchResult transform(SearchResult searchReasult) throws IOException{
 
-		HashMap<String, Object> hM = searchReasult.getExtraData();
+		HashMap<String, Object> hM = new HashMap<>(searchReasult.getExtraData());
+		if (hM.isEmpty())return searchReasult;
+
+		if (hM.get("PatientID")==null) return searchReasult;
 		String MapId =hM.get("PatientID").toString();
-		hM.put("PatientName", lucy.getPatientNameByPatientMapId(MapId));
-		hM.put("PatientID", lucy.getPatientIdByPatientMapId(MapId));
-		hM.put("AccessionNumber", lucy.getAccessionNumberByAccessionMapNumber(hM.get("AccessionNumber").toString()));
+
+		Optional<String> patientName = lucy.getPatientNameByPatientMapId(MapId);
+
+		if (patientName.isPresent()){
+			hM.put("PatientName", patientName );
+		}
+		if (patientName.isPresent()){
+			hM.put("PatientID", patientName);
+		}
+		if(!(hM.get("AccessionNumber")==null)){
+			String acessNumb=hM.get("AccessionNumber").toString();
+					Optional<String> accessionNumber=lucy.getAccessionNumberByAccessionMapNumber(acessNumb);
+
+			if (accessionNumber.isPresent()){
+				hM.put("AccessionNumber",accessionNumber);
+			}
+		}
 		SearchResult sR= new SearchResult(searchReasult.getURI(),searchReasult.getScore(), hM);
 		return sR;
 	}
