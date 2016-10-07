@@ -19,7 +19,6 @@ package pt.ieeta.anonymouspatientdata.core.impl;
 
 import static org.mockito.Mockito.*;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -295,9 +294,7 @@ public class QueryConverterTest {
 
 		//BooleanQuery
 		BooleanQuery.Builder b= new Builder();
-		BooleanQuery bQ =b.add(clause).setMinimumNumberShouldMatch(1).build();
-		BooleanQuery.Builder b2= new Builder();
-		
+		BooleanQuery bQ =b.add(clause).setMinimumNumberShouldMatch(1).build();		
 		
 		
 		//PhraseQuery

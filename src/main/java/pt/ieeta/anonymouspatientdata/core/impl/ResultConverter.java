@@ -44,12 +44,13 @@ public class ResultConverter {
 		String MapId =hM.get("PatientID").toString();
 
 		Optional<String> patientName = lucy.getPatientNameByPatientMapId(MapId);
-
+		Optional<String> patientID = lucy.getPatientIdByPatientMapId(MapId);
+		
 		if (patientName.isPresent()){
 			hM.put("PatientName", patientName );
 		}
-		if (patientName.isPresent()){
-			hM.put("PatientID", patientName);
+		if (patientID.isPresent()){
+			hM.put("PatientID", patientID);
 		}
 		if(!(hM.get("AccessionNumber")==null)){
 			String acessNumb=hM.get("AccessionNumber").toString();
@@ -62,11 +63,5 @@ public class ResultConverter {
 		SearchResult sR= new SearchResult(searchReasult.getURI(),searchReasult.getScore(), hM);
 		return sR;
 	}
-
-
-
-
-
-
 
 }

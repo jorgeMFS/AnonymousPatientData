@@ -56,14 +56,26 @@ public class ResultConverterTest {
 	@Before 
 	public void create()throws IOException{
 		Anon =Mockito.mock(AnonDatabase.class);
+		//Patient1
+		final Optional<String> ID=Optional.ofNullable("1");
+		final Optional<String> NAME=Optional.ofNullable("a1");
+		final Optional<String> MAPID= Optional.ofNullable("123");
+		final Optional<String> ACCESSNUMB=Optional.ofNullable("19");
+		final Optional<String> ACCESSMAPID=Optional.ofNullable("321");
 
-		when(Anon.getmapAccessionNumber(anyString())).thenReturn(Optional.ofNullable("321"));
-		when(Anon.getAccessionNumberByAccessionMapNumber(anyString())).thenReturn(Optional.ofNullable(studyDataMap.get("2")));		
-		when(Anon.getPatientIdByPatientMapId(anyString())).thenReturn(Optional.ofNullable(patientDataMap.get("123").getPatientId()));	
-		when(Anon.getPatientNameByPatientMapId(anyString())).thenReturn(Optional.ofNullable(patientDataMap.get("123").getPatientName()));		
-		when(Anon.getAccessionNumberByAccessionMapNumber(anyString())).thenReturn(Optional.ofNullable(studyDataMap.get(anyString())));
-		when(Anon.getmapIdbyPatientId(patientDataMap.get("123").getPatientId())).thenReturn(Optional.ofNullable(patientDataMap.get("123").getMapId()));
-		when(Anon.getmapIdbyPatientName(anyString())).thenReturn(Optional.ofNullable("123"));
+		//Mock Patient1
+		when(Anon.getmapAccessionNumber(ACCESSNUMB.get()))
+		.thenReturn(ACCESSMAPID);
+		when(Anon.getAccessionNumberByAccessionMapNumber(ACCESSMAPID.get()))
+		.thenReturn(ACCESSNUMB);		
+		when(Anon.getPatientIdByPatientMapId(MAPID.get()))
+		.thenReturn(ID);	
+		when(Anon.getPatientNameByPatientMapId(MAPID.get()))
+		.thenReturn(NAME);		
+		when(Anon.getmapIdbyPatientId(ID.get()))
+		.thenReturn(MAPID);
+		when(Anon.getmapIdbyPatientName(NAME.get()))
+		.thenReturn(MAPID);
 	}
 
 	@Before
@@ -73,16 +85,16 @@ public class ResultConverterTest {
 
 		location= new URI("test");
 		data= new HashMap<String,Object>();
+		
 		data.put("PatientName", "123");
 		data.put("PatientID", "123");
 		data.put("AccessionNumber", "321");
-		Integer id=1;
-		String patientId = id.toString();
-		Integer aN=1*2;
-		String accessionNumber = aN.toString();
-		String patientName ="a" +  patientId;
+		String patientId="1";
+		String accessionNumber = "19";
+		String patientName ="a1";
 		String patientMapId = "123";
 		String accessionMapNumber="321";
+		
 		PatientData Pd=new PatientData(patientName, patientId,patientMapId);
 		patientDataMap.put(Pd.getMapId(), Pd);
 		studyDataMap.put(accessionMapNumber,accessionNumber);
@@ -91,24 +103,24 @@ public class ResultConverterTest {
 
 	@Test
 	public void test() throws IOException {
-		
+
 		ResultConverter rC =new ResultConverter(Anon);
-		
+
 		SearchResult rs=new SearchResult(location, 0, data );
-		
+
 		SearchResult rs1 = rC.transform(rs);
 		System.out.println(rs1.getScore());
 		data.clear();
 		//test
 		data.put("PatientName", "a1");
 		data.put("PatientID", "1");
-		data.put("AccessionNumber", "2");
+		data.put("AccessionNumber", "19");
 		SearchResult test=new SearchResult(location, 0.0, data );
-		
-		
-		Assert.assertEquals(test.get("PatientName"),rs1.get("PatientName"));
-		Assert.assertEquals(test.get("PatientID"),rs1.get("PatientID"));
-		Assert.assertEquals(test.get("AccessionNumber"),rs1.get("AccessionNumber"));
+
+
+		Assert.assertEquals(Optional.of(test.get("PatientName")),rs1.get("PatientName"));
+		Assert.assertEquals(Optional.of(test.get("PatientID")),rs1.get("PatientID"));
+		Assert.assertEquals(Optional.of(test.get("AccessionNumber")),rs1.get("AccessionNumber"));
 		Assert.assertEquals(test.getURI(),rs1.getURI());
 		Assert.assertEquals(test.getScore(),rs1.getScore(),0.001);
 	}
