@@ -58,34 +58,56 @@ public class QueryConverterTest {
 	@Before 
 	public void create()throws IOException{
 		Anon =Mockito.mock(AnonDatabase.class);
-		final Optional<String> ACCESSMAPID=Optional.ofNullable("321");
+		//Patient1
+		final Optional<String> ID=Optional.ofNullable("1");
+		final Optional<String> NAME=Optional.ofNullable("a1");
 		final Optional<String> MAPID= Optional.ofNullable("123");
-	
-		when(Anon.getmapAccessionNumber(anyString())).thenReturn(ACCESSMAPID);
-		when(Anon.getAccessionNumberByAccessionMapNumber(anyString())).thenReturn(Optional.ofNullable(studyDataMap.get("2")));		
-		when(Anon.getPatientIdByPatientMapId(anyString())).thenReturn(Optional.ofNullable(patientDataMap.get("123").getPatientId()));	
-		when(Anon.getPatientNameByPatientMapId(anyString())).thenReturn(Optional.ofNullable(patientDataMap.get("123").getPatientName()));		
-		when(Anon.getAccessionNumberByAccessionMapNumber(anyString())).thenReturn(Optional.ofNullable(studyDataMap.get(anyString())));
-		when(Anon.getmapIdbyPatientId(patientDataMap.get("123").getPatientId())).thenReturn(Optional.ofNullable(patientDataMap.get("123").getMapId()));
-		when(Anon.getmapIdbyPatientName(anyString())).thenReturn(MAPID);
+		final Optional<String> ACCESSNUMB=Optional.ofNullable("19");
+		final Optional<String> ACCESSMAPID=Optional.ofNullable("321");
+
+		//Patient2
+		final Optional<String> ID2=Optional.ofNullable("2");
+		final Optional<String> NAME2=Optional.ofNullable("a2");
+		final Optional<String> MAPID2= Optional.ofNullable("1234");
+		final Optional<String> ACCESSNUMB2=Optional.ofNullable("29");
+		final Optional<String> ACCESSMAPID2=Optional.ofNullable("4321");	
+
+		//Mock Patient1
+		when(Anon.getmapAccessionNumber(ACCESSNUMB.get()))
+		.thenReturn(ACCESSMAPID);
+		when(Anon.getAccessionNumberByAccessionMapNumber(ACCESSMAPID.get()))
+		.thenReturn(ACCESSNUMB);		
+		when(Anon.getPatientIdByPatientMapId(MAPID.get()))
+		.thenReturn(ID);	
+		when(Anon.getPatientNameByPatientMapId(MAPID.get()))
+		.thenReturn(NAME);		
+		when(Anon.getmapIdbyPatientId(ID.get()))
+		.thenReturn(MAPID);
+		when(Anon.getmapIdbyPatientName(NAME.get()))
+		.thenReturn(MAPID);
+		
+		//Mock Patient2
+		when(Anon.getmapAccessionNumber(ACCESSNUMB2.get()))
+		.thenReturn(Optional.empty());
+		when(Anon.getAccessionNumberByAccessionMapNumber(ACCESSMAPID2.get()))
+		.thenReturn(Optional.empty());		
+		when(Anon.getPatientIdByPatientMapId(MAPID2.get()))
+		.thenReturn(Optional.empty());	
+		when(Anon.getPatientNameByPatientMapId(MAPID2.get()))
+		.thenReturn(Optional.empty());		
+		when(Anon.getmapIdbyPatientId(ID2.get()))
+		.thenReturn(Optional.empty());
+		when(Anon.getmapIdbyPatientName(NAME2.get()))
+		.thenReturn(Optional.empty());
+
+
+
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		patientDataMap= new HashMap<String, PatientData>();
-		studyDataMap=new HashMap<String, String>() ;
 
 
-		Integer id=1;
-		String patientId = id.toString();
-		Integer aN=1*2;
-		String accessionNumber = aN.toString();
-		String patientName ="a" +  patientId;
-		String patientMapId = "123";
-		String accessionMapNumber="321";
-		PatientData Pd=new PatientData(patientName, patientId,patientMapId);
-		patientDataMap.put(Pd.getMapId(), Pd);
-		studyDataMap.put(accessionMapNumber,accessionNumber);
 	}
 
 	@Test
@@ -177,7 +199,7 @@ public class QueryConverterTest {
 	@Test
 	public void test2() {
 		//TermQuery AccessionNumber
-		TermQuery tQ =new TermQuery(new Term("AccessionNumber","2"));
+		TermQuery tQ =new TermQuery(new Term("AccessionNumber","19"));
 		TermQuery tQa =new TermQuery(new Term("AccessionNumber","321"));
 		BooleanQuery.Builder builder= new Builder();
 		BooleanClause clause= new BooleanClause(tQ, Occur.SHOULD);
@@ -195,7 +217,7 @@ public class QueryConverterTest {
 		BooleanQuery bQtester=b2.add(clauseBQtest).build();
 
 		//PhraseQuery
-		String T2="2";
+		String T2="19";
 		PhraseQuery phraseQ =new PhraseQuery("AccessionNumber",T2);
 		BooleanQuery.Builder b3= new Builder();
 		BooleanClause clausePQtest=new BooleanClause(phraseQ, Occur.SHOULD);
@@ -220,16 +242,12 @@ public class QueryConverterTest {
 	@Test
 	public void test3() {
 		//TermQuery Others
-		TermQuery tQ =new TermQuery(new Term("other","1 a1"));
-		TermQuery tQa =new TermQuery(new Term("PatientID","123"));
+		TermQuery tQ =new TermQuery(new Term("other","a1"));
 		TermQuery tQb =new TermQuery(new Term("PatientName","123"));
-		TermQuery tQc =new TermQuery(new Term("AccessionNumber","321"));
 		BooleanQuery.Builder builder= new Builder();
 		BooleanClause clause= new BooleanClause(tQ, Occur.SHOULD);
-		BooleanClause clause2= new BooleanClause(tQa, Occur.SHOULD);
 		BooleanClause clause3= new BooleanClause(tQb, Occur.SHOULD);
-		BooleanClause clause4= new BooleanClause(tQc, Occur.SHOULD);
-		BooleanQuery boolQ= builder.add(clause).add(clause2).add(clause3).add(clause4).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery boolQ= builder.add(clause).add(clause3).setMinimumNumberShouldMatch(1).build();
 
 		//QueryConverter.
 		QueryConverter qC = new QueryConverter(Anon);
@@ -242,11 +260,11 @@ public class QueryConverterTest {
 		BooleanQuery bQtester=b2.add(clauseBQtest).build();
 
 		//PhraseQuery
-		String T2="1 a1";
+		String T2="a1";
 		PhraseQuery phraseQ =new PhraseQuery("other",T2);
 		BooleanQuery.Builder b3= new Builder();
 		BooleanClause clausePQtest=new BooleanClause(phraseQ, Occur.SHOULD);
-		BooleanQuery pQtester=b3.add(clausePQtest).add(clause2).add(clause3).add(clause4).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery pQtester=b3.add(clausePQtest).add(clause3).setMinimumNumberShouldMatch(1).build();
 
 
 		try {
@@ -257,6 +275,47 @@ public class QueryConverterTest {
 
 			Assert.assertEquals(boolQ,q);
 			Assert.assertEquals(bQtester,q2);
+			Assert.assertEquals(pQtester,q3);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void test4() {
+		//TermQuery AccessionNumber
+		TermQuery tQ =new TermQuery(new Term("AccessionNumber","29"));
+		BooleanQuery.Builder builder= new Builder();
+		BooleanClause clause= new BooleanClause(tQ, Occur.SHOULD);;
+		BooleanQuery boolQ= builder.add(clause).build();
+
+		//QueryConverter
+		QueryConverter qC = new QueryConverter(Anon);
+
+		//BooleanQuery
+		BooleanQuery.Builder b= new Builder();
+		BooleanQuery bQ =b.add(clause).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery.Builder b2= new Builder();
+		
+		
+		
+		//PhraseQuery
+		String T2="29";
+		PhraseQuery phraseQ =new PhraseQuery("AccessionNumber",T2);
+		BooleanQuery.Builder b3= new Builder();
+		BooleanClause clausePQtest=new BooleanClause(phraseQ, Occur.SHOULD);
+		BooleanQuery pQtester=b3.add(clausePQtest).setMinimumNumberShouldMatch(1).build();
+
+
+		try {
+			Query q = qC.transformQuery(tQ);
+			Query q2 = qC.transformQuery(bQ);
+			Query q3 = qC.transformQuery(phraseQ);
+
+
+			Assert.assertEquals(tQ,q);
+			Assert.assertEquals(boolQ,q2);
 			Assert.assertEquals(pQtester,q3);
 
 		} catch (IOException e) {

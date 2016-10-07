@@ -108,20 +108,20 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 			ResultConverter rC = new ResultConverter(anondB);
 
 			Spliterator<SearchResult> splt= StreamSupport.stream(it.spliterator(), false)
-						 .map(rs -> {
-				try {
-					return rC.transform(rs);
+					.map(rs -> {
+						try {
+							return rC.transform(rs);
 
-				} catch (IOException e) {
-					logger.warn("Problem with Search Result Transformation",e);
-					return null;
-				}
-			})
-				.filter(Objects::nonNull)
-				.spliterator();
+						} catch (IOException e) {
+							logger.warn("Problem with Search Result Transformation",e);
+							return null;
+						}
+					})
+					.filter(Objects::nonNull)
+					.spliterator();
 
 			return new Iterable<SearchResult>() {
-				
+
 				@Override
 				public Spliterator<SearchResult> spliterator() {
 					return splt;
@@ -134,8 +134,7 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 			};
 
 		} catch (ParseException | IOException | RuntimeIOException e1) {
-			LoggerFactory.getLogger(AnonymousStorage.class)
-					.warn("failed to query", e1);
+			logger.warn("failed to query", e1);
 			return Collections.emptyList();
 		}
 	}
