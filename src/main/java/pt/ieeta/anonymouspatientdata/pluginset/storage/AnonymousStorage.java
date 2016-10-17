@@ -96,12 +96,11 @@ public class AnonymousStorage implements StorageInterface, PlatformCommunicatorI
 
 	@Override
 	public boolean handles(URI location) {
-		return Objects.equals(getScheme(),location.getScheme());
+		return Objects.equals(getScheme(), this.AnonymousScheme);
 	}
 
 	@Override
 	public Iterable<StorageInputStream> at(final URI location,Object... arg1) {
-		logger.info(this.scheme);
 		return this.platform.getStorageForSchema(this.scheme).at(location, arg1);
 	}
 

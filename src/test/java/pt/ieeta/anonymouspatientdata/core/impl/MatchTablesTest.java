@@ -105,7 +105,7 @@ public class MatchTablesTest {
 
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				Files.delete(file);
+				Files.deleteIfExists(file);
 				return FileVisitResult.CONTINUE;
 			}
 

@@ -21,6 +21,7 @@ package pt.ieeta.anonymouspatientdata.core.impl;
  */
 
 import java.util.Optional;
+import java.util.UUID;
 import java.io.IOException;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +41,13 @@ public class MatchTables {
 
 
 	public PatientStudy createMatch( String patientId, String patientName, String accessionNumber ) throws IOException{
+		if (patientId==null) {patientId= UUID.randomUUID().toString();}
 
-		PatientData patientData=lucene.getPatientDataById(patientId).orElseGet(() -> {
-			final PatientData pData2= PatientData.createWithMapping(patientName,patientId);
+		String effPatientName = (patientName != null) ? patientName : UUID.randomUUID().toString();
+		String effPatientId = (patientId != null) ? patientId : UUID.randomUUID().toString();
+		PatientData patientData=lucene.getPatientDataById(effPatientId).orElseGet(() -> {
+
+			final PatientData pData2= PatientData.createWithMapping(effPatientName,effPatientId);
 			try {
 				lucene.insertPatientData(pData2);
 			} catch (Exception e) {
@@ -50,9 +55,9 @@ public class MatchTables {
 			}
 			return pData2;
 		});
-
-		StudyData studyData =lucene.getStudyDataByAccessionNumber(accessionNumber).orElseGet(() ->{
-			final StudyData sData = StudyData.createWithMapping(accessionNumber);
+		String effAccessionNumber = (accessionNumber != null) ? accessionNumber : UUID.randomUUID().toString();
+		StudyData studyData =lucene.getStudyDataByAccessionNumber(effAccessionNumber).orElseGet(() ->{
+			final StudyData sData = StudyData.createWithMapping(effAccessionNumber);
 			try {
 				lucene.insertStudyData(sData);
 			} catch (Exception e) {
@@ -85,7 +90,7 @@ public class MatchTables {
 	public AnonDatabase getDB(){
 		return lucene;
 	}
-	
+
 	public void close(){
 		try {
 			lucene.close();

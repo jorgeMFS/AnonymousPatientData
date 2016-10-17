@@ -17,7 +17,6 @@
  */
 package pt.ieeta.anonymouspatientdata.core.impl;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
