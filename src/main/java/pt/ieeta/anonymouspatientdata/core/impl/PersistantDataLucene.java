@@ -34,6 +34,8 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.SearcherFactory;
+import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
@@ -62,6 +64,10 @@ public class PersistantDataLucene implements AnonDatabase {
 	 */
 	private Directory index;
 	private Analyzer analyzer;
+	private int transactions=0;
+	private IndexWriter writer;
+	private volatile DirectoryReader reader;
+	private SearcherManager manager;
 	/**
 	 * constructs an indexer instance
 	 */
@@ -73,6 +79,7 @@ public class PersistantDataLucene implements AnonDatabase {
 
 	PersistantDataLucene(String path){
 		this.setIndexPath(path);
+		createManager();
 		logger.info("Created Lucene Indexer Plugin");
 	}
 
@@ -98,9 +105,16 @@ public class PersistantDataLucene implements AnonDatabase {
 		}
 	}
 
-	private int transactions=0;
-	private IndexWriter writer;
-	private volatile DirectoryReader reader;
+
+	private void createManager() {
+
+		try {
+			manager=new SearcherManager(this.index, new SearcherFactory());
+		} catch (IOException e) {
+
+			logger.error("Failed to create manager");
+		}
+	}
 
 	private synchronized void beginTransaction() throws IOException{		
 		if(transactions==0) {
@@ -119,28 +133,8 @@ public class PersistantDataLucene implements AnonDatabase {
 			this.writer = null;
 		}
 	}	
-	protected DirectoryReader reloadedReader() throws IOException {
-		if (this.reader == null) {
-			this.reader = DirectoryReader.open(this.index);
-			logger.debug("New Reader: {}", reader);
-		} else {
-			DirectoryReader nreader = DirectoryReader.openIfChanged(reader);
-			if(nreader != null) {
-				this.reader.close();
-				this.reader = nreader;
-				logger.debug("New Reader: {}", reader);
-			}
-		}
-		return this.reader;
-	}
 
-	protected DirectoryReader reader() throws IOException {
-		if (this.reader == null) {
-			this.reader = DirectoryReader.open(index);
-			logger.debug("Reader: {}", reader);
-		}
-		return this.reader;
-	}
+
 
 	@Override
 	public void insertStudyData(StudyData studyData) throws IOException{
@@ -187,15 +181,18 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("AccessionNumber",accessionNumber));
 		int NElem=1;
-		IndexReader r = reloadedReader();
-		IndexSearcher is = new IndexSearcher(r);
-		TopDocs tD= is.search(termQuery,NElem);
-		if (tD.totalHits== 0)
-			return Optional.empty();
-		int doc=tD.scoreDocs[0].doc;
-		Document d = is.doc(doc);
-		StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
-		return Optional.of(sd);
+		IndexSearcher is = manager.acquire();
+		try{
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return Optional.empty();
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
+			return Optional.of(sd);} 
+		finally {
+			manager.release(is);
+		}
 
 	}
 
@@ -205,16 +202,20 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("PatientID",id));
 		int NElem=1;
-		IndexReader r = reloadedReader();
-		IndexSearcher is = new IndexSearcher(r);
-		TopDocs tD= is.search(termQuery,NElem);
-		if (tD.totalHits== 0)
-			return Optional.empty();
-		int doc=tD.scoreDocs[0].doc;
-		Document d = is.doc(doc);
-		PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
-		return Optional.of(pd);
-		
+		IndexSearcher is = manager.acquire();
+		try{
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return Optional.empty();
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
+			return Optional.of(pd);
+		} 
+		finally {
+			manager.release(is);
+		}
+
 	}
 
 
@@ -224,15 +225,18 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("Patient_Map_Id",patientMapId));
 		int NElem=1;		
-		IndexReader r = reloadedReader();
-		IndexSearcher is = new IndexSearcher(r);
-		TopDocs tD= is.search(termQuery,NElem);
-		if (tD.totalHits== 0)
-			return Optional.empty();
-		int doc=tD.scoreDocs[0].doc;
-		Document d = is.doc(doc);
-		PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
-		return Optional.of(pd);
+		IndexSearcher is = manager.acquire();
+		try{
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return Optional.empty();
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
+			return Optional.of(pd);} 
+		finally {
+			manager.release(is);
+		}
 
 	}
 
@@ -243,16 +247,19 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("AccessionNumber",accessionNumber));
 		int NElem=1;
-		IndexReader r = reloadedReader();
-		IndexSearcher is = new IndexSearcher(r);
-		TopDocs tD= is.search(termQuery,NElem);
-		if (tD.totalHits== 0)
-			return Optional.empty();
-		int doc=tD.scoreDocs[0].doc;
-		Document d = is.doc(doc);
-		StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
-		String mapAccessionNumber= sd.getMapAccessionNumber();
-		return Optional.of(mapAccessionNumber);
+		IndexSearcher is = manager.acquire();
+		try{
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return Optional.empty();
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
+			String mapAccessionNumber= sd.getMapAccessionNumber();
+			return Optional.of(mapAccessionNumber);} 
+		finally {
+			manager.release(is);
+		}
 
 	}
 
@@ -262,16 +269,19 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("PatientID",patientId));
 		int NElem=1;
-		IndexReader r = reloadedReader();
-		IndexSearcher is = new IndexSearcher(r);
-		TopDocs tD= is.search(termQuery,NElem);
-		if (tD.totalHits== 0)
-			return Optional.empty();
-		int doc=tD.scoreDocs[0].doc;
-		Document d = is.doc(doc);
-		PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
-		String patientMapId= pd.getMapId();
-		return Optional.of(patientMapId);
+		IndexSearcher is = manager.acquire();
+		try{
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return Optional.empty();
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
+			String patientMapId= pd.getMapId();
+			return Optional.of(patientMapId);} 
+		finally {
+			manager.release(is);
+		}
 	}
 
 
@@ -280,16 +290,19 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("PatientName",patientName));
 		int NElem=1;
-		IndexReader r = reloadedReader();
-		IndexSearcher is = new IndexSearcher(r);
-		TopDocs tD= is.search(termQuery,NElem);
-		if (tD.totalHits== 0)
-			return Optional.empty();
-		int doc=tD.scoreDocs[0].doc;
-		Document d = is.doc(doc);
-		PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
-		String patientMapId= pd.getMapId();
-		return Optional.of(patientMapId);
+		IndexSearcher is = manager.acquire();
+		try{
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return Optional.empty();
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
+			String patientMapId= pd.getMapId();
+			return Optional.of(patientMapId);} 
+		finally {
+			manager.release(is);
+		}
 
 	}
 
@@ -297,9 +310,8 @@ public class PersistantDataLucene implements AnonDatabase {
 	@Override
 	public void close() throws IOException{
 		index.close();
-		reader.close();
 		index = null;
-
+		manager.close();
 	}
 
 
@@ -308,16 +320,19 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("Patient_Map_Id",patientMapId));
 		int NElem=1;
-		IndexReader r = reloadedReader();
-		IndexSearcher is = new IndexSearcher(r);
-		TopDocs tD= is.search(termQuery,NElem);
-		if (tD.totalHits== 0)
-			return Optional.empty();
-		int doc=tD.scoreDocs[0].doc;
-		Document d = is.doc(doc);
-		PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
-		String patientName = pd.getPatientName();
-		return Optional.of(patientName);
+		IndexSearcher is = manager.acquire();
+		try{
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return Optional.empty();
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
+			String patientName = pd.getPatientName();
+			return Optional.of(patientName);} 
+		finally {
+			manager.release(is);
+		}
 	}
 
 
@@ -327,16 +342,19 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("Patient_Map_Id",patientMapId));
 		int NElem=1;
-		IndexReader r = reloadedReader();
-		IndexSearcher is = new IndexSearcher(r);
-		TopDocs tD= is.search(termQuery,NElem);
-		if (tD.totalHits== 0)
-			return Optional.empty();
-		int doc=tD.scoreDocs[0].doc;
-		Document d = is.doc(doc);
-		PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
-		String patientId = pd.getPatientId();
-		return Optional.of(patientId);
+		IndexSearcher is = manager.acquire();
+		try{
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return Optional.empty();
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
+			String patientId = pd.getPatientId();
+			return Optional.of(patientId);} 
+		finally {
+			manager.release(is);
+		}
 
 	}
 
@@ -345,16 +363,19 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (index==null) throw new IllegalStateException();
 		TermQuery termQuery = new TermQuery(new Term("Accession_Map_Number",mapAccessionNumber));
 		int NElem=1;
-		IndexReader r = reloadedReader();
-		IndexSearcher is = new IndexSearcher(r);
-		TopDocs tD= is.search(termQuery,NElem);
-		if (tD.totalHits== 0)
-			return Optional.empty();
-		int doc=tD.scoreDocs[0].doc;
-		Document d = is.doc(doc);
-		StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
-		String AccessionNumber = sd.getAccessionNumber();
-		return Optional.of(AccessionNumber);
+		IndexSearcher is = manager.acquire();
+		try{
+			TopDocs tD= is.search(termQuery,NElem);
+			if (tD.totalHits== 0)
+				return Optional.empty();
+			int doc=tD.scoreDocs[0].doc;
+			Document d = is.doc(doc);
+			StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
+			String AccessionNumber = sd.getAccessionNumber();
+			return Optional.of(AccessionNumber);} 
+		finally {
+			manager.release(is);
+		}
 
 	}
 
