@@ -110,7 +110,8 @@ public class PersistantDataLucene implements AnonDatabase {
 		studyDataDoc.add(Accession_Map_Number);
 		studyDataDoc.add(other);
 		this.writer.addDocument(studyDataDoc);
-
+		this.writer.flush();
+		this.manager.maybeRefresh();
 	}
 
 	@Override
@@ -127,6 +128,8 @@ public class PersistantDataLucene implements AnonDatabase {
 		patientDataDoc.add(other);
 
 		this.writer.addDocument(patientDataDoc);
+		this.writer.flush();
+		this.manager.maybeRefresh();
 
 	}
 
