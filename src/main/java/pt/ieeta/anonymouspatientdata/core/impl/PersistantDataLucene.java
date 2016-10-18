@@ -19,8 +19,10 @@
 package pt.ieeta.anonymouspatientdata.core.impl;
 
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -28,8 +30,6 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
@@ -64,75 +64,37 @@ public class PersistantDataLucene implements AnonDatabase {
 	 */
 	private Directory index;
 	private Analyzer analyzer;
-	private int transactions=0;
-	private IndexWriter writer;
-	private volatile DirectoryReader reader;
+	private final IndexWriter writer;
 	private SearcherManager manager;
 	/**
 	 * constructs an indexer instance
+	 * @throws IOException 
 	 */
-	PersistantDataLucene(){
 
-		this.indexFilePath = DEFAULT_ANON_PATH;
-		logger.info("Created Lucene Indexer default Constructor");
-	}
 
-	PersistantDataLucene(String path){
+	PersistantDataLucene(String path) throws IOException{
 		this.setIndexPath(path);
-		createManager();
+		Path p = Paths.get(path);
+		index = FSDirectory.open(p);
+		Files.createDirectories(p);
+		analyzer = new StandardAnalyzer();
+
+		IndexWriterConfig indexConfig = new IndexWriterConfig(analyzer)
+				.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+		// this will create the index if it does not exist yet
+		this.writer=new IndexWriter(this.index,indexConfig);
+		manager=new SearcherManager(this.writer, new SearcherFactory());
 		logger.info("Created Lucene Indexer Plugin");
 	}
 
 
 
-	public final void setIndexPath(String indexPath) {
+	private final void setIndexPath(String indexPath) {
 		this.indexFilePath = indexPath;
 		logger.debug("LUCENE: indexing at {}", indexFilePath);
-
-		try {
-			index = FSDirectory.open(new File(indexFilePath).toPath());
-			File f = new File(indexFilePath);
-			f.mkdirs();
-			analyzer = new StandardAnalyzer();
-
-			IndexWriterConfig indexConfig = new IndexWriterConfig(analyzer)
-					.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-			// this will create the index if it does not exist yet
-			new IndexWriter(index, indexConfig).close();
-
-		} catch (IOException ex) {
-			logger.error("Failed to open index", ex);
-		}
 	}
 
 
-	private void createManager() {
-
-		try {
-			manager=new SearcherManager(this.index, new SearcherFactory());
-		} catch (IOException e) {
-
-			logger.error("Failed to create manager");
-		}
-	}
-
-	private synchronized void beginTransaction() throws IOException{		
-		if(transactions==0) {
-			IndexWriterConfig indexConfig = new IndexWriterConfig(analyzer);
-			indexConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-			this.writer = new IndexWriter(index, indexConfig);
-		}		
-		this.transactions++;
-	}
-
-	private synchronized void endTransaction() throws IOException{
-		this.transactions--;
-		this.writer.commit();
-		if(transactions==0){
-			this.writer.close();
-			this.writer = null;
-		}
-	}	
 
 
 
@@ -147,12 +109,8 @@ public class PersistantDataLucene implements AnonDatabase {
 		studyDataDoc.add(AccessionNumber);
 		studyDataDoc.add(Accession_Map_Number);
 		studyDataDoc.add(other);
-		beginTransaction();
-		try {
-			this.writer.addDocument(studyDataDoc);
-		} finally {
-			endTransaction();
-		}
+		this.writer.addDocument(studyDataDoc);
+
 	}
 
 	@Override
@@ -167,12 +125,9 @@ public class PersistantDataLucene implements AnonDatabase {
 		patientDataDoc.add(patientId);
 		patientDataDoc.add(patient_Map_Id);
 		patientDataDoc.add(other);
-		beginTransaction();
-		try {
-			this.writer.addDocument(patientDataDoc);
-		} finally {
-			endTransaction();
-		}
+
+		this.writer.addDocument(patientDataDoc);
+
 	}
 
 
@@ -309,9 +264,14 @@ public class PersistantDataLucene implements AnonDatabase {
 
 	@Override
 	public void close() throws IOException{
-		index.close();
-		index = null;
+		
+		if (manager!=null)
 		manager.close();
+		if (writer!=null)
+		this.writer.close();
+		if (index!=null)
+		index.close();
+		
 	}
 
 

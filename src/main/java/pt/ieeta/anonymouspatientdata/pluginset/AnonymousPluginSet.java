@@ -42,11 +42,12 @@ import pt.ua.dicoogle.sdk.core.DicooglePlatformInterface;
 import pt.ua.dicoogle.sdk.core.PlatformCommunicatorInterface;
 import pt.ua.dicoogle.sdk.settings.ConfigurationHolder;
 
-
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
 import org.restlet.resource.ServerResource;
+import org.slf4j.LoggerFactory;
 
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
@@ -116,7 +117,12 @@ public class AnonymousPluginSet implements PluginSet, PlatformCommunicatorInterf
 	@Override
 	public void setSettings(ConfigurationHolder arg0) {
 		this.setLocation(arg0.getConfiguration().getString("Location","./Anon_index/"));
-		MatchTables.getInstance().bootstrapDataBase(getLocation());
+		try {
+			MatchTables.getInstance().bootstrapDataBase(getLocation());
+		} catch (IOException e) {
+			LoggerFactory.getLogger(AnonymousPluginSet.class).warn("Issue while constructing PersistantDataLucene",e);	
+
+		}
 		this.settings =arg0;
 	}
 

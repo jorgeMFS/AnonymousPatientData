@@ -82,8 +82,10 @@ public class MatchTables {
 				});
 	}
 
-	public void bootstrapDataBase(String path){
-		lucene = new AnonCache(new PersistantDataLucene(path));
+	public void bootstrapDataBase(String path) throws IOException{
+		
+			lucene = new AnonCache(new PersistantDataLucene(path));
+		
 	}
 
 

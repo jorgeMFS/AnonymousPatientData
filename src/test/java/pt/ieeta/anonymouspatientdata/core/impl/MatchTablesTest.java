@@ -39,7 +39,7 @@ public class MatchTablesTest {
 	final String patientName= "Jorge Miguel";
 	final String patientId = "234643501";
 	final String accessionNumber ="836492346234987";
-	final String Location="./Test_index/";
+	final String Location="./Test_index2/";
 	PatientData patientData=PatientData.createWithMapping(patientName, patientId);
 	StudyData studyData =StudyData.createWithMapping(accessionNumber);
 	/**
@@ -94,7 +94,7 @@ public class MatchTablesTest {
 
 
 	@After
-	public void cleanUp() throws IOException {
+	public void cleanUp() throws IOException, InterruptedException {
 		MatchTables.getInstance().close();
 		Path dbPath = Paths.get(Location);
 		Files.walkFileTree(dbPath, new FileVisitor<Path>() {

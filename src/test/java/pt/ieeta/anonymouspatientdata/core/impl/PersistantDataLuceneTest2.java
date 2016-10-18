@@ -29,7 +29,7 @@ import org.junit.Test;
  * @author Jorge Miguel Ferreira da Silva
  *
  */
-public class PersistantDataLuceneTest {
+public class PersistantDataLuceneTest2 {
 
 
 	String patientName= "Jorge Miguel Ferreira da Silva";
@@ -48,29 +48,23 @@ public class PersistantDataLuceneTest {
 	public void setUp() throws Exception {
 		lucy =new PersistantDataLucene(DEFAULT_ANON_PATH);
 		
-
 	}
-	
-
 	/**
-	 * Test method for {@link pt.ieeta.anonymouspatientdata.core.impl.PersistantDataLucene#getStudyDataByAccessionNumber(java.lang.String)}.
+	 * Test method for {@link pt.ieeta.anonymouspatientdata.core.impl.PersistantDataLucene#getPatientDataById(java.lang.String)}.
 	 */
 	@Test
-	public void testGetStudyDataByAccessionNumber() {
-		System.out.println(" testGetStudyDataByAccessionNumber\n");
+	public void testGetPatientDataById() {
+		System.out.println("testGetPatientDataById\n");
 		try {
-			lucy.insertStudyData(studyData);
+			lucy.insertPatientData(patientData);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		try {
-			Optional<StudyData> sd=lucy.getStudyDataByAccessionNumber(accessionNumber);
-			Assert.assertTrue(sd.isPresent());
+			Optional<PatientData> pd=lucy.getPatientDataById(patientId);
+			Assert.assertTrue(pd.isPresent());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
-	
-
 }
