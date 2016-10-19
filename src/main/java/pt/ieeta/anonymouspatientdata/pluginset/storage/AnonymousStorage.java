@@ -96,7 +96,7 @@ public class AnonymousStorage implements StorageInterface, PlatformCommunicatorI
 
 	@Override
 	public boolean handles(URI location) {
-		return Objects.equals(getScheme(), this.AnonymousScheme);
+		return Objects.equals(getScheme(), this.scheme);
 	}
 
 	@Override
