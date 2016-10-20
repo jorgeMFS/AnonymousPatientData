@@ -50,4 +50,25 @@ public class PatientStudy {
 		this.studyData = studyData;
 	}
 
+	@Override
+	public String toString() {
+		return patientData.toString() + "\n" + studyData.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj)
+			return true;
+		if (obj==null)
+			return false;
+		if (obj.getClass()!=this.getClass())
+			return false;
+		PatientStudy ps = (PatientStudy) obj;
+		if (ps.patientData!=patientData)
+			return false;
+		if (ps.studyData!= studyData)
+			return false;
+		return true;
+	}
+
 }

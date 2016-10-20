@@ -33,7 +33,6 @@ public class PatientData {
 
 	/**
 	 * @param patientName
-	 * @param mapName
 	 * @param patientId
 	 * @param mapId
 	 */
@@ -44,7 +43,7 @@ public class PatientData {
 		this.patientId = patientId;
 		this.setMapId(mapId);
 	}
-	
+
 	public String getPatientId() {
 		return patientId;
 	}
@@ -68,14 +67,42 @@ public class PatientData {
 	public void setMapId(String mapId) {
 		this.mapId = mapId;
 	}
-	
+
 	public static String createmapId(){
 		return UUID.randomUUID().toString();
 	}
-	
+
 	public static PatientData createWithMapping(String patientName,String patientId){
 		PatientData patientData = new PatientData(patientName,patientId,createmapId());
 		return patientData;
 	}
+
+	@Override
+	public String toString() {
+		return "patientName : " + patientName.toString() + "\n" + "patientId :" + patientId.toString()
+		+ "\n" + "mapId :" + mapId.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj)
+			return true;
+		if (obj==null)
+			return false;
+		if (obj.getClass()!=this.getClass())
+			return false;
+		PatientData pd = (PatientData) obj;
+		if (pd.mapId!=mapId)
+			return false;
+		if (pd.patientId!= patientId)
+			return false;
+		if (pd.patientName!= patientName)
+			return false;
+		return true;
+	}
+
+
+
+
 }
 

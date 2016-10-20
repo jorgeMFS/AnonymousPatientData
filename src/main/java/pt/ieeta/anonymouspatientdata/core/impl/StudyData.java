@@ -64,6 +64,28 @@ public class StudyData {
 		StudyData studyData = new StudyData(accessionNumber,createmapAccessionNumber());
 		return studyData;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj)
+			return true;
+		if (obj==null)
+			return false;
+		if (obj.getClass()!=this.getClass())
+			return false;
+		StudyData sd = (StudyData) obj;
+		if (sd.accessionNumber!=accessionNumber)
+			return false;
+		if (sd.mapAccessionNumber!= mapAccessionNumber)
+			return false;
+		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "accessionNumber : " + accessionNumber.toString() + "\n" + "mapAccessionNumber :" + mapAccessionNumber.toString();
+	}
+	
 }
 
 

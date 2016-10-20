@@ -95,13 +95,12 @@ public class PersistantDataLucene implements AnonDatabase {
 	}
 
 
-
-
-
 	@Override
 	public void insertStudyData(StudyData studyData) throws IOException{
-
-		if (index==null) throw new IllegalStateException();
+		if (index==null) {
+			logger.debug("failed to insert study data");
+			throw new IllegalStateException();
+		}
 		Document studyDataDoc= new Document();
 		TextField AccessionNumber = new TextField("AccessionNumber",studyData.getAccessionNumber(),Store.YES);
 		TextField Accession_Map_Number = new TextField("Accession_Map_Number",studyData.getMapAccessionNumber(),Store.YES);
@@ -110,13 +109,17 @@ public class PersistantDataLucene implements AnonDatabase {
 		studyDataDoc.add(Accession_Map_Number);
 		studyDataDoc.add(other);
 		this.writer.addDocument(studyDataDoc);
+		logger.debug("inserted study Data{}",studyDataDoc);
 		this.writer.flush();
 		this.manager.maybeRefresh();
 	}
 
 	@Override
 	public void insertPatientData(PatientData patientData) throws IOException{
-		if (index==null) throw new IllegalStateException();
+		if (index==null) {
+			logger.debug("failed to insert patient data");
+			throw new IllegalStateException();
+		}
 		Document patientDataDoc= new Document();
 		TextField patientName = new TextField("PatientName",patientData.getPatientName(),Store.YES);
 		TextField patientId = new TextField("PatientID",patientData.getPatientId(),Store.YES);
@@ -128,6 +131,7 @@ public class PersistantDataLucene implements AnonDatabase {
 		patientDataDoc.add(other);
 
 		this.writer.addDocument(patientDataDoc);
+		logger.debug("inserted patient data",patientDataDoc);
 		this.writer.flush();
 		this.manager.maybeRefresh();
 
@@ -142,12 +146,16 @@ public class PersistantDataLucene implements AnonDatabase {
 		IndexSearcher is = manager.acquire();
 		try{
 			TopDocs tD= is.search(termQuery,NElem);
-			if (tD.totalHits== 0)
+			if (tD.totalHits== 0){
+				logger.debug("got empty Patient Data By Accession Number");
 				return Optional.empty();
+			}
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
+			logger.debug("Could get Accession Number{}", sd.toString());
 			return Optional.of(sd);} 
+
 		finally {
 			manager.release(is);
 		}
@@ -163,11 +171,14 @@ public class PersistantDataLucene implements AnonDatabase {
 		IndexSearcher is = manager.acquire();
 		try{
 			TopDocs tD= is.search(termQuery,NElem);
-			if (tD.totalHits== 0)
+			if (tD.totalHits== 0){
+				logger.debug("got empty Patient Data By Id");
 				return Optional.empty();
+			}
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
+			logger.debug("Could get Patient Data By Id{}", pd.toString());
 			return Optional.of(pd);
 		} 
 		finally {
@@ -186,11 +197,14 @@ public class PersistantDataLucene implements AnonDatabase {
 		IndexSearcher is = manager.acquire();
 		try{
 			TopDocs tD= is.search(termQuery,NElem);
-			if (tD.totalHits== 0)
+			if (tD.totalHits== 0){
+				logger.debug("got empty Patient Data By patient Map Id");
 				return Optional.empty();
+			}
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
+			logger.debug("Could get Data By patient Map Id{}", pd.toString());
 			return Optional.of(pd);} 
 		finally {
 			manager.release(is);
@@ -208,12 +222,15 @@ public class PersistantDataLucene implements AnonDatabase {
 		IndexSearcher is = manager.acquire();
 		try{
 			TopDocs tD= is.search(termQuery,NElem);
-			if (tD.totalHits== 0)
+			if (tD.totalHits== 0){
+				logger.debug("got empty map Accession Number");
 				return Optional.empty();
+			}
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
 			String mapAccessionNumber= sd.getMapAccessionNumber();
+			logger.debug("Could get map Accession Number{}", mapAccessionNumber);
 			return Optional.of(mapAccessionNumber);} 
 		finally {
 			manager.release(is);
@@ -230,12 +247,15 @@ public class PersistantDataLucene implements AnonDatabase {
 		IndexSearcher is = manager.acquire();
 		try{
 			TopDocs tD= is.search(termQuery,NElem);
-			if (tD.totalHits== 0)
+			if (tD.totalHits== 0){
+				logger.debug("got empty map Id by Patient Id");
 				return Optional.empty();
+			}
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientMapId= pd.getMapId();
+			logger.debug("Could get map Id by Patient Id{}", patientMapId);
 			return Optional.of(patientMapId);} 
 		finally {
 			manager.release(is);
@@ -251,12 +271,15 @@ public class PersistantDataLucene implements AnonDatabase {
 		IndexSearcher is = manager.acquire();
 		try{
 			TopDocs tD= is.search(termQuery,NElem);
-			if (tD.totalHits== 0)
+			if (tD.totalHits== 0){
+				logger.debug("got empty map Id by Patient Name");
 				return Optional.empty();
+			}
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientMapId= pd.getMapId();
+			logger.debug("Could get map Id by Patient Name{}", patientMapId);
 			return Optional.of(patientMapId);} 
 		finally {
 			manager.release(is);
@@ -267,14 +290,14 @@ public class PersistantDataLucene implements AnonDatabase {
 
 	@Override
 	public void close() throws IOException{
-		
+
 		if (manager!=null)
-		manager.close();
+			manager.close();
 		if (writer!=null)
-		this.writer.close();
+			this.writer.close();
 		if (index!=null)
-		index.close();
-		
+			index.close();
+
 	}
 
 
@@ -286,12 +309,15 @@ public class PersistantDataLucene implements AnonDatabase {
 		IndexSearcher is = manager.acquire();
 		try{
 			TopDocs tD= is.search(termQuery,NElem);
-			if (tD.totalHits== 0)
+			if (tD.totalHits== 0){
+				logger.debug("got empty Patient Name By Patient Map Id");
 				return Optional.empty();
+			}
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientName = pd.getPatientName();
+			logger.debug("Could get Patient Name By Patient Map Id{}", patientName);
 			return Optional.of(patientName);} 
 		finally {
 			manager.release(is);
@@ -308,12 +334,16 @@ public class PersistantDataLucene implements AnonDatabase {
 		IndexSearcher is = manager.acquire();
 		try{
 			TopDocs tD= is.search(termQuery,NElem);
-			if (tD.totalHits== 0)
+			if (tD.totalHits== 0){
+				logger.debug("got empty Patient Id By Patient Map Id");
 				return Optional.empty();
+			}
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
 			String patientId = pd.getPatientId();
+			logger.debug("Could get Patient Id By Patient Map Id{}", patientId);
+
 			return Optional.of(patientId);} 
 		finally {
 			manager.release(is);
@@ -329,12 +359,15 @@ public class PersistantDataLucene implements AnonDatabase {
 		IndexSearcher is = manager.acquire();
 		try{
 			TopDocs tD= is.search(termQuery,NElem);
-			if (tD.totalHits== 0)
+			if (tD.totalHits== 0){
+				logger.debug("got empty Accession Number By Accession Map Number");
 				return Optional.empty();
+			}
 			int doc=tD.scoreDocs[0].doc;
 			Document d = is.doc(doc);
 			StudyData sd=new StudyData(d.get("AccessionNumber"), d.get("Accession_Map_Number"));
 			String AccessionNumber = sd.getAccessionNumber();
+			logger.debug("Could get Accession Number By Accession Map Number{}", AccessionNumber);
 			return Optional.of(AccessionNumber);} 
 		finally {
 			manager.release(is);

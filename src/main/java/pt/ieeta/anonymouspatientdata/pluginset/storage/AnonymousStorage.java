@@ -82,7 +82,6 @@ public class AnonymousStorage implements StorageInterface, PlatformCommunicatorI
 	}
 	
 	
-	
 	@Override
 	public void setSettings(ConfigurationHolder arg0) {
 		this.scheme=arg0.getConfiguration().getString("scheme","file");
