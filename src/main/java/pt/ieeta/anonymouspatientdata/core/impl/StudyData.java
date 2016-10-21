@@ -66,24 +66,39 @@ public class StudyData {
 	}
 	
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((accessionNumber == null) ? 0 : accessionNumber.hashCode());
+		result = prime * result + ((mapAccessionNumber == null) ? 0 : mapAccessionNumber.hashCode());
+		return result;
+	}
+
+	@Override
 	public boolean equals(Object obj) {
-		if (this==obj)
+		if (this == obj)
 			return true;
-		if (obj==null)
+		if (obj == null)
 			return false;
-		if (obj.getClass()!=this.getClass())
+		if (getClass() != obj.getClass())
 			return false;
-		StudyData sd = (StudyData) obj;
-		if (sd.accessionNumber!=accessionNumber)
+		StudyData other = (StudyData) obj;
+		if (accessionNumber == null) {
+			if (other.accessionNumber != null)
+				return false;
+		} else if (!accessionNumber.equals(other.accessionNumber))
 			return false;
-		if (sd.mapAccessionNumber!= mapAccessionNumber)
+		if (mapAccessionNumber == null) {
+			if (other.mapAccessionNumber != null)
+				return false;
+		} else if (!mapAccessionNumber.equals(other.mapAccessionNumber))
 			return false;
 		return true;
 	}
 	
 	@Override
 	public String toString() {
-		return "accessionNumber : " + accessionNumber.toString() + "\n" + "mapAccessionNumber :" + mapAccessionNumber.toString();
+		return "StudyData [accessionNumber=" + accessionNumber + ", mapAccessionNumber=" + mapAccessionNumber + "]";
 	}
 	
 }

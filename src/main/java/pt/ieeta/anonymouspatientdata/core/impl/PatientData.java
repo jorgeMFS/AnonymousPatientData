@@ -79,27 +79,47 @@ public class PatientData {
 
 	@Override
 	public String toString() {
-		return "patientName : " + patientName.toString() + "\n" + "patientId :" + patientId.toString()
-		+ "\n" + "mapId :" + mapId.toString();
+		return "PatientData [patientName=" + patientName + ", patientId=" + patientId + ", mapId=" + mapId + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((mapId == null) ? 0 : mapId.hashCode());
+		result = prime * result + ((patientId == null) ? 0 : patientId.hashCode());
+		result = prime * result + ((patientName == null) ? 0 : patientName.hashCode());
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this==obj)
+		if (this == obj)
 			return true;
-		if (obj==null)
+		if (obj == null)
 			return false;
-		if (obj.getClass()!=this.getClass())
+		if (getClass() != obj.getClass())
 			return false;
-		PatientData pd = (PatientData) obj;
-		if (pd.mapId!=mapId)
+		PatientData other = (PatientData) obj;
+		if (mapId == null) {
+			if (other.mapId != null)
+				return false;
+		} else if (!mapId.equals(other.mapId))
 			return false;
-		if (pd.patientId!= patientId)
+		if (patientId == null) {
+			if (other.patientId != null)
+				return false;
+		} else if (!patientId.equals(other.patientId))
 			return false;
-		if (pd.patientName!= patientName)
+		if (patientName == null) {
+			if (other.patientName != null)
+				return false;
+		} else if (!patientName.equals(other.patientName))
 			return false;
 		return true;
 	}
+
+	
 
 
 

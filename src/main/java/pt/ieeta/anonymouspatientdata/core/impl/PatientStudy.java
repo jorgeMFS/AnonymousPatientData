@@ -52,21 +52,36 @@ public class PatientStudy {
 
 	@Override
 	public String toString() {
-		return patientData.toString() + "\n" + studyData.toString();
+		return "PatientStudy [patientData=" + patientData + ", studyData=" + studyData + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((patientData == null) ? 0 : patientData.hashCode());
+		result = prime * result + ((studyData == null) ? 0 : studyData.hashCode());
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this==obj)
+		if (this == obj)
 			return true;
-		if (obj==null)
+		if (obj == null)
 			return false;
-		if (obj.getClass()!=this.getClass())
+		if (getClass() != obj.getClass())
 			return false;
-		PatientStudy ps = (PatientStudy) obj;
-		if (ps.patientData!=patientData)
+		PatientStudy other = (PatientStudy) obj;
+		if (patientData == null) {
+			if (other.patientData != null)
+				return false;
+		} else if (!patientData.equals(other.patientData))
 			return false;
-		if (ps.studyData!= studyData)
+		if (studyData == null) {
+			if (other.studyData != null)
+				return false;
+		} else if (!studyData.equals(other.studyData))
 			return false;
 		return true;
 	}
