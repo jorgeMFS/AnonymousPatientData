@@ -40,10 +40,6 @@ public class AnonimizeDicomObject {
  */
 	public static void anonymizeObject(DicomObject DICOMObj) throws IOException {
 		
-		DICOMObj.remove(Tag.PatientID);
-		DICOMObj.remove(Tag.PatientName);
-		DICOMObj.remove(Tag.AccessionNumber);
-		
 		String patientName = DICOMObj.getString(Tag.PatientName);
 		String patientId =DICOMObj.getString(Tag.PatientID);
 		String accessionNumber=DICOMObj.getString(Tag.AccessionNumber);
