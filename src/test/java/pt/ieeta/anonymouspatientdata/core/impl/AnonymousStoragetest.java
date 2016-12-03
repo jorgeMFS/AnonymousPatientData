@@ -56,7 +56,7 @@ public class AnonymousStoragetest {
 	public void setUp() throws Exception {
 		this.storage= new AnonymousStorage();
 		System.out.println("Setup Test");
-		String str ="./src/data/1_1.dcm"; 
+		String str ="./src/data/test.dcm"; 
 		dis =new DicomInputStream(new File(str));
 		this.dcmObj=dis.readDicomObject();
 		dis.close();
@@ -124,7 +124,3 @@ public class AnonymousStoragetest {
 		});
 	}
 }
-
-
-
-
