@@ -60,7 +60,7 @@ public class PersistantDataLucene implements AnonDatabase {
 	 */
 	private String indexFilePath;
 	/**
-	 * lucene variables which we need to track
+	 * Lucene variables which we need to track
 	 */
 	private Directory index;
 	private Analyzer analyzer;
@@ -111,7 +111,10 @@ public class PersistantDataLucene implements AnonDatabase {
 		this.writer.addDocument(studyDataDoc);
 		logger.debug("inserted study Data{}",studyDataDoc);
 		this.writer.flush();
-		this.manager.maybeRefresh();
+		boolean boolval=this.manager.maybeRefresh();
+		if (boolval!=true){
+			logger.warn("maybe.Refresh is not working");
+		}
 	}
 
 	@Override
@@ -133,7 +136,11 @@ public class PersistantDataLucene implements AnonDatabase {
 		this.writer.addDocument(patientDataDoc);
 		logger.debug("inserted patient data",patientDataDoc);
 		this.writer.flush();
-		this.manager.maybeRefresh();
+		boolean boolval=this.manager.maybeRefresh();
+		if (boolval!=true){
+			logger.warn("maybe.Refresh is not working");
+		}
+
 
 	}
 
@@ -188,7 +195,7 @@ public class PersistantDataLucene implements AnonDatabase {
 	}
 
 
-
+	/* O erro Esta aqui */
 	@Override
 	public Optional<PatientData> getPatientDataBypatientMapId(String patientMapId) throws IOException {
 		if (index==null) throw new IllegalStateException();
