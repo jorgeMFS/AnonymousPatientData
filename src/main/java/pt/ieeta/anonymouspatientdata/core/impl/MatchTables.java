@@ -84,8 +84,8 @@ public class MatchTables {
 
 	public void bootstrapDataBase(String path) throws IOException{
 		
-			lucene = new AnonCache(new PersistantDataLucene(path));
-		
+			lucene = new PersistantDataLucene(path);
+			//lucene = new AnonCache(new PersistantDataLucene(path));
 	}
 
 
