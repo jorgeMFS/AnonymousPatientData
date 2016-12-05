@@ -110,7 +110,7 @@ public class PersistantDataLucene implements AnonDatabase {
 		studyDataDoc.add(other);
 		this.writer.addDocument(studyDataDoc);
 		logger.debug("inserted study Data{}",studyDataDoc);
-		this.writer.flush();
+		this.writer.commit();
 		boolean boolval=this.manager.maybeRefresh();
 		if (boolval!=true){
 			logger.warn("maybe.Refresh is not working");
@@ -135,7 +135,7 @@ public class PersistantDataLucene implements AnonDatabase {
 
 		this.writer.addDocument(patientDataDoc);
 		logger.debug("inserted patient data",patientDataDoc);
-		this.writer.flush();
+		this.writer.commit();
 		boolean boolval=this.manager.maybeRefresh();
 		if (boolval!=true){
 			logger.warn("maybe.Refresh is not working");
