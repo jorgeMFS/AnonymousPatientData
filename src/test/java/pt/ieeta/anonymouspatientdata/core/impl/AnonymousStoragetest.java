@@ -55,7 +55,6 @@ public class AnonymousStoragetest {
 	@Before
 	public void setUp() throws Exception {
 		this.storage= new AnonymousStorage();
-		System.out.println("Setup Test");
 		String str ="./src/data/test.dcm"; 
 		dis =new DicomInputStream(new File(str));
 		this.dcmObj=dis.readDicomObject();
@@ -75,7 +74,6 @@ public class AnonymousStoragetest {
 
 	@Test
 	public void ValidOutput(){
-		System.out.println("URI handle Anonymous Test");
 		Assert.assertFalse(storage.handles(uri));
 		Assert.assertSame("Anonymous-Wrapper-Plugin",this.storage.getName());
 	}
@@ -85,9 +83,6 @@ public class AnonymousStoragetest {
 		String patientNameexpected=dcmObj.getString(Tag.PatientName);
 		AnonimizeDicomObject.anonymizeObject(this.dcmObj);
 		Assert.assertEquals(dcmObj.get(Tag.SOPInstanceUID).toString(), dcmObj.get(Tag.SOPInstanceUID).toString());
-		System.out.println("Anonymize DICOM Test");
-		System.out.println(patientNameexpected);
-		System.out.println(dcmObj.get(Tag.PatientName));
 		Assert.assertNotEquals(patientNameexpected, dcmObj.get(Tag.PatientName));
 	}
 

@@ -31,6 +31,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 /**
  * @author Jorge Miguel Ferreira da Silva
@@ -39,51 +41,79 @@ import org.junit.Test;
 public class PersistantDataLuceneTest {
 
 
-	String patientName= "Jorge Miguel Ferreira da Silva";
-	String patientId = "123456896564";
-	String accessionNumber ="83649234623498754";
-	PatientData patientData=PatientData.createWithMapping(patientName, patientId);
-	StudyData studyData =StudyData.createWithMapping(accessionNumber);
+
 	AnonDatabase lucy;
 	static final String DEFAULT_ANON_PATH = "./Anon_index/";
+	PatientData pd;
+	StudyData sd;
+	StudyData sd2;
+	final String ID="1";
+	final String NAME="a1";
+	final String MAPID= "123";
+	final String ACCESSNUMB="19";
+	final String ACCESSMAPID="321";
+	final String ACCESSNUMB2="29";
+	final String ACCESSMAPID2="4321";	
 
 	/**
 	 * @throws java.lang.Exception
 	 */
+
+
+	@Mock
+	AnonDatabase Anon;
+
+
+	@Before 
+	public void create()throws IOException{
+		Anon =Mockito.mock(AnonDatabase.class);
+		//Patient1
+
+
+		pd=new PatientData(NAME, ID,MAPID);
+		sd= new StudyData(ACCESSNUMB, ACCESSMAPID);
+		sd2= new StudyData(ACCESSNUMB2, ACCESSMAPID2);
+
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		lucy =new PersistantDataLucene(DEFAULT_ANON_PATH);
 
 	}
-	
-	
+
+
 
 	/**
 	 * Test method for {@link pt.ieeta.anonymouspatientdata.core.impl.PersistantDataLucene#getStudyDataByAccessionNumber(java.lang.String)}.
 	 * @throws IOException 
 	 */
+	
 	@Test
 	public void testGetStudyDataByAccessionNumber() throws IOException {
 		System.out.println(" testGetStudyDataByAccessionNumber\n");
 
-		lucy.insertStudyData(studyData);
-
-		Optional<StudyData> sd=lucy.getStudyDataByAccessionNumber(accessionNumber);
-		Assert.assertTrue(sd.isPresent());
+		lucy.insertStudyData(this.sd);
+		lucy.insertStudyData(this.sd2);
+		Optional<StudyData> sdo=lucy.getStudyDataByAccessionNumber(ACCESSNUMB);
+		Optional<StudyData> sdo2=lucy.getStudyDataByAccessionNumber(ACCESSNUMB2);
+		Assert.assertEquals(sdo2.get(),sd2);
+		Assert.assertEquals(sdo.get(),sd);
 	}
-	
+
+
 	@Test
 	public void testGetPatientDataById() throws IOException {
 		System.out.println("testGetPatientDataById\n");
 
-		lucy.insertPatientData(patientData);
-		Optional<PatientData> pd=lucy.getPatientDataById(patientId);
-		Assert.assertTrue(pd.isPresent());
+		lucy.insertPatientData(pd);
+		Optional<PatientData> pdo=lucy.getPatientDataById(ID);
+		Assert.assertEquals(pdo.get(),pd);
 
 	}
-	
-	
-	
+
+
+
 	@After
 	public void cleanUp() throws IOException, InterruptedException {
 		lucy.close();
