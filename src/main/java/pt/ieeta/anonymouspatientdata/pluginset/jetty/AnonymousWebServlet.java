@@ -101,7 +101,7 @@ public class AnonymousWebServlet  extends HttpServlet implements PlatformCommuni
 
 
 		// fetch storage interface
-		StorageInterface storage = platform.getStorageForSchema("anon");
+		StorageInterface storage = platform.getStorageForSchema("anonymousScheme");
 		if (storage==null) throw new IllegalStateException();
 		
 		List<String> uris;
