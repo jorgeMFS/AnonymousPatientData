@@ -93,6 +93,9 @@ public class PersistantDataLuceneTest {
 	public void testGetStudyDataByAccessionNumber() throws IOException {
 		System.out.println(" testGetStudyDataByAccessionNumber\n");
 
+		Optional<StudyData> test=lucy.getStudyDataByAccessionNumber(ACCESSNUMB);
+		Assert.assertFalse(test.isPresent());
+		
 		lucy.insertStudyData(this.sd);
 		lucy.insertStudyData(this.sd2);
 		Optional<StudyData> sdo=lucy.getStudyDataByAccessionNumber(ACCESSNUMB);
@@ -106,6 +109,10 @@ public class PersistantDataLuceneTest {
 	public void testGetPatientDataById() throws IOException {
 		System.out.println("testGetPatientDataById\n");
 
+		Optional<PatientData> test=lucy.getPatientDataById(ID);
+		Assert.assertFalse(test.isPresent());
+		
+		
 		lucy.insertPatientData(pd);
 		Optional<PatientData> pdo=lucy.getPatientDataById(ID);
 		Assert.assertEquals(pdo.get(),pd);
