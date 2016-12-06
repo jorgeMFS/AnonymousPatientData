@@ -52,29 +52,34 @@ public class ResultConverterTest {
 	@Rule 
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
+	static final String ID="1";
+	static final String NAME="Jorge Miguel";
+	static final String MAPID="123";
+	static final String ACCESSNUMB="19";
+	static final String ACCESSMAPID="321";
+	
 	@Before 
 	public void create()throws IOException{
-		Anon =Mockito.mock(AnonDatabase.class);
+		Anon = Mockito.mock(AnonDatabase.class);
 		//Patient1
-		final Optional<String> ID=Optional.ofNullable("1");
-		final Optional<String> NAME=Optional.ofNullable("a1");
-		final Optional<String> MAPID= Optional.ofNullable("123");
-		final Optional<String> ACCESSNUMB=Optional.ofNullable("19");
-		final Optional<String> ACCESSMAPID=Optional.ofNullable("321");
 
 		//Mock Patient1
-		when(Anon.getmapAccessionNumber(ACCESSNUMB.get()))
-		.thenReturn(ACCESSMAPID);
-		when(Anon.getAccessionNumberByAccessionMapNumber(ACCESSMAPID.get()))
-		.thenReturn(ACCESSNUMB);		
-		when(Anon.getPatientIdByPatientMapId(MAPID.get()))
-		.thenReturn(ID);	
-		when(Anon.getPatientNameByPatientMapId(MAPID.get()))
-		.thenReturn(NAME);		
-		when(Anon.getmapIdbyPatientId(ID.get()))
-		.thenReturn(MAPID);
-		when(Anon.getmapIdbyPatientName(NAME.get()))
-		.thenReturn(MAPID);
+		when(Anon.getPatientDataBypatientMapId(MAPID))
+		.thenReturn(Optional.of(new PatientData(NAME, ID, MAPID)));
+		when(Anon.getStudyDataByAccessionNumber(ACCESSMAPID))
+		.thenReturn(Optional.of(new StudyData(ACCESSNUMB, ACCESSMAPID)));
+		when(Anon.getmapAccessionNumber(ACCESSNUMB))
+		.thenReturn(Optional.of(ACCESSMAPID));
+		when(Anon.getAccessionNumberByAccessionMapNumber(ACCESSMAPID))
+		.thenReturn(Optional.of(ACCESSNUMB));		
+		when(Anon.getPatientIdByPatientMapId(MAPID))
+		.thenReturn(Optional.of(ID));
+		when(Anon.getPatientNameByPatientMapId(MAPID))
+		.thenReturn(Optional.of(NAME));		
+		when(Anon.getmapIdbyPatientId(ID))
+		.thenReturn(Optional.of(MAPID));
+		when(Anon.getmapIdbyPatientName(NAME))
+		.thenReturn(Optional.of(MAPID));
 	}
 
 	@Before
@@ -83,16 +88,11 @@ public class ResultConverterTest {
 		studyDataMap=new HashMap<String, String>() ;
 
 		location= new URI("test");
-		data= new HashMap<String,Object>();
-		
-		data.put("PatientName", "123");
-		data.put("PatientID", "123");
-		data.put("AccessionNumber", "321");
-		String patientId="1";
-		String accessionNumber = "19";
-		String patientName ="a1";
-		String patientMapId = "123";
-		String accessionMapNumber="321";
+		String patientId = ID;
+		String accessionNumber = ACCESSNUMB;
+		String patientName = NAME;
+		String patientMapId = MAPID;
+		String accessionMapNumber=ACCESSMAPID;
 		
 		PatientData Pd=new PatientData(patientName, patientId,patientMapId);
 		patientDataMap.put(Pd.getMapId(), Pd);
@@ -105,23 +105,24 @@ public class ResultConverterTest {
 
 		ResultConverter rC =new ResultConverter(Anon);
 
+		HashMap<String, Object> data= new HashMap<String,Object>();
+		data.put("PatientName", NAME);
+		data.put("PatientID", MAPID);
+		data.put("AccessionNumber", ACCESSMAPID);
+
 		SearchResult rs=new SearchResult(location, 0, data );
 
 		SearchResult rs1 = rC.transform(rs);
-		System.out.println(rs1.getScore());
-		data.clear();
-		//test
-		data.put("PatientName", "a1");
-		data.put("PatientID", "1");
-		data.put("AccessionNumber", "19");
-		SearchResult test=new SearchResult(location, 0.0, data );
+		
+		Assert.assertTrue(rs1.get("PatientName") instanceof String);
+		Assert.assertTrue(rs1.get("PatientID") instanceof String);
+		Assert.assertTrue(rs1.get("AccessionNumber") instanceof String);
 
-
-		Assert.assertEquals(Optional.of(test.get("PatientName")),rs1.get("PatientName"));
-		Assert.assertEquals(Optional.of(test.get("PatientID")),rs1.get("PatientID"));
-		Assert.assertEquals(Optional.of(test.get("AccessionNumber")),rs1.get("AccessionNumber"));
-		Assert.assertEquals(test.getURI(),rs1.getURI());
-		Assert.assertEquals(test.getScore(),rs1.getScore(),0.001);
+		Assert.assertEquals(NAME, rs1.get("PatientName"));
+		Assert.assertEquals(ID, rs1.get("PatientID"));
+		Assert.assertEquals(ACCESSNUMB, rs1.get("AccessionNumber"));
+		Assert.assertEquals(location, rs1.getURI());
+		Assert.assertEquals(0, rs1.getScore(),1e-8);
 	}
 
 

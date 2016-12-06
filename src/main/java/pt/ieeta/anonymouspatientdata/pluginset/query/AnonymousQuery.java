@@ -98,12 +98,14 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 	@Override
 	public Iterable<SearchResult> query(String query, Object... parameters) {
 		Objects.requireNonNull(query);
+		logger.info("Requested query: {}", query);
 		QueryParser qP = new QueryParser("other", new StandardAnalyzer());
 		QueryInterface provider = this.platform.requestQueryPlugin(this.plugin);
 		try {
 			Query q = qP.parse(query);
 			AnonDatabase anondB = MatchTables.getInstance().getDB();
 			q = new QueryConverter(anondB).transformQuery(q);
+			logger.info("Transformed query: {}", q);
 			Iterable<SearchResult> it = provider.query(q.toString(), parameters);
 			ResultConverter rC = new ResultConverter(anondB);
 

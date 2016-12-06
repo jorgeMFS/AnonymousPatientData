@@ -30,7 +30,7 @@ public class MatchTables {
 	private AnonDatabase lucene=null;
 	private MatchTables() {}
 	private static MatchTables instance = null;
-	public static MatchTables getInstance()
+	public static synchronized MatchTables getInstance()
 	{
 
 		if (instance==null)
@@ -84,7 +84,7 @@ public class MatchTables {
 
 	public void bootstrapDataBase(String path) throws IOException{
 
-			lucene = new AnonCache(new PersistantDataLucene(path));
+			lucene = new PersistantDataLucene(path); //new AnonCache(new PersistantDataLucene(path));
 	}
 
 

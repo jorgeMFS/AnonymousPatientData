@@ -71,7 +71,6 @@ public class PersistantDataLucene implements AnonDatabase {
 	 * @throws IOException 
 	 */
 
-
 	PersistantDataLucene(String path) throws IOException{
 		this.setIndexPath(path);
 		Path p = Paths.get(path);
@@ -84,10 +83,8 @@ public class PersistantDataLucene implements AnonDatabase {
 		// this will create the index if it does not exist yet
 		this.writer=new IndexWriter(this.index,indexConfig);
 		this.manager=new SearcherManager(this.writer,new SearcherFactory());
-		logger.info("Created Lucene Indexer Plugin");
+		logger.info("Opened Lucene database");
 	}
-
-
 
 	private final void setIndexPath(String indexPath) {
 		this.indexFilePath = indexPath;
@@ -305,6 +302,7 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (index!=null)
 			index.close();
 
+		logger.info("Closed Lucene database");
 	}
 
 

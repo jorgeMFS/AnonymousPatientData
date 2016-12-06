@@ -20,6 +20,9 @@ package pt.ieeta.anonymouspatientdata.core.impl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.logging.Logger;
+
+import org.slf4j.LoggerFactory;
 
 import pt.ua.dicoogle.sdk.datastructs.SearchResult;
 
@@ -41,23 +44,26 @@ public class ResultConverter {
 		if (hM.isEmpty())return searchReasult;
 
 		if (hM.get("PatientID")==null) return searchReasult;
-		String MapId =hM.get("PatientID").toString();
-
-		Optional<String> patientName = lucy.getPatientNameByPatientMapId(MapId);
-		Optional<String> patientID = lucy.getPatientIdByPatientMapId(MapId);
+		String MapId =hM.get("PatientID").toString().trim();
+		LoggerFactory.getLogger(ResultConverter.class).info("Attempting to convert result: Map ID = {}", MapId);
 		
-		if (patientName.isPresent()){
-			hM.put("PatientName", patientName );
+		Optional<PatientData> patientData = lucy.getPatientDataBypatientMapId(MapId);
+		
+		if (patientData.isPresent()){
+			LoggerFactory.getLogger(ResultConverter.class).info("> Found patient data");
+			if (patientData.get().getPatientName() != null) {
+				hM.put("PatientName", patientData.get().getPatientName());
+			}
+			if (patientData.get().getPatientId() != null) {
+				hM.put("PatientID", patientData.get().getPatientId());
+			}
 		}
-		if (patientID.isPresent()){
-			hM.put("PatientID", patientID);
-		}
-		if(!(hM.get("AccessionNumber")==null)){
-			String acessNumb=hM.get("AccessionNumber").toString();
-					Optional<String> accessionNumber=lucy.getAccessionNumberByAccessionMapNumber(acessNumb);
+		if(hM.get("AccessionNumber") != null){
+			String acessNumb=hM.get("AccessionNumber").toString().trim();
+			Optional<String> accessionNumber=lucy.getAccessionNumberByAccessionMapNumber(acessNumb);
 
 			if (accessionNumber.isPresent()){
-				hM.put("AccessionNumber",accessionNumber);
+				hM.put("AccessionNumber", accessionNumber.get());
 			}
 		}
 		SearchResult sR= new SearchResult(searchReasult.getURI(),searchReasult.getScore(), hM);

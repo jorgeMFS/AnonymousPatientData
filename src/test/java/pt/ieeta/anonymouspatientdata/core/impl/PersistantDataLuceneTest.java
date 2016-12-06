@@ -78,8 +78,6 @@ public class PersistantDataLuceneTest {
 	
 	@Test
 	public void testGetStudyDataByAccessionNumber() throws IOException {
-		System.out.println(" testGetStudyDataByAccessionNumber\n");
-
 		Optional<StudyData> test=lucy.getStudyDataByAccessionNumber(ACCESSNUMB);
 		Assert.assertFalse(test.isPresent());
 		
@@ -91,22 +89,56 @@ public class PersistantDataLuceneTest {
 		Assert.assertEquals(sdo.get(),sd);
 	}
 
+	@Test
+	public void testGetStudyDataByMapAccessionNumber() throws IOException {
+		lucy.insertStudyData(this.sd);
+		lucy.insertStudyData(this.sd2);
+		Optional<String> sdo = lucy.getAccessionNumberByAccessionMapNumber(ACCESSMAPID);
+		Assert.assertEquals(sdo.get(), ACCESSNUMB);
 
+		Optional<String> sdo2 = lucy.getAccessionNumberByAccessionMapNumber(ACCESSMAPID2);
+		Assert.assertEquals(sdo2.get(), ACCESSNUMB2);
+	}
+	
 	@Test
 	public void testGetPatientDataById() throws IOException {
-		System.out.println("testGetPatientDataById\n");
-
 		Optional<PatientData> test=lucy.getPatientDataById(ID);
 		Assert.assertFalse(test.isPresent());
 		
-		
 		lucy.insertPatientData(pd);
 		Optional<PatientData> pdo=lucy.getPatientDataById(ID);
+		Assert.assertTrue(pdo.isPresent());
 		Assert.assertEquals(pdo.get(),pd);
-
 	}
 
+	@Test
+	public void testGetPatientDataByMapId() throws IOException {
+		Optional<PatientData> test=lucy.getPatientDataBypatientMapId(MAPID);
+		Assert.assertFalse(test.isPresent());
+		
+		lucy.insertPatientData(pd);
+		Optional<PatientData> pdo=lucy.getPatientDataBypatientMapId(MAPID);
+		Assert.assertTrue(pdo.isPresent());
+		Assert.assertEquals(pdo.get(),pd);
+	}
 
+	@Test
+	public void testPNandIDByMapId() throws IOException {
+		Optional<String> pn = lucy.getPatientNameByPatientMapId(MAPID);
+		Assert.assertFalse(pn.isPresent());
+
+		Optional<String> pid = lucy.getPatientIdByPatientMapId(MAPID);
+		Assert.assertFalse(pid.isPresent());
+		
+		lucy.insertPatientData(pd);
+		Optional<String> pdo = lucy.getPatientNameByPatientMapId(MAPID);
+		Assert.assertTrue(pdo.isPresent());
+		Assert.assertEquals(pdo.get(), NAME);
+
+		Optional<String> pdo2 = lucy.getPatientIdByPatientMapId(MAPID);
+		Assert.assertTrue(pdo2.isPresent());
+		Assert.assertEquals(pdo2.get(), ID);
+	}
 
 	@After
 	public void cleanUp() throws IOException, InterruptedException {
