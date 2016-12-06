@@ -83,7 +83,7 @@ public class PersistantDataLucene implements AnonDatabase {
 				.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
 		// this will create the index if it does not exist yet
 		this.writer=new IndexWriter(this.index,indexConfig);
-		manager=new SearcherManager(this.writer, new SearcherFactory());
+		this.manager=new SearcherManager(this.writer,new SearcherFactory());
 		logger.info("Created Lucene Indexer Plugin");
 	}
 
@@ -111,9 +111,10 @@ public class PersistantDataLucene implements AnonDatabase {
 		this.writer.addDocument(studyDataDoc);
 		logger.debug("inserted study Data{}",studyDataDoc);
 		this.writer.commit();
+		this.writer.flush();
 		boolean boolval=this.manager.maybeRefresh();
 		if (boolval!=true){
-			logger.warn("maybe.Refresh is not working");
+			logger.warn("maybe.Refresh another thread is currently refreshing");
 		}
 	}
 
@@ -136,9 +137,10 @@ public class PersistantDataLucene implements AnonDatabase {
 		this.writer.addDocument(patientDataDoc);
 		logger.debug("inserted patient data",patientDataDoc);
 		this.writer.commit();
+		this.writer.flush();
 		boolean boolval=this.manager.maybeRefresh();
 		if (boolval!=true){
-			logger.warn("maybe.Refresh is not working");
+			logger.warn("maybe.Refresh another thread is currently refreshing");
 		}
 
 
