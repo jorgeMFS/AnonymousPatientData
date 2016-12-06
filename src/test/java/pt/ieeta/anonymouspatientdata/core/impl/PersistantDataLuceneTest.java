@@ -43,7 +43,7 @@ public class PersistantDataLuceneTest {
 
 
 	AnonDatabase lucy;
-	static final String DEFAULT_ANON_PATH = "./Anon_index/";
+	static final String DEFAULT_ANON_PATH = System.getProperty("java.tmp.dir") + "/Anon_index/";
 	PatientData pd;
 	StudyData sd;
 	StudyData sd2;
@@ -55,21 +55,9 @@ public class PersistantDataLuceneTest {
 	final String ACCESSNUMB2="29";
 	final String ACCESSMAPID2="4321";	
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-
-
-	@Mock
-	AnonDatabase Anon;
-
-
 	@Before 
 	public void create()throws IOException{
-		Anon =Mockito.mock(AnonDatabase.class);
 		//Patient1
-
-
 		pd=new PatientData(NAME, ID,MAPID);
 		sd= new StudyData(ACCESSNUMB, ACCESSMAPID);
 		sd2= new StudyData(ACCESSNUMB2, ACCESSMAPID2);
@@ -78,10 +66,9 @@ public class PersistantDataLuceneTest {
 
 	@Before
 	public void setUp() throws Exception {
+		Files.createDirectories(Paths.get(DEFAULT_ANON_PATH));
 		lucy =new PersistantDataLucene(DEFAULT_ANON_PATH);
-
 	}
-
 
 
 	/**

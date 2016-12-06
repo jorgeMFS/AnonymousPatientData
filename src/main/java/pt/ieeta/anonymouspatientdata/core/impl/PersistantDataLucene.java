@@ -59,7 +59,7 @@ public class PersistantDataLucene implements AnonDatabase {
 	 * where the index files will be located
 	 */
 	private String indexFilePath;
-	/**
+	/** 
 	 * Lucene variables which we need to track
 	 */
 	private Directory index;
@@ -196,8 +196,6 @@ public class PersistantDataLucene implements AnonDatabase {
 
 	}
 
-
-	/* O erro Esta aqui */
 	@Override
 	public Optional<PatientData> getPatientDataBypatientMapId(String patientMapId) throws IOException {
 		if (index==null) throw new IllegalStateException();
