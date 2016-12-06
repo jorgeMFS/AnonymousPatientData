@@ -39,9 +39,6 @@ public class AnonCache implements AnonDatabase {
 	//private final int MAXSIZESTUDYDATA=1000;
 
 
-
-
-
 	public AnonCache(AnonDatabase anonDb) {
 		this.anonDb= anonDb;
 	}
@@ -158,8 +155,6 @@ public class AnonCache implements AnonDatabase {
 			
 			return pd;
 
-
-
 		}
 		catch(RuntimeIOException e){
 			throw new IOException(e);
@@ -184,4 +179,11 @@ public class AnonCache implements AnonDatabase {
 			throw new IOException(e);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "AnonCache [anonDb=" + anonDb + ", patientDataMap=" + patientDataMap + ", studyDataMap=" + studyDataMap
+				+ "]";
+	}
+	
 }

@@ -52,6 +52,8 @@ public class PersistantDataLucene implements AnonDatabase {
 
 
 
+	
+
 	private static final Logger logger = LoggerFactory.getLogger(PersistantDataLucene.class);
 	static final String DEFAULT_ANON_PATH = "./Anon_index/";
 	static final String DEFAULT_ANON="Indexed";
@@ -380,4 +382,10 @@ public class PersistantDataLucene implements AnonDatabase {
 
 	}
 
+	@Override
+	public String toString() {
+		return "PersistantDataLucene [indexFilePath=" + indexFilePath + ", index=" + index + ", analyzer=" + analyzer
+				+ ", writer=" + writer + ", manager=" + manager + "]";
+	}
+	
 }

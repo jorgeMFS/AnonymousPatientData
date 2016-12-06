@@ -20,8 +20,6 @@ package pt.ieeta.anonymouspatientdata.core.impl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.logging.Logger;
-
 import org.slf4j.LoggerFactory;
 
 import pt.ua.dicoogle.sdk.datastructs.SearchResult;
@@ -46,9 +44,9 @@ public class ResultConverter {
 		if (hM.get("PatientID")==null) return searchReasult;
 		String MapId =hM.get("PatientID").toString().trim();
 		LoggerFactory.getLogger(ResultConverter.class).info("Attempting to convert result: Map ID = {}", MapId);
-		
+
 		Optional<PatientData> patientData = lucy.getPatientDataBypatientMapId(MapId);
-		
+
 		if (patientData.isPresent()){
 			LoggerFactory.getLogger(ResultConverter.class).info("> Found patient data");
 			if (patientData.get().getPatientName() != null) {

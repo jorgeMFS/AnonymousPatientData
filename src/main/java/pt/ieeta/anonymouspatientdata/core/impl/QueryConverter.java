@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.PhraseQuery;
@@ -30,8 +31,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 
 import pt.ieeta.anonymouspatientdata.core.util.RuntimeIOException;
-
-import org.apache.lucene.search.BooleanClause.Occur;
 
 /**
  * @author Jorge Miguel Ferreira da Silva
@@ -249,4 +248,12 @@ public class QueryConverter {
 		}
 		return q;
 	}
+
+	@Override
+	public String toString() {
+		return "QueryConverter [lucy=" + lucy + "]";
+	}
+	
+	
+	
 }
