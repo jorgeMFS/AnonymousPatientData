@@ -46,20 +46,20 @@ public class PersistantDataLuceneTest {
 	PatientData pd;
 	StudyData sd;
 	StudyData sd2;
-	final String ID="1";
-	final String NAME="a1";
-	final String MAPID= "123";
-	final String ACCESSNUMB="19";
-	final String ACCESSMAPID="321";
-	final String ACCESSNUMB2="29";
-	final String ACCESSMAPID2="4321";	
+	final String PatientID="000";
+	final String PatientName="Patient^Anonymous";
+	final String MAPID= "1f46ddfb-73ed-4f12-b897-8f54354a8789";
+	final String AccessionNumber="000";
+	final String ACCESSMAPID="97b08c16-b688-4b03-a26f-4c4bc6d22f09";
+	final String AccessionNumber2="111";
+	final String ACCESSMAPID2="97b08c16-b688-4b03-a26f-4c4bc6d22f03";	
 
 	@Before 
 	public void create()throws IOException{
 		//Patient1
-		pd=new PatientData(NAME, ID,MAPID);
-		sd= new StudyData(ACCESSNUMB, ACCESSMAPID);
-		sd2= new StudyData(ACCESSNUMB2, ACCESSMAPID2);
+		pd=new PatientData(PatientName, PatientID,MAPID);
+		sd= new StudyData(AccessionNumber, ACCESSMAPID);
+		sd2= new StudyData(AccessionNumber2, ACCESSMAPID2);
 
 	}
 
@@ -77,13 +77,13 @@ public class PersistantDataLuceneTest {
 	
 	@Test
 	public void testGetStudyDataByAccessionNumber() throws IOException {
-		Optional<StudyData> test=lucy.getStudyDataByAccessionNumber(ACCESSNUMB);
+		Optional<StudyData> test=lucy.getStudyDataByAccessionNumber(AccessionNumber);
 		Assert.assertFalse(test.isPresent());
 		
 		lucy.insertStudyData(this.sd);
 		lucy.insertStudyData(this.sd2);
-		Optional<StudyData> sdo=lucy.getStudyDataByAccessionNumber(ACCESSNUMB);
-		Optional<StudyData> sdo2=lucy.getStudyDataByAccessionNumber(ACCESSNUMB2);
+		Optional<StudyData> sdo=lucy.getStudyDataByAccessionNumber(AccessionNumber);
+		Optional<StudyData> sdo2=lucy.getStudyDataByAccessionNumber(AccessionNumber2);
 		Assert.assertEquals(sdo2.get(),sd2);
 		Assert.assertEquals(sdo.get(),sd);
 	}
@@ -93,19 +93,19 @@ public class PersistantDataLuceneTest {
 		lucy.insertStudyData(this.sd);
 		lucy.insertStudyData(this.sd2);
 		Optional<String> sdo = lucy.getAccessionNumberByAccessionMapNumber(ACCESSMAPID);
-		Assert.assertEquals(sdo.get(), ACCESSNUMB);
+		Assert.assertEquals(sdo.get(), AccessionNumber);
 
 		Optional<String> sdo2 = lucy.getAccessionNumberByAccessionMapNumber(ACCESSMAPID2);
-		Assert.assertEquals(sdo2.get(), ACCESSNUMB2);
+		Assert.assertEquals(sdo2.get(), AccessionNumber2);
 	}
 	
 	@Test
 	public void testGetPatientDataById() throws IOException {
-		Optional<PatientData> test=lucy.getPatientDataById(ID);
+		Optional<PatientData> test=lucy.getPatientDataById(PatientID);
 		Assert.assertFalse(test.isPresent());
 		
 		lucy.insertPatientData(pd);
-		Optional<PatientData> pdo=lucy.getPatientDataById(ID);
+		Optional<PatientData> pdo=lucy.getPatientDataById(PatientID);
 		Assert.assertTrue(pdo.isPresent());
 		Assert.assertEquals(pdo.get(),pd);
 	}
@@ -132,11 +132,11 @@ public class PersistantDataLuceneTest {
 		lucy.insertPatientData(pd);
 		Optional<String> pdo = lucy.getPatientNameByPatientMapId(MAPID);
 		Assert.assertTrue(pdo.isPresent());
-		Assert.assertEquals(pdo.get(), NAME);
+		Assert.assertEquals(pdo.get(), PatientName);
 
 		Optional<String> pdo2 = lucy.getPatientIdByPatientMapId(MAPID);
 		Assert.assertTrue(pdo2.isPresent());
-		Assert.assertEquals(pdo2.get(), ID);
+		Assert.assertEquals(pdo2.get(), PatientID);
 	}
 
 	@After

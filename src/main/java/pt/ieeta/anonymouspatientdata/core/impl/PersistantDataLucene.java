@@ -29,6 +29,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -101,8 +102,8 @@ public class PersistantDataLucene implements AnonDatabase {
 			throw new IllegalStateException();
 		}
 		Document studyDataDoc= new Document();
-		TextField AccessionNumber = new TextField("AccessionNumber",studyData.getAccessionNumber(),Store.YES);
-		TextField Accession_Map_Number = new TextField("Accession_Map_Number",studyData.getMapAccessionNumber(),Store.YES);
+		StringField AccessionNumber = new StringField("AccessionNumber",studyData.getAccessionNumber(),Store.YES);
+		StringField Accession_Map_Number = new StringField("Accession_Map_Number",studyData.getMapAccessionNumber(),Store.YES);
 		TextField other =new TextField("other",studyData.getAccessionNumber(),Store.NO);
 		studyDataDoc.add(AccessionNumber);
 		studyDataDoc.add(Accession_Map_Number);
@@ -125,8 +126,8 @@ public class PersistantDataLucene implements AnonDatabase {
 		}
 		Document patientDataDoc= new Document();
 		TextField patientName = new TextField("PatientName",patientData.getPatientName(),Store.YES);
-		TextField patientId = new TextField("PatientID",patientData.getPatientId(),Store.YES);
-		TextField patient_Map_Id = new TextField("Patient_Map_Id",patientData.getMapId(),Store.YES);
+		StringField patientId = new StringField("PatientID",patientData.getPatientId(),Store.YES);
+		StringField patient_Map_Id = new StringField("Patient_Map_Id",patientData.getMapId(),Store.YES);
 		TextField other =new TextField("other",patientData.getPatientName()+" "+patientData.getPatientId(),Store.NO);
 		patientDataDoc.add(patientName);
 		patientDataDoc.add(patientId);
@@ -141,8 +142,6 @@ public class PersistantDataLucene implements AnonDatabase {
 		if (boolval!=true){
 			logger.warn("maybe.Refresh another thread is currently refreshing");
 		}
-
-
 	}
 
 
