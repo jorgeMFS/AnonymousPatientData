@@ -2,7 +2,7 @@
 
 Dicoogle Anonimizer Plugin Wrapper that allows controlled searching in reversibly deidentified medical imaging archives.
 
-## Installation
+## Construction
 
 Before building, please make sure that your system contains the following tools:
 #### Dependencies
@@ -13,9 +13,11 @@ Before building, please make sure that your system contains the following tools:
 ### Intructions
  1. Retrieve the full source code from this repository: `https://github.com/jorgeMFS/AnonymousWrapper.git`
  2. Navigate to the project's base directory, and build the parent Maven project by calling `mvn install`
- 3. Go to the `\AnonymousPatientData\target` folder and copy the `AnonymousPatientData-jar-with-dependencies.jar`
- 4. Paste the jar in the `\Plugins` folder of the Dicoogle Project.
- 5. Navigate to Dicoogle project base directory and execute the jar.
+ 
+ 
+## Installing
+
+Copy or move the plugin's jar file (the one with dependencies, named with the pattern "cbir-vvvvvv-jar-with-dependencies") to the "/Plugins/" folder in Dicoogle's working directory.
 
 ## Authors
 
