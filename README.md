@@ -28,4 +28,4 @@ Before building, please make sure that your system contains the following tools:
 Bioinformatics, IEETA,UA
 
 **Contacts**
-Contacts: jorge(dot)miguel(dot)ferreira(dot)silva(at)ua(dot)pt
+Email: jorge(dot)miguel(dot)ferreira(dot)silva(at)ua(dot)pt
