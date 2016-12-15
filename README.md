@@ -17,7 +17,7 @@ Before building, please make sure that your system contains the following tools:
  
 ## Installing
 
-Copy or move the plugin's jar file (the one with dependencies, named with the pattern "cbir-vvvvvv-jar-with-dependencies") to the "/Plugins/" folder in Dicoogle's working directory.
+Copy or move the plugin's jar file (the one with dependencies, named with the pattern `-jar-with-dependencies`) to the `./Plugins/` folder in Dicoogle's working directory.
 
 ## Authors
 
