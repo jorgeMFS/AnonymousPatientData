@@ -22,9 +22,8 @@ Before building, please make sure that your system contains the following tools:
 ## Authors
 
 - Jorge Miguel Silva
-- Eduardo Pinto
+- Eduardo Pinho
 
-### License
 Bioinformatics, IEETA,UA
 
 **Contacts**
