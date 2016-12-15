@@ -1,5 +1,3 @@
-# AnonymousWrapper
-Dicoogle Anonymizer Wrapper
 # Dicoogle Anonymizer Wrapper
 
 Dicoogle Anonimizer Plugin Wrapper that allows controlled searching in reversibly deidentified medical imaging archives.
