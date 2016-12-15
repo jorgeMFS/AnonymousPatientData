@@ -1,5 +1,7 @@
 # Dicoogle Anonymizer Wrapper
 
+[![Build Status](https://travis-ci.org/jorgeMFS/AnonymousWrapper.svg?branch=master)](https://travis-ci.org/jorgeMFS/AnonymousWrapper)
+
 Dicoogle Anonimizer Plugin Wrapper that allows controlled searching in reversibly deidentified medical imaging archives.
 
 ## Installation
