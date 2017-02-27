@@ -164,7 +164,6 @@ public class QueryConverter {
 			}
 			return bld.build();
 
-
 		}
 		if(q.getClass().isAssignableFrom(PhraseQuery.class))
 		{
@@ -179,7 +178,7 @@ public class QueryConverter {
 
 				String value=t.text();
 
-				if (t.field()=="PatientID"){
+				if (t.field().equals("PatientID")){
 					
 					Optional<String> getmapIdbyPatientId=this.lucy.getmapIdbyPatientId(value);
 					String pIdValue=getmapIdbyPatientId.get();
@@ -191,7 +190,7 @@ public class QueryConverter {
 					}
 				}
 
-				if (t.field()=="PatientName"){
+				if (t.field().equals("PatientName")){
 					Optional<String> getmapIdbyPatientName =this.lucy.getmapIdbyPatientName(value);
 					String PatientNameValue=getmapIdbyPatientName.get();
 					if (getmapIdbyPatientName.isPresent()){
@@ -201,7 +200,7 @@ public class QueryConverter {
 						bq.add(bClause);
 					}
 				}
-				if(t.field()=="AccessionNumber"){
+				if(t.field().equals("AccessionNumber")){
 					Optional<String>getmapAccessionNumber= this.lucy.getmapAccessionNumber(value);
 					
 					if (getmapAccessionNumber.isPresent()){
@@ -212,12 +211,11 @@ public class QueryConverter {
 						bq.add(bClause);
 					}
 				}
-				if(t.field()=="other"){
+				if(t.field().equals("other") ){
 					Optional<String> getmapIdbyPatientId=this.lucy.getmapIdbyPatientId(value);
 					Optional<String> getmapIdbyPatientName =this.lucy.getmapIdbyPatientName(value);
 					Optional<String>getmapAccessionNumber= this.lucy.getmapAccessionNumber(value);
-					
-					
+
 					
 					if (getmapIdbyPatientId.isPresent()){
 						String pIdValue=getmapIdbyPatientId.get();
