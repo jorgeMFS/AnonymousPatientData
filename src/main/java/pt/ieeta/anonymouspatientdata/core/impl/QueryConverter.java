@@ -68,7 +68,6 @@ public class QueryConverter {
 				BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
 				BooleanQuery bq = new BooleanQuery.Builder()
 						.add(bClause).add(bClause2)
-						.setMinimumNumberShouldMatch(1)
 						.build();
 				return bq;
 			}
@@ -81,7 +80,6 @@ public class QueryConverter {
 				BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
 				BooleanQuery bq = new BooleanQuery.Builder().
 						add(bClause).add(bClause2)
-						.setMinimumNumberShouldMatch(1)
 						.build();
 
 				return (Query) bq;
@@ -95,8 +93,7 @@ public class QueryConverter {
 				BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
 				BooleanQuery bq = new BooleanQuery.Builder()
 						.add(bClause).add(bClause2)
-						.setMinimumNumberShouldMatch(1)
-						.build();
+					    .build();
 
 				return (Query) bq;
 			}
@@ -132,8 +129,7 @@ public class QueryConverter {
 					BooleanClause bClause4= new BooleanClause(tq4, Occur.SHOULD);
 					bq.add(bClause4);
 				}
-				BooleanQuery bq1 = bq.setMinimumNumberShouldMatch(1)
-						.build();
+				BooleanQuery bq1 = bq.build();
 				return bq1;
 			}
 
@@ -240,8 +236,7 @@ public class QueryConverter {
 					}
 				}
 			}
-			BooleanQuery bq1 = bq.setMinimumNumberShouldMatch(1)
-					.build();
+			BooleanQuery bq1 = bq.build();
 			return bq1;
 		}
 		return q;

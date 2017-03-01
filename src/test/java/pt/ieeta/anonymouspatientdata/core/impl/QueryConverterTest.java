@@ -123,19 +123,19 @@ public class QueryConverterTest {
 		//--TEST1 PatientId
 		BooleanQuery.Builder builder= new Builder();
 		BooleanClause clause= new BooleanClause(tQa, Occur.SHOULD);
-		BooleanQuery boolQ= builder.add(clause).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery boolQ= builder.add(clause).build();
 		BooleanClause clause2=new BooleanClause(tQa1, Occur.SHOULD);
-		BooleanQuery boolQ2= builder.add(clause2).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery boolQ2= builder.add(clause2).build();
 
 		//Boolean Query PatientName
 		BooleanQuery.Builder b= new Builder();
 		BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
-		BooleanQuery bQ= b.add(bClause).setMinimumNumberShouldMatch(1).build();		
+		BooleanQuery bQ= b.add(bClause).build();
 		//--TEST1 PatientName
 		BooleanQuery.Builder b2= new Builder();
 		BooleanQuery.Builder b3= new Builder();
 		BooleanClause bClause2=new BooleanClause(tQ1, Occur.SHOULD);
-		BooleanQuery bQ2= b2.add(bClause).add(bClause2).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery bQ2= b2.add(bClause).add(bClause2).build();
 
 		//--TEST1 PatientID
 		BooleanClause clause3=new BooleanClause(boolQ2, Occur.SHOULD);
@@ -159,7 +159,7 @@ public class QueryConverterTest {
 		//--TEST PatientName
 		BooleanQuery.Builder b4= new Builder();
 		BooleanClause bClause4=new BooleanClause(pQ, Occur.SHOULD);
-		BooleanQuery bQ4= b4.add(bClause4).add(bClause2).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery bQ4= b4.add(bClause4).add(bClause2).build();
 
 		//--TEST PatientId
 		BooleanQuery.Builder builder3=new Builder();
@@ -167,7 +167,7 @@ public class QueryConverterTest {
 		BooleanQuery boolQ4=builder3.add(clause4).build();
 		BooleanQuery.Builder builder4=new Builder();
 		BooleanClause clause5=new BooleanClause(phraseQ, Occur.SHOULD);
-		BooleanQuery bQ5= builder4.add(clause5).add(clause2).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery bQ5= builder4.add(clause5).add(clause2).build();
 		BooleanClause cla=new BooleanClause(bQ5, Occur.SHOULD);
 
 		BooleanQuery.Builder builder5=new Builder();
@@ -203,14 +203,14 @@ public class QueryConverterTest {
 		BooleanQuery.Builder builder= new Builder();
 		BooleanClause clause= new BooleanClause(tQ, Occur.SHOULD);
 		BooleanClause clause2= new BooleanClause(tQa, Occur.SHOULD);
-		BooleanQuery boolQ= builder.add(clause).add(clause2).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery boolQ= builder.add(clause).add(clause2).build();
 
 		//QueryConverter
 		QueryConverter qC = new QueryConverter(Anon);
 
 		//BooleanQuery
 		BooleanQuery.Builder b= new Builder();
-		BooleanQuery bQ =b.add(clause).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery bQ =b.add(clause).build();
 		BooleanQuery.Builder b2= new Builder();
 		BooleanClause clauseBQtest=new BooleanClause(boolQ, Occur.SHOULD);
 		BooleanQuery bQtester=b2.add(clauseBQtest).build();
@@ -220,7 +220,7 @@ public class QueryConverterTest {
 		PhraseQuery phraseQ =new PhraseQuery("AccessionNumber",T2);
 		BooleanQuery.Builder b3= new Builder();
 		BooleanClause clausePQtest=new BooleanClause(phraseQ, Occur.SHOULD);
-		BooleanQuery pQtester=b3.add(clausePQtest).add(clause2).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery pQtester=b3.add(clausePQtest).add(clause2).build();
 
 
 		try {
@@ -246,14 +246,14 @@ public class QueryConverterTest {
 		BooleanQuery.Builder builder= new Builder();
 		BooleanClause clause= new BooleanClause(tQ, Occur.SHOULD);
 		BooleanClause clause3= new BooleanClause(tQb, Occur.SHOULD);
-		BooleanQuery boolQ= builder.add(clause).add(clause3).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery boolQ= builder.add(clause).add(clause3).build();
 
 		//QueryConverter.
 		QueryConverter qC = new QueryConverter(Anon);
 
 		//BooleanQuery
 		BooleanQuery.Builder b= new Builder();
-		BooleanQuery bQ =b.add(clause).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery bQ =b.add(clause).build();
 		BooleanQuery.Builder b2= new Builder();
 		BooleanClause clauseBQtest=new BooleanClause(boolQ, Occur.SHOULD);
 		BooleanQuery bQtester=b2.add(clauseBQtest).build();
@@ -263,7 +263,7 @@ public class QueryConverterTest {
 		PhraseQuery phraseQ =new PhraseQuery("other",T2);
 		BooleanQuery.Builder b3= new Builder();
 		BooleanClause clausePQtest=new BooleanClause(phraseQ, Occur.SHOULD);
-		BooleanQuery pQtester=b3.add(clausePQtest).add(clause3).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery pQtester=b3.add(clausePQtest).add(clause3).build();
 
 
 		try {
@@ -294,7 +294,7 @@ public class QueryConverterTest {
 
 		//BooleanQuery
 		BooleanQuery.Builder b= new Builder();
-		BooleanQuery bQ =b.add(clause).setMinimumNumberShouldMatch(1).build();		
+		BooleanQuery bQ =b.add(clause).build();
 		
 		
 		//PhraseQuery
@@ -302,7 +302,7 @@ public class QueryConverterTest {
 		PhraseQuery phraseQ =new PhraseQuery("AccessionNumber",T2);
 		BooleanQuery.Builder b3= new Builder();
 		BooleanClause clausePQtest=new BooleanClause(phraseQ, Occur.SHOULD);
-		BooleanQuery pQtester=b3.add(clausePQtest).setMinimumNumberShouldMatch(1).build();
+		BooleanQuery pQtester=b3.add(clausePQtest).build();
 
 
 		try {

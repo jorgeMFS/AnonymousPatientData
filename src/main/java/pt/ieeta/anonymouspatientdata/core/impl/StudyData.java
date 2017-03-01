@@ -31,7 +31,6 @@ public class StudyData {
 	/**
 	 * @param accessionNumber
 	 * @param mapAccessionNumber
-	 * @param patientId
 	 */
 	
 

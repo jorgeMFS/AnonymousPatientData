@@ -98,7 +98,6 @@ public class MatchTables {
 		} catch (IOException e) {
 			LoggerFactory.getLogger(MatchTables.class).warn("Issue while closing index",e);	
 		}
-
 	}
 
 }

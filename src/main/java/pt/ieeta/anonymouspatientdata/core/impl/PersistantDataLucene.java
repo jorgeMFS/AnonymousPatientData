@@ -89,6 +89,7 @@ public class PersistantDataLucene implements AnonDatabase {
 		logger.info("Opened Lucene database");
 	}
 
+
 	private final void setIndexPath(String indexPath) {
 		this.indexFilePath = indexPath;
 		logger.debug("LUCENE: indexing at {}", indexFilePath);

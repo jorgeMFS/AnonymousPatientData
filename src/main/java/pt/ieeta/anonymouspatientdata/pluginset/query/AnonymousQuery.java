@@ -108,7 +108,6 @@ public class AnonymousQuery implements QueryInterface, PlatformCommunicatorInter
 			logger.info("Transformed query: {}", q);
 			Iterable<SearchResult> it = provider.query(q.toString(), parameters);
 			ResultConverter rC = new ResultConverter(anondB);
-
 			Spliterator<SearchResult> splt= StreamSupport.stream(it.spliterator(), false)
 					.map(rs -> {
 						try {
