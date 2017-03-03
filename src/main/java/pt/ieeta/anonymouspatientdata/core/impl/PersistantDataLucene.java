@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -34,11 +37,7 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.SearcherFactory;
-import org.apache.lucene.search.SearcherManager;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.slf4j.Logger;
@@ -263,6 +262,36 @@ public class PersistantDataLucene implements AnonDatabase {
 			String patientMapId= pd.getMapId();
 			logger.debug("Could get map Id by Patient Id{}", patientMapId);
 			return Optional.of(patientMapId);} 
+		finally {
+			manager.release(is);
+		}
+	}
+
+    @Override
+    public List<String> getvariousmapIdbyPatientName(String patientName) throws IOException{
+        if (index==null) throw new IllegalStateException();
+        TermQuery termQuery = new TermQuery(new Term("PatientName",patientName));
+        int NElem=1;
+        IndexSearcher is = manager.acquire();
+        try{
+            TopDocs tD= is.search(termQuery,NElem);
+            if (tD.totalHits== 0){
+                logger.debug("got empty map Id by Patient Name");
+				return Collections.emptyList();
+            }
+            List<String> patientMapIds = new ArrayList <>();
+            ScoreDoc[] docs = tD.scoreDocs;
+			for (ScoreDoc sc: docs) {
+
+                int doc= sc.doc;
+                Document d = is.doc(doc);
+                PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
+                String patientMapId= pd.getMapId();
+                patientMapIds.add(patientMapId);
+			}
+
+			logger.debug("Could get map Id by Patient Name{}", patientMapIds);
+			return patientMapIds;}
 		finally {
 			manager.release(is);
 		}

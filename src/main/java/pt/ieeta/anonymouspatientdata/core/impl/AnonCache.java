@@ -20,6 +20,7 @@ package pt.ieeta.anonymouspatientdata.core.impl;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -85,6 +86,11 @@ public class AnonCache implements AnonDatabase {
 	public Optional<String> getmapIdbyPatientName(String patientName) throws IOException {
 		return this.anonDb.getmapIdbyPatientName(patientName);
 
+	}
+
+	@Override
+	public List<String> getvariousmapIdbyPatientName(String patientName) throws IOException {
+		return this.anonDb.getvariousmapIdbyPatientName(patientName);
 	}
 
 

@@ -25,6 +25,7 @@ package pt.ieeta.anonymouspatientdata.core.impl;
  */
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 public interface AnonDatabase {
@@ -44,6 +45,8 @@ public interface AnonDatabase {
 	Optional<String> getmapIdbyPatientId(String patientId) throws IOException;
 
 	Optional<String> getmapIdbyPatientName(String patientName) throws IOException;
+
+	List<String> getvariousmapIdbyPatientName (String patientName) throws IOException;
 
 	void close() throws IOException;
 

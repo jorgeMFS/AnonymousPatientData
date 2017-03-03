@@ -19,8 +19,7 @@ package pt.ieeta.anonymouspatientdata.core.impl;
 
 import static org.mockito.Mockito.*;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -58,12 +57,13 @@ public class QueryConverterTest {
 	public void create()throws IOException{
 		Anon =Mockito.mock(AnonDatabase.class);
 		//Patient1
+		List <String> array = new ArrayList <>();
 		final Optional<String> ID=Optional.ofNullable("1");
 		final Optional<String> NAME=Optional.ofNullable("a1");
 		final Optional<String> MAPID= Optional.ofNullable("123");
 		final Optional<String> ACCESSNUMB=Optional.ofNullable("19");
 		final Optional<String> ACCESSMAPID=Optional.ofNullable("321");
-
+		array.add(MAPID.get());
 		//Patient2
 		final Optional<String> ID2=Optional.ofNullable("2");
 		final Optional<String> NAME2=Optional.ofNullable("a2");
@@ -84,7 +84,11 @@ public class QueryConverterTest {
 		.thenReturn(MAPID);
 		when(Anon.getmapIdbyPatientName(NAME.get()))
 		.thenReturn(MAPID);
-		
+		when(Anon.getmapIdbyPatientName(NAME.get()))
+				.thenReturn(MAPID);
+		when(Anon.getvariousmapIdbyPatientName(NAME.get()))
+				.thenReturn(array);
+
 		//Mock Patient2
 		when(Anon.getmapAccessionNumber(ACCESSNUMB2.get()))
 		.thenReturn(Optional.empty());
@@ -98,6 +102,8 @@ public class QueryConverterTest {
 		.thenReturn(Optional.empty());
 		when(Anon.getmapIdbyPatientName(NAME2.get()))
 		.thenReturn(Optional.empty());
+		when(Anon.getvariousmapIdbyPatientName(NAME2.get()))
+				.thenReturn(Collections.emptyList());
 
 
 
@@ -113,13 +119,13 @@ public class QueryConverterTest {
 	public void test() {
 
 		//TermQuery PatientName
-		TermQuery tQ =new TermQuery(new Term("PatientName","a1"));
+		TermQuery tQ = new TermQuery(new Term("PatientName","a1"));
 		//--TEST PatientName
-		TermQuery tQ1 =new TermQuery(new Term("PatientName","123"));
+		TermQuery tQ1 = new TermQuery(new Term("PatientName","123"));
 
 		//TermQuery PatientId
-		TermQuery tQa =new TermQuery(new Term("PatientID","1"));
-		TermQuery tQa1 =new TermQuery(new Term("PatientID","123"));
+		TermQuery tQa = new TermQuery(new Term("PatientID","1"));
+		TermQuery tQa1 = new TermQuery(new Term("PatientID","123"));
 		//--TEST1 PatientId
 		BooleanQuery.Builder builder= new Builder();
 		BooleanClause clause= new BooleanClause(tQa, Occur.SHOULD);
@@ -129,23 +135,23 @@ public class QueryConverterTest {
 
 		//Boolean Query PatientName
 		BooleanQuery.Builder b= new Builder();
-		BooleanClause bClause= new BooleanClause(tQ, Occur.SHOULD);
-		BooleanQuery bQ= b.add(bClause).build();
+		BooleanClause bClause = new BooleanClause(tQ, Occur.SHOULD);
+		BooleanQuery bQ = b.add(bClause).build();
 		//--TEST1 PatientName
-		BooleanQuery.Builder b2= new Builder();
-		BooleanQuery.Builder b3= new Builder();
-		BooleanClause bClause2=new BooleanClause(tQ1, Occur.SHOULD);
-		BooleanQuery bQ2= b2.add(bClause).add(bClause2).build();
+		BooleanQuery.Builder b2 = new Builder();
+		BooleanQuery.Builder b3 = new Builder();
+		BooleanClause bClause2 = new BooleanClause(tQ1, Occur.SHOULD);
+		BooleanQuery bQ2 = b2.add(bClause).add(bClause2).build();
 
 		//--TEST1 PatientID
-		BooleanClause clause3=new BooleanClause(boolQ2, Occur.SHOULD);
-		BooleanQuery.Builder builder2= new Builder();
-		BooleanQuery boolQ3=builder2.add(clause3).build();
+		BooleanClause clause3 = new BooleanClause(boolQ2, Occur.SHOULD);
+		BooleanQuery.Builder builder2 = new Builder();
+		BooleanQuery boolQ3 = builder2.add(clause3).build();
 
 
 		//--TEST2 PatientName
-		BooleanClause bClause3=new BooleanClause(bQ2, Occur.SHOULD);
-		BooleanQuery bQ3=b3.add(bClause3).build();
+		BooleanClause bClause3 = new BooleanClause(bQ2, Occur.SHOULD);
+		BooleanQuery bQ3 = b3.add(bClause3).build();
 
 		//Phrase Query PatientName
 		String T="a1";
@@ -157,9 +163,9 @@ public class QueryConverterTest {
 		QueryConverter qC = new QueryConverter(Anon);
 
 		//--TEST PatientName
-		BooleanQuery.Builder b4= new Builder();
-		BooleanClause bClause4=new BooleanClause(pQ, Occur.SHOULD);
-		BooleanQuery bQ4= b4.add(bClause4).add(bClause2).build();
+		BooleanQuery.Builder b4 = new Builder();
+		BooleanClause bClause4 = new BooleanClause(pQ, Occur.SHOULD);
+		BooleanQuery bQ4 = b4.add(bClause4).add(bClause2).build();
 
 		//--TEST PatientId
 		BooleanQuery.Builder builder3=new Builder();
