@@ -69,7 +69,52 @@ public class QueryConverterTest {
 		final Optional<String> NAME2=Optional.ofNullable("a2");
 		final Optional<String> MAPID2= Optional.ofNullable("1234");
 		final Optional<String> ACCESSNUMB2=Optional.ofNullable("29");
-		final Optional<String> ACCESSMAPID2=Optional.ofNullable("4321");	
+		final Optional<String> ACCESSMAPID2=Optional.ofNullable("4321");
+
+		//Leite^Antonia
+		List <String> antonia_array = new ArrayList <>();
+		final Optional<String> NAMEa=Optional.ofNullable("Leite^Antónia");
+		final Optional<String> MAPIDa= Optional.ofNullable("789");
+		antonia_array.add(MAPIDa.get());
+
+		//Leite^Alice
+		List <String> alice_array = new ArrayList <>();
+		final Optional<String> NAMEal=Optional.ofNullable("Leite^Alice");
+		final Optional<String> MAPIDal= Optional.ofNullable("456");
+		alice_array.add(MAPIDal.get());
+
+
+		//Leite
+		final Optional<String> NAMEL=Optional.ofNullable("Leite");
+		List <String> Leitearray = new ArrayList <>();
+		Leitearray.add(MAPIDal.get());
+		Leitearray.add(MAPIDa.get());
+
+
+
+		//Mock Leite^Antonia
+		when(Anon.getPatientNameByPatientMapId(MAPIDa.get()))
+				.thenReturn(NAMEa);
+		when(Anon.getvariousmapIdbyPatientName(NAMEa.get()))
+				.thenReturn(antonia_array);
+		when(Anon.getmapIdbyPatientId(ID.get()))
+				.thenReturn(MAPIDa);
+
+
+		//Mock Leite^Alice
+		when(Anon.getPatientNameByPatientMapId(MAPIDal.get()))
+				.thenReturn(NAMEal);
+		when(Anon.getvariousmapIdbyPatientName(NAMEal.get()))
+				.thenReturn(alice_array);
+		when(Anon.getmapIdbyPatientId(ID.get()))
+				.thenReturn(MAPIDal);
+
+		when(Anon.getvariousmapIdbyPatientName(NAMEL.get())).thenReturn(Leitearray);
+
+
+
+
+
 
 		//Mock Patient1
 		when(Anon.getmapAccessionNumber(ACCESSNUMB.get()))
@@ -83,11 +128,10 @@ public class QueryConverterTest {
 		when(Anon.getmapIdbyPatientId(ID.get()))
 		.thenReturn(MAPID);
 		when(Anon.getmapIdbyPatientName(NAME.get()))
-		.thenReturn(MAPID);
-		when(Anon.getmapIdbyPatientName(NAME.get()))
 				.thenReturn(MAPID);
 		when(Anon.getvariousmapIdbyPatientName(NAME.get()))
 				.thenReturn(array);
+
 
 		//Mock Patient2
 		when(Anon.getmapAccessionNumber(ACCESSNUMB2.get()))
@@ -131,7 +175,8 @@ public class QueryConverterTest {
 		BooleanClause clause= new BooleanClause(tQa, Occur.SHOULD);
 		BooleanQuery boolQ= builder.add(clause).build();
 		BooleanClause clause2=new BooleanClause(tQa1, Occur.SHOULD);
-		BooleanQuery boolQ2= builder.add(clause2).build();
+        BooleanQuery.Builder builders= new Builder();
+		BooleanQuery boolQ2= builders.add(clause2).build();
 
 		//Boolean Query PatientName
 		BooleanQuery.Builder b= new Builder();
@@ -141,7 +186,7 @@ public class QueryConverterTest {
 		BooleanQuery.Builder b2 = new Builder();
 		BooleanQuery.Builder b3 = new Builder();
 		BooleanClause bClause2 = new BooleanClause(tQ1, Occur.SHOULD);
-		BooleanQuery bQ2 = b2.add(bClause).add(bClause2).build();
+		BooleanQuery bQ2 = b2.add(bClause2).build();
 
 		//--TEST1 PatientID
 		BooleanClause clause3 = new BooleanClause(boolQ2, Occur.SHOULD);
@@ -165,26 +210,23 @@ public class QueryConverterTest {
 		//--TEST PatientName
 		BooleanQuery.Builder b4 = new Builder();
 		BooleanClause bClause4 = new BooleanClause(pQ, Occur.SHOULD);
-		BooleanQuery bQ4 = b4.add(bClause4).add(bClause2).build();
+		BooleanQuery bQ4 = b4.add(bClause2).build();
 
 		//--TEST PatientId
-		BooleanQuery.Builder builder3=new Builder();
-		BooleanClause clause4=new BooleanClause(phraseQ, Occur.SHOULD);
-		BooleanQuery boolQ4=builder3.add(clause4).build();
-		BooleanQuery.Builder builder4=new Builder();
-		BooleanClause clause5=new BooleanClause(phraseQ, Occur.SHOULD);
-		BooleanQuery bQ5= builder4.add(clause5).add(clause2).build();
-		BooleanClause cla=new BooleanClause(bQ5, Occur.SHOULD);
+		BooleanQuery.Builder builder3 = new Builder();
+		BooleanClause clause4 = new BooleanClause(phraseQ, Occur.SHOULD);
+		BooleanQuery boolQ4 = builder3.add(clause4).build();
+		BooleanQuery.Builder builder4 = new Builder();
+		BooleanClause clause5 = new BooleanClause(phraseQ, Occur.SHOULD);
+		BooleanQuery bQ5 = builder4.add(clause5).add(clause2).build();
 
-		BooleanQuery.Builder builder5=new Builder();
-		BooleanQuery booleanQuery= builder5.add(cla).build();
 		try {
 			Query q = qC.transformQuery(tQ);
 			Query qa = qC.transformQuery(tQa);
 			Query q2 = qC.transformQuery(bQ);
 			Query qa2 = qC.transformQuery(boolQ);
 			Query q3 = qC.transformQuery(pQ);
-			Query qa3 = qC.transformQuery(boolQ4);
+
 			//--TEST PatientName
 			Assert.assertEquals(bQ2,q);
 			Assert.assertEquals(bQ3,q2);
@@ -192,7 +234,6 @@ public class QueryConverterTest {
 			//--TEST PatientId
 			Assert.assertEquals(boolQ2,qa);
 			Assert.assertEquals(boolQ3,qa2);
-			Assert.assertEquals(booleanQuery,qa3);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -208,8 +249,9 @@ public class QueryConverterTest {
 		TermQuery tQa =new TermQuery(new Term("AccessionNumber","321"));
 		BooleanQuery.Builder builder= new Builder();
 		BooleanClause clause= new BooleanClause(tQ, Occur.SHOULD);
-		BooleanClause clause2= new BooleanClause(tQa, Occur.SHOULD);
-		BooleanQuery boolQ= builder.add(clause).add(clause2).build();
+		BooleanClause a= new BooleanClause(tQa, Occur.SHOULD);
+
+		BooleanQuery boolQ= builder.add(a).build();
 
 		//QueryConverter
 		QueryConverter qC = new QueryConverter(Anon);
@@ -226,15 +268,13 @@ public class QueryConverterTest {
 		PhraseQuery phraseQ =new PhraseQuery("AccessionNumber",T2);
 		BooleanQuery.Builder b3= new Builder();
 		BooleanClause clausePQtest=new BooleanClause(phraseQ, Occur.SHOULD);
-		BooleanQuery pQtester=b3.add(clausePQtest).add(clause2).build();
+		BooleanQuery pQtester=b3.add(a).build();
 
 
 		try {
 			Query q = qC.transformQuery(tQ);
 			Query q2 = qC.transformQuery(bQ);
 			Query q3 = qC.transformQuery(phraseQ);
-
-
 			Assert.assertEquals(boolQ,q);
 			Assert.assertEquals(bQtester,q2);
 			Assert.assertEquals(pQtester,q3);
@@ -252,7 +292,7 @@ public class QueryConverterTest {
 		BooleanQuery.Builder builder= new Builder();
 		BooleanClause clause= new BooleanClause(tQ, Occur.SHOULD);
 		BooleanClause clause3= new BooleanClause(tQb, Occur.SHOULD);
-		BooleanQuery boolQ= builder.add(clause).add(clause3).build();
+		BooleanQuery boolQ= builder.add(clause3).build();
 
 		//QueryConverter.
 		QueryConverter qC = new QueryConverter(Anon);
@@ -269,7 +309,7 @@ public class QueryConverterTest {
 		PhraseQuery phraseQ =new PhraseQuery("other",T2);
 		BooleanQuery.Builder b3= new Builder();
 		BooleanClause clausePQtest=new BooleanClause(phraseQ, Occur.SHOULD);
-		BooleanQuery pQtester=b3.add(clausePQtest).add(clause3).build();
+		BooleanQuery pQtester=b3.add(clause3).build();
 
 
 		try {
@@ -308,7 +348,7 @@ public class QueryConverterTest {
 		PhraseQuery phraseQ =new PhraseQuery("AccessionNumber",T2);
 		BooleanQuery.Builder b3= new Builder();
 		BooleanClause clausePQtest=new BooleanClause(phraseQ, Occur.SHOULD);
-		BooleanQuery pQtester=b3.add(clausePQtest).build();
+		BooleanQuery pQtester=b3.build();
 
 
 		try {
@@ -327,4 +367,77 @@ public class QueryConverterTest {
 	}
 
 
+
+	@Test
+	public void test5() {
+		TermQuery tQ =new TermQuery(new Term("PatientName","Leite"));
+		TermQuery tQan =new TermQuery(new Term("PatientName","Leite^Antónia"));
+		TermQuery tQ1 =new TermQuery(new Term("PatientName","456"));
+		TermQuery tQ2 =new TermQuery(new Term("PatientName","Leite^Alice"));
+		TermQuery tQal =new TermQuery(new Term("PatientName","789"));
+		BooleanQuery.Builder builder= new Builder();
+		BooleanClause clause= new BooleanClause(tQ, Occur.SHOULD);
+		BooleanClause clause1= new BooleanClause(tQ1, Occur.SHOULD);
+		BooleanClause clause2= new BooleanClause(tQal, Occur.SHOULD);
+		BooleanQuery  boolQ = builder.add(clause1).add(clause2).build();
+        BooleanQuery.Builder b4 = new Builder();
+        BooleanQuery bQ1 = b4.add(new BooleanClause(boolQ, Occur.SHOULD)).build();
+        //QueryConverter
+		QueryConverter qC = new QueryConverter(Anon);
+
+
+		//BooleanQuery
+		BooleanQuery.Builder b= new Builder();
+		BooleanQuery bQ =b.add(clause).build();
+
+
+		try {
+			Query q = qC.transformQuery(tQ);
+			Query q2 = qC.transformQuery(bQ);
+			Assert.assertEquals(bQ1,q2);
+			Assert.assertEquals(boolQ,q);
+
+
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
+	}
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

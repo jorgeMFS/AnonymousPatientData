@@ -64,9 +64,8 @@ public class QueryConverter {
 				List<String> getvariousmapIdbyPatientName =this.lucy.getvariousmapIdbyPatientName(value);
 
 				if (getvariousmapIdbyPatientName.isEmpty()) return q;
-                BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
                 Builder bq = new BooleanQuery.Builder();
-                        bq.add(bClause);
+
 
 				for(String getmapIdbyPatientName:getvariousmapIdbyPatientName ){
                     TermQuery tq2=new TermQuery(new Term(fn, getmapIdbyPatientName));
@@ -82,10 +81,9 @@ public class QueryConverter {
 				Optional<String> getmapIdbyPatientId=this.lucy.getmapIdbyPatientId(value);
 				if (!getmapIdbyPatientId.isPresent()) return q;
 				TermQuery tq2=new TermQuery(new Term(fn,  getmapIdbyPatientId.get()));
-				BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
 				BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
-				BooleanQuery bq = new BooleanQuery.Builder().
-						add(bClause).add(bClause2)
+				BooleanQuery bq = new BooleanQuery.Builder()
+						.add(bClause2)
 						.build();
 
 				return (Query) bq;
@@ -95,10 +93,9 @@ public class QueryConverter {
 				Optional<String>getmapAccessionNumber= this.lucy.getmapAccessionNumber(value);
 				if (!getmapAccessionNumber.isPresent()) return q;
 				TermQuery tq2=new TermQuery(new Term(fn, getmapAccessionNumber.get()));
-				BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
 				BooleanClause bClause2= new BooleanClause(tq2, Occur.SHOULD);
 				BooleanQuery bq = new BooleanQuery.Builder()
-						.add(bClause).add(bClause2)
+						.add(bClause2)
 					    .build();
 
 				return (Query) bq;
@@ -109,9 +106,8 @@ public class QueryConverter {
 				Optional<String> getmapIdbyPatientId=this.lucy.getmapIdbyPatientId(value);
                 List<String> getvariousmapIdbyPatientName =this.lucy.getvariousmapIdbyPatientName(value);
 				Optional<String>getmapAccessionNumber= this.lucy.getmapAccessionNumber(value);
-				BooleanClause bClause= new BooleanClause(q, Occur.SHOULD);
-				Builder bq = new BooleanQuery.Builder()
-						.add(bClause);
+
+				Builder bq = new BooleanQuery.Builder();
 
 				if (getmapIdbyPatientId.isPresent()){
 					String pIdValue=getmapIdbyPatientId.get();				
@@ -170,9 +166,6 @@ public class QueryConverter {
 			PhraseQuery pq= (PhraseQuery) q;
 			Term[] pqTerms= pq.getTerms();
 			Builder bq = new BooleanQuery.Builder();
-			BooleanClause bClause1= new BooleanClause(pq, Occur.SHOULD);
-			bq.add(bClause1);
-
 
 			for (Term t:pqTerms){
 
