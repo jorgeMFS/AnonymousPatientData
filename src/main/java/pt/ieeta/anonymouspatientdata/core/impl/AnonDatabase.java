@@ -44,8 +44,6 @@ public interface AnonDatabase {
 
 	Optional<String> getmapIdbyPatientId(String patientId) throws IOException;
 
-	Optional<String> getmapIdbyPatientName(String patientName) throws IOException;
-
 	List<String> getvariousmapIdbyPatientName (String patientName) throws IOException;
 
 	void close() throws IOException;

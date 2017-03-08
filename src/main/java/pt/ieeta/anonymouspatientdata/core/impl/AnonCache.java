@@ -81,13 +81,6 @@ public class AnonCache implements AnonDatabase {
 		return this.anonDb.getmapIdbyPatientId(patientId);
 	}
 
-
-	@Override
-	public Optional<String> getmapIdbyPatientName(String patientName) throws IOException {
-		return this.anonDb.getmapIdbyPatientName(patientName);
-
-	}
-
 	@Override
 	public List<String> getvariousmapIdbyPatientName(String patientName) throws IOException {
 		return this.anonDb.getvariousmapIdbyPatientName(patientName);

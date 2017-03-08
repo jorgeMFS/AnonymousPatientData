@@ -127,8 +127,6 @@ public class QueryConverterTest {
 		.thenReturn(NAME);		
 		when(Anon.getmapIdbyPatientId(ID.get()))
 		.thenReturn(MAPID);
-		when(Anon.getmapIdbyPatientName(NAME.get()))
-				.thenReturn(MAPID);
 		when(Anon.getvariousmapIdbyPatientName(NAME.get()))
 				.thenReturn(array);
 
@@ -143,8 +141,6 @@ public class QueryConverterTest {
 		when(Anon.getPatientNameByPatientMapId(MAPID2.get()))
 		.thenReturn(Optional.empty());		
 		when(Anon.getmapIdbyPatientId(ID2.get()))
-		.thenReturn(Optional.empty());
-		when(Anon.getmapIdbyPatientName(NAME2.get()))
 		.thenReturn(Optional.empty());
 		when(Anon.getvariousmapIdbyPatientName(NAME2.get()))
 				.thenReturn(Collections.emptyList());

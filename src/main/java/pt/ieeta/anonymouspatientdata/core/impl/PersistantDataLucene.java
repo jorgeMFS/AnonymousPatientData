@@ -51,9 +51,6 @@ import org.slf4j.LoggerFactory;
 public class PersistantDataLucene implements AnonDatabase {
 
 
-
-	
-
 	private static final Logger logger = LoggerFactory.getLogger(PersistantDataLucene.class);
 	static final String DEFAULT_ANON_PATH = "./Anon_index/";
 	static final String DEFAULT_ANON="Indexed";
@@ -271,7 +268,7 @@ public class PersistantDataLucene implements AnonDatabase {
     public List<String> getvariousmapIdbyPatientName(String patientName) throws IOException{
         if (index==null) throw new IllegalStateException();
         TermQuery termQuery = new TermQuery(new Term("PatientName",patientName));
-        int NElem=1;
+        int NElem=10;
         IndexSearcher is = manager.acquire();
         try{
             TopDocs tD= is.search(termQuery,NElem);
@@ -296,32 +293,6 @@ public class PersistantDataLucene implements AnonDatabase {
 			manager.release(is);
 		}
 	}
-
-
-	@Override
-	public Optional<String> getmapIdbyPatientName(String patientName) throws IOException{
-		if (index==null) throw new IllegalStateException();
-		TermQuery termQuery = new TermQuery(new Term("PatientName",patientName));
-		int NElem=1;
-		IndexSearcher is = manager.acquire();
-		try{
-			TopDocs tD= is.search(termQuery,NElem);
-			if (tD.totalHits== 0){
-				logger.debug("got empty map Id by Patient Name");
-				return Optional.empty();
-			}
-			int doc=tD.scoreDocs[0].doc;
-			Document d = is.doc(doc);
-			PatientData pd=new PatientData(d.get("PatientName"), d.get("PatientID"),d.get("Patient_Map_Id"));
-			String patientMapId= pd.getMapId();
-			logger.debug("Could get map Id by Patient Name{}", patientMapId);
-			return Optional.of(patientMapId);} 
-		finally {
-			manager.release(is);
-		}
-
-	}
-
 
 	@Override
 	public void close() throws IOException{

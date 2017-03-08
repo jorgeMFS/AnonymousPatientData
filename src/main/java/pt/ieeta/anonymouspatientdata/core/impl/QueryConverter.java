@@ -61,18 +61,16 @@ public class QueryConverter {
 
 			if(fn.equals("PatientName")){
 				String value=tq.getTerm().text();
-				List<String> getvariousmapIdbyPatientName =this.lucy.getvariousmapIdbyPatientName(value);
+				List<String> getvariousmapIdbyPatientName = this.lucy.getvariousmapIdbyPatientName(value);
 
 				if (getvariousmapIdbyPatientName.isEmpty()) return q;
                 Builder bq = new BooleanQuery.Builder();
-
-
+                
 				for(String getmapIdbyPatientName:getvariousmapIdbyPatientName ){
                     TermQuery tq2=new TermQuery(new Term(fn, getmapIdbyPatientName));
                     BooleanClause a= new BooleanClause(tq2, Occur.SHOULD);
                     bq.add(new BooleanClause(tq2, Occur.SHOULD));
                 }
-
                 BooleanQuery bQ= bq.build();
 				return bQ;
 			}

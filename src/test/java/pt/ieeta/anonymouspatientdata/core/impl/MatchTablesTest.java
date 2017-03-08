@@ -52,8 +52,7 @@ public class MatchTablesTest {
 
 	/**
 	 * Test method for {@link pt.ieeta.anonymouspatientdata.core.impl.MatchTables#createMatch(java.lang.String, java.lang.String, java.lang.String)}.
-	 * @throws IOException 
-	 * @throws Sql2oException 
+	 * @throws IOException
 	 */
 	@Test
 	public final void testCreateMatch() throws IOException {
@@ -75,8 +74,7 @@ public class MatchTablesTest {
 
 	/**
 	 * Test method for {@link pt.ieeta.anonymouspatientdata.core.impl.MatchTables#getMatch(java.lang.String, java.lang.String)}.
-	 * @throws IOException 
-	 * @throws Sql2oException 
+	 * @throws IOException
 	 */
 	@Test
 	public final void testGetMatch() throws IOException {

@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.After;
@@ -52,7 +53,16 @@ public class PersistantDataLuceneTest {
 	final String AccessionNumber="000";
 	final String ACCESSMAPID="97b08c16-b688-4b03-a26f-4c4bc6d22f09";
 	final String AccessionNumber2="111";
-	final String ACCESSMAPID2="97b08c16-b688-4b03-a26f-4c4bc6d22f03";	
+	final String ACCESSMAPID2="13b15b80-48ce-4fd5-ba24-e3bd345e858c";
+
+	PatientData pd2;
+	StudyData sd22;
+
+	final String PatientID2="111";
+	final String PatientName2="Patient^Known";
+	final String MAPID2= "1011897f9-0260-4888-9aef-63949d2d0bb1";
+	final String AccessionNumber22="123";
+	final String ACCESSMAPID22="3f857653-68d4-4812-ab57-8aad7cd0b8b3";
 
 	@Before 
 	public void create()throws IOException{
@@ -61,6 +71,8 @@ public class PersistantDataLuceneTest {
 		sd= new StudyData(AccessionNumber, ACCESSMAPID);
 		sd2= new StudyData(AccessionNumber2, ACCESSMAPID2);
 
+		pd2=new PatientData(PatientName2,PatientID2,MAPID2);
+		sd22= new StudyData(AccessionNumber22, ACCESSMAPID22);
 	}
 
 	@Before
@@ -119,24 +131,6 @@ public class PersistantDataLuceneTest {
 		Optional<PatientData> pdo=lucy.getPatientDataBypatientMapId(MAPID);
 		Assert.assertTrue(pdo.isPresent());
 		Assert.assertEquals(pdo.get(),pd);
-	}
-
-	@Test
-	public void testPNandIDByMapId() throws IOException {
-		Optional<String> pn = lucy.getPatientNameByPatientMapId(MAPID);
-		Assert.assertFalse(pn.isPresent());
-
-		Optional<String> pid = lucy.getPatientIdByPatientMapId(MAPID);
-		Assert.assertFalse(pid.isPresent());
-		
-		lucy.insertPatientData(pd);
-		Optional<String> pdo = lucy.getPatientNameByPatientMapId(MAPID);
-		Assert.assertTrue(pdo.isPresent());
-		Assert.assertEquals(pdo.get(), PatientName);
-
-		Optional<String> pdo2 = lucy.getPatientIdByPatientMapId(MAPID);
-		Assert.assertTrue(pdo2.isPresent());
-		Assert.assertEquals(pdo2.get(), PatientID);
 	}
 
 	@After

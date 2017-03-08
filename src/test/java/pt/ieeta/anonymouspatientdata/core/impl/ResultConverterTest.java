@@ -78,8 +78,6 @@ public class ResultConverterTest {
 		.thenReturn(Optional.of(NAME));		
 		when(Anon.getmapIdbyPatientId(ID))
 		.thenReturn(Optional.of(MAPID));
-		when(Anon.getmapIdbyPatientName(NAME))
-		.thenReturn(Optional.of(MAPID));
 	}
 
 	@Before
